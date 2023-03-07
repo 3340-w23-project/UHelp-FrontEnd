@@ -2,7 +2,7 @@
 
 .sectionWrapper {
   width: 100%;
-  background-color: var(--tertiary-color);
+  background-color: #fff;
 }
 
 .heroSectionWrapper {
@@ -14,11 +14,27 @@
 
 .section {
   @include flexCenter;
+  width: 100%;
   justify-content: center;
   flex-direction: column;
   padding: 8rem 1rem;
   margin: 0 auto;
   text-align: center;
+
+  .heading {
+    color: var(--secondary-color);
+    line-height: 4.5rem;
+    font-weight: 700;
+    font-size: 1.875rem;
+    margin-bottom: 2rem;
+  }
+
+  .description {
+    color: rgb(104, 112, 124);
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    line-height: 2.25rem;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -27,7 +43,7 @@
   }
 }
 
-.heading {
+.heroHeading {
   color: var(--secondary-color);
   line-height: 4.5rem;
   font-weight: 700;
@@ -35,11 +51,11 @@
   margin-bottom: 4rem;
 }
 
-.headingPrimary {
+.heroHeadingPrimary {
   color: var(--primary-color);
 }
 
-.description {
+.heroDescription {
   color: var(--secondary-color);
   font-weight: 700;
   font-size: 1.5rem;

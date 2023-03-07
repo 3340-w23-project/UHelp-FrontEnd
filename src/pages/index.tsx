@@ -19,12 +19,12 @@ export default function Home() {
         <Navbar />
 
         <Section hero>
-          <h1 className={styles.heading}>UHelp</h1>
-          <div className={styles.description}>
+          <h1 className={styles.heroHeading}>UHelp</h1>
+          <div className={styles.heroDescription}>
             {"Get "}
-            <span className={styles.headingPrimary}>Help </span>
+            <span className={styles.heroHeadingPrimary}>Help </span>
             {"and "}
-            <span className={styles.headingPrimary}>Connect </span>
+            <span className={styles.heroHeadingPrimary}>Connect </span>
             {"with Peers."}
           </div>
 
@@ -33,7 +33,7 @@ export default function Home() {
           </Link>
         </Section>
         <Section
-          title="What is UHelp?"
+          heading="What is UHelp?"
           description="UHelp is a platform that connects students with peers to help them with their academic needs."
         />
         <Footer />

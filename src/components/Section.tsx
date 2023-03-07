@@ -3,7 +3,7 @@ import styles from "@/styles/Home.module.scss";
 import className from "classnames";
 
 type SectionProps = {
-  title?: string;
+  heading?: string;
   description?: string;
   children?: ReactNode;
   hero?: boolean;
@@ -16,10 +16,12 @@ const Section = (props: SectionProps) => (
       [styles.heroSectionWrapper]: props.hero,
     })}>
     <div className={styles.section}>
-      {(props.title || props.description) && (
+      {(props.heading || props.description) && (
         <div>
-          {props.title && <h2>{props.title}</h2>}
-          {props.description && <div>{props.description}</div>}
+          {props.heading && <h2 className={styles.heading}>{props.heading}</h2>}
+          {props.description && (
+            <div className={styles.description}>{props.description}</div>
+          )}
         </div>
       )}
       {props.children}
