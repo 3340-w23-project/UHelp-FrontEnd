@@ -1,26 +1,37 @@
 import styles from "@/styles/Navbar.module.scss";
 import Link from "next/link";
+import { Button } from "../Button";
 import { MenuItem } from "./MenuItem";
+import { AppConfig } from "@/utils/AppConfig";
 
 const menuItems = [
   { label: "Home", href: "/" },
-  { label: "Sign Up", href: "/signup" },
+  { label: "Sign In", href: "/signin" },
+  { label: "Sign Up", href: "/signup", button: true },
 ];
 
 const Navbar = () => (
   <div className={styles.navbar}>
     <div className={styles.logo}>
       <Link href="/">
-        <img src="./images/logo.png" alt="UHelp" width={50} height={50} />
-        UHelp
+        <img src={AppConfig.siteLogo} alt="UHelp" width={50} height={50} />
+        {AppConfig.siteName}
       </Link>
     </div>
 
-    <nav>
-      <ul className={styles.menu}>
-        {menuItems.map((item) => (
-          <MenuItem key={item.label} {...item} />
-        ))}
+    <nav className={styles.menu}>
+      <ul>
+        {menuItems.map((item) =>
+          item.button ? (
+            <li key={item.label}>
+              <Button sm href={item.href}>
+                {item.label}
+              </Button>
+            </li>
+          ) : (
+            <MenuItem key={item.label} {...item} />
+          )
+        )}
       </ul>
     </nav>
   </div>

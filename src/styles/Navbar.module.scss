@@ -2,12 +2,12 @@
 
 .navbar {
   display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   position: fixed;
   width: 100%;
   height: 64px;
-  flex-wrap: wrap;
   justify-content: space-between;
-  align-items: center;
   padding: 0 calc((100vw - 1000px) / 2);
   color: var(--secondary-color);
   background-color: rgba(253, 251, 242, 0.95);
@@ -17,11 +17,43 @@
 }
 
 .menu {
-  @include flexCenter;
   height: 100%;
-  gap: 1.5rem;
-  font-size: 1.2rem;
-  font-weight: bold;
+  ul {
+    @include flexCenter;
+    flex-wrap: wrap;
+    height: 100%;
+    gap: 1.5rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
+  li {
+    @include flexCenter;
+    height: 100%;
+  }
+
+  .item {
+    @include flexCenter;
+    position: relative;
+
+    a {
+      @include flexCenter;
+      display: flex;
+      height: 100%;
+    }
+
+    &:hover {
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background-color: var(--primary-color);
+      }
+    }
+  }
 }
 
 .logo {
