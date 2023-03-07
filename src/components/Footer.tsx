@@ -7,7 +7,7 @@ const Footer = () => (
     <div className={styles.footerWrapper}>
       <div className={styles.footer}>
         <Link href="/">
-          <img src="/logo.png" alt="UHelp" width={75} height={75} />
+          <img src="./images/logo.png" alt="UHelp" width={75} height={75} />
         </Link>
         <a className={styles.icon} href={AppConfig.githubUrl}>
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

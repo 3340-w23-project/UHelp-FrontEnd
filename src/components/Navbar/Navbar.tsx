@@ -11,7 +11,7 @@ const Navbar = () => (
   <div className={styles.navbar}>
     <div className={styles.logo}>
       <Link href="/">
-        <img src="/logo.png" alt="UHelp" width={50} height={50} />
+        <img src="./images/logo.png" alt="UHelp" width={50} height={50} />
         UHelp
       </Link>
     </div>
