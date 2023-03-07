@@ -5,13 +5,14 @@ import Link from "next/link";
 import { Button } from "@/components/Button";
 import { Section } from "@/components/Section";
 import { Footer } from "@/components/Footer";
+import { AppConfig } from "@/utils/AppConfig";
 
 export default function Home() {
   return (
     <>
       <Head>
-        <title>UHelp</title>
-        <meta name="description" content="UHelp" />
+        <title>{`${AppConfig.siteName} - ${AppConfig.siteDescription}`}</title>
+        <meta name="description" content={AppConfig.siteDescription} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -19,7 +20,7 @@ export default function Home() {
         <Navbar />
 
         <Section hero>
-          <h1 className={styles.heroHeading}>UHelp</h1>
+          <h1 className={styles.heroHeading}>{AppConfig.siteName}</h1>
           <div className={styles.heroDescription}>
             {"Get "}
             <span className={styles.heroHeadingPrimary}>Help </span>
