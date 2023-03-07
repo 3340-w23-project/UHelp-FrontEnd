@@ -4,6 +4,7 @@ import { Navbar } from "@/components/Navbar/Navbar";
 import Link from "next/link";
 import { Button } from "@/components/Button";
 import { Section } from "@/components/Section";
+import { Footer } from "@/components/Footer";
 
 export default function Home() {
   return (
@@ -35,6 +36,7 @@ export default function Home() {
           title="What is UHelp?"
           description="UHelp is a platform that connects students with peers to help them with their academic needs."
         />
+        <Footer />
       </main>
     </>
   );
