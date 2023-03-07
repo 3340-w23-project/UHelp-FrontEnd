@@ -1,0 +1,47 @@
+@use "variables" as *;
+
+.sectionWrapper {
+  width: 100%;
+  background-color: var(--tertiary-color);
+}
+
+.heroSectionWrapper {
+  @include flexCenter;
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--tertiary-color);
+}
+
+.section {
+  @include flexCenter;
+  justify-content: center;
+  flex-direction: column;
+  padding: 8rem 1rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+@media (min-width: 1024px) {
+  .section {
+    max-width: var(--max-width);
+  }
+}
+
+.heading {
+  color: var(--secondary-color);
+  line-height: 4.5rem;
+  font-weight: 700;
+  font-size: 7rem;
+  margin-bottom: 4rem;
+}
+
+.headingPrimary {
+  color: var(--primary-color);
+}
+
+.description {
+  color: var(--secondary-color);
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+}
