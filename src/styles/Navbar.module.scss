@@ -74,3 +74,18 @@
     color: var(--secondary-color);
   }
 }
+
+@media (max-width: $mobileWidth) {
+  .navbar {
+    padding: 0 1rem;
+  }
+
+  .menu {
+    @include flexCenter;
+    .mobileMenuButtton {
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+    }
+  }
+}

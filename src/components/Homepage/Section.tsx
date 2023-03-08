@@ -11,6 +11,7 @@ type SectionProps = {
   buttonLabel?: string;
   buttonHref?: string;
   reverse?: boolean;
+  isMobile: boolean;
 };
 
 const Section = (props: SectionProps) => (
@@ -18,7 +19,7 @@ const Section = (props: SectionProps) => (
     <div
       className={className({
         [styles.section]: true,
-        [styles.reverse]: props.reverse,
+        [styles.reverse]: props.reverse && !props.isMobile,
       })}>
       {props.image && (
         <div className={styles.imageContainer}>

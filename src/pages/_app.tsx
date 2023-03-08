@@ -5,6 +5,7 @@ import { useState } from "react";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
@@ -15,10 +16,26 @@ export default function App({ Component, pageProps }: AppProps) {
     }
   };
 
+  const handleResize = () => {
+    const width = window.innerWidth;
+    if (width < 768) {
+      setIsMobile(true);
+    } else {
+      setIsMobile(false);
+    }
+  };
+
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  return <Component {...pageProps} isScrolled={isScrolled} />;
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return (
+    <Component {...pageProps} isScrolled={isScrolled} isMobile={isMobile} />
+  );
 }
