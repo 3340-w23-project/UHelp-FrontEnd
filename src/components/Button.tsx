@@ -5,27 +5,27 @@ type ButtonProps = {
   xl?: boolean;
   sm?: boolean;
   secondary?: boolean;
-  children: string;
+  label: string;
   href?: string;
+  Icon?: React.FunctionComponent<any>;
 };
 
-const Button = (props: ButtonProps) => {
+const Button = ({ Icon, label, href, xl, sm, secondary }: ButtonProps) => {
   const btnClass = className({
     btn: true,
-    "btn-xl": props.xl,
-    "btn-base": !props.xl && !props.sm,
-    "btn-sm": props.sm,
-    "btn-primary": !props.secondary,
-    "btn-secondary": props.secondary,
+    "btn-xl": xl,
+    "btn-sm": sm,
+    "btn-primary": !secondary,
+    "btn-secondary": secondary,
+    "btn-base": !xl && !sm,
   });
 
   return (
     <div className={btnClass}>
-      {props.href ? (
-        <Link href={props.href}>{props.children}</Link>
-      ) : (
-        props.children
-      )}
+      <>
+        {Icon && <Icon />}
+        {href ? <Link href={"/signup"}>{label}</Link> : <span>{label}</span>}
+      </>
     </div>
   );
 };

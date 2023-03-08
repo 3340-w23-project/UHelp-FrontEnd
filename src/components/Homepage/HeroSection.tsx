@@ -3,6 +3,7 @@ import React from "react";
 import { Button } from "../Button";
 import styles from "@/styles/Home.module.scss";
 import { AppConfig } from "@/utils/AppConfig";
+import { MdOutlineLogin } from "react-icons/md";
 
 const HeroSection = () => {
   return (
@@ -15,10 +16,7 @@ const HeroSection = () => {
         <span className={styles.highlight}>Connect </span>
         {"with Peers."}
       </div>
-
-      <Link href="">
-        <Button xl>Join Now</Button>
-      </Link>
+      <Button xl Icon={MdOutlineLogin} href="/signup" label="Join Now" />
     </div>
   );
 };

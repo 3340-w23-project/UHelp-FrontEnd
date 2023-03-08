@@ -21,8 +21,9 @@ const Navbar = ({ isScrolled }: NavbarProps) => (
     <div className={styles.logo}>
       <Link href="/">
         <Image
+          priority
           src={AppConfig.siteLogo}
-          alt="UHelp"
+          alt={AppConfig.siteName + " Logo"}
           quality={100}
           width={50}
           height={50}
@@ -36,9 +37,7 @@ const Navbar = ({ isScrolled }: NavbarProps) => (
         {menuItems.map((item) =>
           item.button ? (
             <li key={item.label}>
-              <Button sm secondary href={item.href}>
-                {item.label}
-              </Button>
+              <Button sm secondary href={item.href} label={item.label} />
             </li>
           ) : (
             <MenuItem key={item.label} {...item} />
