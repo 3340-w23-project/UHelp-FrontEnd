@@ -7,7 +7,11 @@ import { Section } from "@/components/Section";
 import { Footer } from "@/components/Footer";
 import { AppConfig } from "@/utils/AppConfig";
 
-export default function Home() {
+type HomeProps = {
+  isScrolled: boolean;
+};
+
+export default function Home(props: HomeProps) {
   return (
     <>
       <Head>
@@ -17,7 +21,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <Navbar />
+        <Navbar isScrolled={props.isScrolled} />
 
         <Section hero>
           <h1 className={styles.heroHeading}>{AppConfig.siteName}</h1>

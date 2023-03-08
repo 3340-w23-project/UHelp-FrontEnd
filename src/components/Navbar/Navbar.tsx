@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Button } from "../Button";
 import { MenuItem } from "./MenuItem";
 import { AppConfig } from "@/utils/AppConfig";
+import className from "classnames";
 
 const menuItems = [
   { label: "Home", href: "/" },
@@ -10,8 +11,12 @@ const menuItems = [
   { label: "Sign Up", href: "/signup", button: true },
 ];
 
-const Navbar = () => (
-  <div className={styles.navbar}>
+type NavbarProps = {
+  isScrolled: boolean;
+};
+
+const Navbar = ({ isScrolled }: NavbarProps) => (
+  <div className={className(styles.navbar, { [styles.scrolled]: isScrolled })}>
     <div className={styles.logo}>
       <Link href="/">
         <img src={AppConfig.siteLogo} alt="UHelp" width={50} height={50} />
@@ -24,7 +29,7 @@ const Navbar = () => (
         {menuItems.map((item) =>
           item.button ? (
             <li key={item.label}>
-              <Button sm href={item.href}>
+              <Button sm secondary href={item.href}>
                 {item.label}
               </Button>
             </li>

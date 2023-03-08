@@ -4,6 +4,7 @@ import Link from "next/link";
 type ButtonProps = {
   xl?: boolean;
   sm?: boolean;
+  secondary?: boolean;
   children: string;
   href?: string;
 };
@@ -14,7 +15,8 @@ const Button = (props: ButtonProps) => {
     "btn-xl": props.xl,
     "btn-base": !props.xl && !props.sm,
     "btn-sm": props.sm,
-    "btn-primary": true,
+    "btn-primary": !props.secondary,
+    "btn-secondary": props.secondary,
   });
 
   return (

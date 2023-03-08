@@ -33,17 +33,16 @@ li {
   display: inline-block;
   border-radius: 0.25rem;
   text-align: center;
-  background-color: var(--primary-color);
-  color: var(--secondary-color);
   font-size: 1.25rem;
   font-weight: 800;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 5px 10px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 5px 10px -3px,
+    rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
 
   &:hover {
-    background-color: #f7c000;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 8px 13px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 8px 13px -3px,
+      rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
   }
 }
 
@@ -55,6 +54,24 @@ li {
   padding: 0.5rem 1rem;
   font-size: 1.2rem;
   font-weight: bold;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+
+  &:hover {
+    background-color: rgba(255, 196, 20, 0.8);
+  }
+}
+
+.btn-secondary {
+  background-color: var(--secondary-color);
+  color: var(--tertiary-color);
+
+  &:hover {
+    background-color: rgba(25, 23, 21, 0.8);
+  }
 }
 
 .btn-base {

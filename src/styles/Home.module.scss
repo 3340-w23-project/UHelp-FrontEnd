@@ -9,7 +9,12 @@
   @include flexCenter;
   width: 100%;
   min-height: 100vh;
-  background-color: var(--tertiary-color);
+  background-color: rgba(253, 250, 239, 0.98);
+  background-image: url("/images/hero-background.png");
+  background-repeat: repeat;
+  background-size: 400px;
+  background-position: center;
+  background-blend-mode: overlay;
 }
 
 .section {
