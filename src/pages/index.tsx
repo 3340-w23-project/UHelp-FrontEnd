@@ -36,6 +36,8 @@ export default function Home(props: HomeProps) {
           heading="Join a Supportive Community of Learners"
           description="Be part of a safe and respectful community of learners from diverse backgrounds and perspectives. Connect with others, get academic support, and participate in additional resources and events like study groups and online workshops."
           image="/images/img3.png"
+          buttonLabel="Get Started"
+          buttonHref="/signup"
         />
         <Footer />
       </main>

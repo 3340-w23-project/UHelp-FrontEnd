@@ -1,15 +1,16 @@
-import { ReactNode } from "react";
 import styles from "@/styles/Home.module.scss";
 import className from "classnames";
 import Image from "next/image";
+import { Button } from "../Button";
 
 type SectionProps = {
   heading?: string;
   description?: string;
   image?: string;
   imageAlt?: string;
+  buttonLabel?: string;
+  buttonHref?: string;
   reverse?: boolean;
-  children?: ReactNode;
 };
 
 const Section = (props: SectionProps) => (
@@ -31,10 +32,7 @@ const Section = (props: SectionProps) => (
         </div>
       )}
       {(props.heading || props.description) && (
-        <div
-          className={className({
-            [styles.textContainer]: true,
-          })}>
+        <div className={styles.contentContainer}>
           <div>
             {props.heading && (
               <h2 className={styles.heading}>{props.heading}</h2>
@@ -43,10 +41,14 @@ const Section = (props: SectionProps) => (
               <div className={styles.description}>{props.description}</div>
             )}
           </div>
+          {props.buttonLabel && (
+            <Button xl href={props.buttonHref}>
+              {props.buttonLabel}
+            </Button>
+          )}
         </div>
       )}
     </div>
-    {props.children}
   </div>
 );
 
