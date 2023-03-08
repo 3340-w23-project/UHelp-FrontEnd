@@ -4,6 +4,7 @@ import { Button } from "../Button";
 import { MenuItem } from "./MenuItem";
 import { AppConfig } from "@/utils/AppConfig";
 import className from "classnames";
+import Image from "next/image";
 
 const menuItems = [
   { label: "Home", href: "/" },
@@ -19,7 +20,13 @@ const Navbar = ({ isScrolled }: NavbarProps) => (
   <div className={className(styles.navbar, { [styles.scrolled]: isScrolled })}>
     <div className={styles.logo}>
       <Link href="/">
-        <img src={AppConfig.siteLogo} alt="UHelp" width={50} height={50} />
+        <Image
+          src={AppConfig.siteLogo}
+          alt="UHelp"
+          quality={100}
+          width={50}
+          height={50}
+        />
         {AppConfig.siteName}
       </Link>
     </div>

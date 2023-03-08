@@ -1,11 +1,9 @@
 import Head from "next/head";
-import styles from "@/styles/Home.module.scss";
 import { Navbar } from "@/components/Navbar/Navbar";
-import Link from "next/link";
-import { Button } from "@/components/Button";
-import { Section } from "@/components/Section";
+import { Section } from "@/components/Homepage/Section";
 import { Footer } from "@/components/Footer";
 import { AppConfig } from "@/utils/AppConfig";
+import HeroSection from "@/components/Homepage/HeroSection";
 
 type HomeProps = {
   isScrolled: boolean;
@@ -20,26 +18,24 @@ export default function Home(props: HomeProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
+      <main>
         <Navbar isScrolled={props.isScrolled} />
-
-        <Section hero>
-          <h1 className={styles.heroHeading}>{AppConfig.siteName}</h1>
-          <div className={styles.heroDescription}>
-            {"Get "}
-            <span className={styles.heroHeadingPrimary}>Help </span>
-            {"and "}
-            <span className={styles.heroHeadingPrimary}>Connect </span>
-            {"with Peers."}
-          </div>
-
-          <Link href="">
-            <Button xl>Join Now</Button>
-          </Link>
-        </Section>
+        <HeroSection />
         <Section
-          heading="What is UHelp?"
-          description="UHelp is a platform that connects students with peers to help them with their academic needs."
+          heading="Connect with Classmates and Get Help"
+          description="Find academic assistance and connect with peers by joining a class-specific forum. Get multiple perspectives on course material and discover new study techniques to help you succeed in your classes."
+          image="/images/img1.png"
+        />
+        <Section
+          heading="Find Answers Quickly and Easily"
+          description="Use our efficient and user-friendly platform to quickly find answers to common questions. Browse through threads or use our search function to find the information you need. Follow our guidelines to keep the community organized and helpful."
+          image="/images/img2.png"
+          reverse
+        />
+        <Section
+          heading="Join a Supportive Community of Learners"
+          description="Be part of a safe and respectful community of learners from diverse backgrounds and perspectives. Connect with others, get academic support, and participate in additional resources and events like study groups and online workshops."
+          image="/images/img3.png"
         />
         <Footer />
       </main>
