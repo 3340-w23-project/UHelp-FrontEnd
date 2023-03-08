@@ -1,9 +1,8 @@
-import Head from "next/head";
 import { Navbar } from "@/components/Navbar/Navbar";
 import { Section } from "@/components/Homepage/Section";
 import { Footer } from "@/components/Footer";
-import { AppConfig } from "@/utils/AppConfig";
 import HeroSection from "@/components/Homepage/HeroSection";
+import MetaTags from "@/components/MetaTags";
 
 type HomeProps = {
   isScrolled: boolean;
@@ -12,15 +11,14 @@ type HomeProps = {
 export default function Home(props: HomeProps) {
   return (
     <>
-      <Head>
-        <title>{`${AppConfig.siteName} - ${AppConfig.siteDescription}`}</title>
-        <meta name="description" content={AppConfig.siteDescription} />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <MetaTags />
       <main>
         <Navbar isScrolled={props.isScrolled} />
-        <HeroSection />
+        <HeroSection
+          description="Get _Help_ and _Connect_ with Peers."
+          actionLabel="Join Now"
+          actionHref="/signup"
+        />
         <Section
           heading="Connect with Classmates and Get Help"
           description="Find academic assistance and connect with peers by joining a class-specific forum. Get multiple perspectives on course material and discover new study techniques to help you succeed in your classes."

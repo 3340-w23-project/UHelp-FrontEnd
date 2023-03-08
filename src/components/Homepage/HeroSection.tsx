@@ -1,22 +1,37 @@
-import Link from "next/link";
 import React from "react";
 import { Button } from "../Button";
 import styles from "@/styles/Home.module.scss";
 import { AppConfig } from "@/utils/AppConfig";
 import { MdOutlineLogin } from "react-icons/md";
 
-const HeroSection = () => {
+type HeroSectionProps = {
+  description: string;
+  actionLabel: string;
+  actionHref: string;
+};
+
+const HeroSection = ({
+  description,
+  actionLabel,
+  actionHref,
+}: HeroSectionProps) => {
   return (
     <div className={styles.heroSectionWrapper}>
       <h1 className={styles.heading}>{AppConfig.siteName}</h1>
+
       <div className={styles.description}>
-        {"Get "}
-        <span className={styles.highlight}>Help </span>
-        {"and "}
-        <span className={styles.highlight}>Connect </span>
-        {"with Peers."}
+        {description.split("_").map((word, index) =>
+          index % 2 ? (
+            <span key={index} className={styles.highlight}>
+              {word}
+            </span>
+          ) : (
+            <>{word}</>
+          )
+        )}
       </div>
-      <Button xl Icon={MdOutlineLogin} href="/signup" label="Join Now" />
+
+      <Button xl Icon={MdOutlineLogin} href={actionHref} label={actionLabel} />
     </div>
   );
 };
