@@ -36,7 +36,7 @@ li {
   border-radius: 0.25rem;
   text-align: center;
   font-size: 1.25rem;
-  font-weight: 800;
+  font-weight: bold;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 5px 10px -3px,
@@ -62,7 +62,6 @@ li {
 .btn-sm {
   padding: 0.5rem 1rem;
   font-size: 1.2rem;
-  font-weight: bold;
 }
 
 .btn-primary {
