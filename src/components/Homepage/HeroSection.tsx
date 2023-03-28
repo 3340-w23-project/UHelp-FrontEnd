@@ -29,7 +29,7 @@ const HeroSection = ({
                 {word}
               </span>
             ) : (
-              <>{word}</>
+              <span key={index}>{word}</span>
             )
           )}
         </div>

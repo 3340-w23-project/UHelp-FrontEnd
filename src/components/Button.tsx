@@ -8,9 +8,18 @@ type ButtonProps = {
   label: string;
   href?: string;
   Icon?: React.FunctionComponent<any>;
+  onClick?: () => void;
 };
 
-const Button = ({ Icon, label, href, xl, sm, secondary }: ButtonProps) => {
+const Button = ({
+  Icon,
+  label,
+  href,
+  xl,
+  sm,
+  secondary,
+  onClick,
+}: ButtonProps) => {
   const btnClass = className({
     btn: true,
     "btn-xl": xl,
@@ -21,7 +30,7 @@ const Button = ({ Icon, label, href, xl, sm, secondary }: ButtonProps) => {
   });
 
   return (
-    <div className={btnClass}>
+    <div className={btnClass} onClick={onClick}>
       <>
         {Icon && <Icon />}
         {href ? <Link href={"/signup"}>{label}</Link> : <span>{label}</span>}

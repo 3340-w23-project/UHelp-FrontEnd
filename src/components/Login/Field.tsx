@@ -6,9 +6,11 @@ type Props = {
   type: string;
   id: string;
   placeholder?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  value?: string;
 };
 
-function Field({ label, type, id, placeholder }: Props) {
+function Field({ label, type, id, placeholder, onChange, value }: Props) {
   return (
     <div className={styles.fieldContainer}>
       <label htmlFor={id} className={styles.label}>
@@ -19,6 +21,8 @@ function Field({ label, type, id, placeholder }: Props) {
         id={id}
         className={styles.input}
         placeholder={placeholder}
+        onChange={onChange}
+        value={value}
       />
     </div>
   );

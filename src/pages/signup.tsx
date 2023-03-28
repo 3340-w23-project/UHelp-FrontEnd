@@ -1,7 +1,6 @@
 import React from "react";
 import styles from "@/styles/signin.module.scss";
 import { Navbar } from "@/components/Navbar/Navbar";
-import { Button } from "@/components/Button";
 import Field from "@/components/Login/Field";
 
 type Props = {
@@ -14,7 +13,7 @@ function signUp({ isScrolled, isMobile }: Props) {
     <>
       <Navbar isScrolled={isScrolled} isMobile={isMobile} />
       <div className={styles.wrapper}>
-        <div className={styles.container}>
+        <form className={styles.container}>
           <h1 className={styles.header}>Sign Up</h1>
           <Field
             label="Username"
@@ -29,9 +28,13 @@ function signUp({ isScrolled, isMobile }: Props) {
             placeholder="Password"
           />
           <div className={styles.submit}>
-            <Button sm label="Sign Up" />
+            <input
+              type="submit"
+              value="Sign Up"
+              className="btn btn-sm btn-secondary"
+            />
           </div>
-        </div>
+        </form>
       </div>
     </>
   );
