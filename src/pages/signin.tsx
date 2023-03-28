@@ -12,7 +12,7 @@ type Props = {
   isMobile: boolean;
 };
 
-function signIn({ isScrolled, isMobile }: Props) {
+function SignIn({ isScrolled, isMobile }: Props) {
   const cookies = new Cookies();
   const router = useRouter();
   const [username, setUsername] = useState("");
@@ -23,7 +23,7 @@ function signIn({ isScrolled, isMobile }: Props) {
     if (cookies.get("access_token")) {
       router.push("/");
     }
-  }, []);
+  }, [router, cookies]);
 
   const validate = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -103,4 +103,4 @@ function signIn({ isScrolled, isMobile }: Props) {
   );
 }
 
-export default signIn;
+export default SignIn;
