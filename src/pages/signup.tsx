@@ -9,7 +9,7 @@ type Props = {
   isMobile: boolean;
 };
 
-function signUn({ isScrolled, isMobile }: Props) {
+function signUp({ isScrolled, isMobile }: Props) {
   return (
     <>
       <Navbar isScrolled={isScrolled} isMobile={isMobile} />
@@ -38,4 +38,4 @@ function signUn({ isScrolled, isMobile }: Props) {
   );
 }
 
-export default signUn;
+export default signUp;
