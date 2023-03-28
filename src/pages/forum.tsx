@@ -17,14 +17,13 @@ type Post = {
   replies: [];
 };
 
-function forum() {
+function Forum() {
   const [posts, setPosts] = useState<Post[]>([]);
 
   const fetchPosts = async () => {
     const res = await fetch("/api/post/all");
     const data = await res.json();
     setPosts(data);
-    console.log(data);
   };
 
   const formatDateTime = (date: string) => {
@@ -91,4 +90,4 @@ function forum() {
   );
 }
 
-export default forum;
+export default Forum;

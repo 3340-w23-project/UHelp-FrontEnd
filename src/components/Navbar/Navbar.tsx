@@ -39,7 +39,7 @@ function Navbar({ isScrolled, isMobile }: NavbarProps) {
     } else {
       setIsLogged(false);
     }
-  }, []);
+  }, [cookies]);
 
   return (
     <div
