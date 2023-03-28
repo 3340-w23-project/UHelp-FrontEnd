@@ -16,7 +16,12 @@ function signIn({ isScrolled, isMobile }: Props) {
       <div className={styles.wrapper}>
         <div className={styles.container}>
           <h1 className={styles.header}>Sign In</h1>
-          <Field label="Email" type="email" id="email" placeholder="Email" />
+          <Field
+            label="Username"
+            type="text"
+            id="username"
+            placeholder="Username"
+          />
           <Field
             label="Password"
             type="password"

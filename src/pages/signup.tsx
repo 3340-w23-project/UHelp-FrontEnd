@@ -20,9 +20,8 @@ function signUp({ isScrolled, isMobile }: Props) {
             label="Username"
             type="text"
             id="username"
-            placeholder="User"
+            placeholder="Username"
           />
-          <Field label="Email" type="email" id="email" placeholder="Email" />
           <Field
             label="Password"
             type="password"
