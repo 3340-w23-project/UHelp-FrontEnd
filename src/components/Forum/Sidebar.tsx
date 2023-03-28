@@ -34,11 +34,13 @@ function Sidebar() {
       </div>
       <div className={styles.sidebarContent}>
         {categories.map((category) => (
-          <div className={styles.sidebarItem}>
+          <div key={category} className={styles.sidebarItem}>
             <span className={styles.category}>{category}</span>
             <ul>
               {classes.map((classItem) => (
-                <li className={styles.classItem}>{classItem}</li>
+                <li key={classItem} className={styles.classItem}>
+                  {classItem}
+                </li>
               ))}
             </ul>
           </div>
