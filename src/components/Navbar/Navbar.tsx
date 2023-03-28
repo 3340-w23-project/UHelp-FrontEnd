@@ -64,6 +64,7 @@ function Navbar({ isScrolled, isMobile }: NavbarProps) {
             {isLogged ? (
               <>
                 <MenuItem label="Home" href="/" />
+                <MenuItem href="/forum" label="Forum" />
                 <span className={styles.user}>{user}</span>
                 <Button
                   sm

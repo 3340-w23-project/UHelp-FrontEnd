@@ -32,6 +32,76 @@
   margin-left: 300px;
   font-size: 1.4rem;
   background-color: var(--tertiary-color);
+
+  .postsWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+    margin: 0 auto;
+
+    .post {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      background-color: #f2ebda;
+      cursor: pointer;
+
+      .postHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        font-size: 1.1rem;
+
+        .postHeaderLeft {
+          display: flex;
+          flex-direction: column;
+
+          .postTitle {
+            font-size: 1.6rem;
+            font-weight: bold;
+          }
+
+          .postAuthor {
+            font-weight: 500;
+          }
+        }
+
+        .postHeaderRight {
+          display: flex;
+          gap: 1rem;
+        }
+      }
+
+      .postContent {
+        font-size: 1.2rem;
+        color: #373737;
+      }
+
+      .postFooter {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        font-size: 1.2rem;
+        color: var(--secondary-color);
+
+        .postAuthor {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .postDate {
+          font-size: 1.2rem;
+        }
+      }
+    }
+  }
 }
 
 .sidebarWrapper {
