@@ -8,7 +8,7 @@ import Modal from "@/components/Forum/Modal";
 import Cookies from "universal-cookie";
 import jwt from "jwt-decode";
 import { IoTrash } from "react-icons/io5";
-import { MdReply } from "react-icons/md";
+import { MdReply, MdModeEdit } from "react-icons/md";
 
 type Post = {
   id: number;
@@ -28,10 +28,11 @@ function Forum() {
   const [user, setUser] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editPostId, setEditPostId] = useState(0);
   const [deletePostId, setDeletePostId] = useState(0);
 
-  const closeModal = () => setIsModalOpen(false);
   const [postTitleInput, setPostTitleInput] = useState("");
   const [postContentInput, setPostContentInput] = useState("");
   const [error, setError] = useState("");
@@ -67,7 +68,9 @@ function Forum() {
       setError(data.error);
       return;
     }
-    closeModal();
+    setIsModalOpen(false);
+    setPostTitleInput("");
+    setPostContentInput("");
     fetchPosts();
   };
 
@@ -78,6 +81,38 @@ function Forum() {
         Authorization: "Bearer " + cookies.get("access_token"),
       },
     }).then(() => fetchPosts());
+  };
+
+  const updatePost = async (id: number) => {
+    if (postTitleInput === "") {
+      setError("Title cannot be empty");
+      return;
+    } else if (postContentInput === "") {
+      setError("Content cannot be empty");
+      return;
+    }
+
+    const res = await fetch(`/api/post/${id}/update`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + cookies.get("access_token"),
+      },
+      body: JSON.stringify({
+        title: postTitleInput,
+        content: postContentInput,
+      }),
+    });
+    const data = await res.json();
+    if (data.error) {
+      setError(data.error);
+      return;
+    }
+    setIsEditModalOpen(false);
+    setEditPostId(0);
+    setPostTitleInput("");
+    setPostContentInput("");
+    fetchPosts();
   };
 
   const formatDateTime = (date: string) => {
@@ -142,14 +177,26 @@ function Forum() {
                     </div>
                     <div className={styles.postHeaderRight}>
                       {post.author.username === user && (
-                        <Button
-                          secondary
-                          icon={IoTrash}
-                          onClick={() => {
-                            setDeletePostId(post.id);
-                            setDeleteModalOpen(true);
-                          }}
-                        />
+                        <>
+                          <Button
+                            secondary
+                            icon={IoTrash}
+                            onClick={() => {
+                              setDeletePostId(post.id);
+                              setIsDeleteModalOpen(true);
+                            }}
+                          />
+                          <Button
+                            secondary
+                            icon={MdModeEdit}
+                            onClick={() => {
+                              setEditPostId(post.id);
+                              setPostTitleInput(post.title);
+                              setPostContentInput(post.content);
+                              setIsEditModalOpen(true);
+                            }}
+                          />
+                        </>
                       )}
                       <Button secondary icon={MdReply} />
                     </div>
@@ -165,7 +212,7 @@ function Forum() {
       {/* New Post Modal */}
       <Modal
         status={isModalOpen}
-        handleClose={closeModal}
+        handleClose={() => setIsModalOpen(false)}
         title={"New Post"}
         width={"30%"}>
         <div className={styles.modalBodyWrapper}>
@@ -205,10 +252,58 @@ function Forum() {
         </div>
       </Modal>
 
+      {/* Edit Post Modal */}
+      <Modal
+        status={isEditModalOpen}
+        handleClose={() => {
+          setIsEditModalOpen(false);
+          setEditPostId(0);
+          setPostTitleInput("");
+          setPostContentInput("");
+        }}
+        title={"Edit Post"}
+        width={"30%"}>
+        <div className={styles.modalBodyWrapper}>
+          <div className={styles.modalBody}>
+            <div className={styles.modalForm}>
+              <label className={styles.modalLabel}>
+                Post Title
+                <input
+                  type="text"
+                  value={postTitleInput}
+                  onChange={(e) => {
+                    setPostTitleInput(e.target.value);
+                  }}
+                />
+              </label>
+              <label className={styles.modalLabel}>
+                Post Content
+                <textarea
+                  value={postContentInput}
+                  onChange={(e) => {
+                    setPostContentInput(e.target.value);
+                  }}
+                />
+              </label>
+            </div>
+            <div className="centerRow">
+              {error && <p className={styles.error}>{error}</p>}
+            </div>
+          </div>
+          <div className={styles.modalFooter}>
+            <Button
+              secondary
+              sm
+              onClick={() => updatePost(editPostId)}
+              label={"Update Post"}></Button>
+          </div>
+        </div>
+      </Modal>
+
       {/* Delete Post Modal */}
       <Modal
-        status={deleteModalOpen}
-        handleClose={() => setDeleteModalOpen(false)}
+        status={isDeleteModalOpen}
+        handleClose={() => setIsDeleteModalOpen(false)}
         title={"Delete Post"}>
         <div className={styles.modalBodyWrapper}>
           <div className={styles.modalBody}>
@@ -222,7 +317,7 @@ function Forum() {
               sm
               onClick={() => {
                 deletePost(deletePostId);
-                setDeleteModalOpen(false);
+                setIsDeleteModalOpen(false);
               }}
               label={"Delete Post"}></Button>
           </div>
