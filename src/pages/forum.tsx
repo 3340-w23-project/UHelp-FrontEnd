@@ -9,6 +9,7 @@ import Cookies from "universal-cookie";
 import jwt from "jwt-decode";
 import { IoTrash } from "react-icons/io5";
 import { MdReply, MdModeEdit } from "react-icons/md";
+import { AnimatePresence, motion } from "framer-motion";
 
 type Post = {
   id: number;
@@ -20,6 +21,29 @@ type Post = {
     username: string;
   };
   replies: [];
+};
+
+const itemTransition = {
+  hidden: {
+    y: -20,
+    opacity: 0,
+  },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.25,
+      ease: "easeOut",
+    },
+  },
+  exit: {
+    y: -20,
+    opacity: 0,
+    transition: {
+      duration: 0.25,
+      ease: "easeOut",
+    },
+  },
 };
 
 function Forum() {
@@ -159,52 +183,60 @@ function Forum() {
         </div>
         <div className={styles.contentWrapper}>
           <div className={styles.postsWrapper}>
-            {posts.map((post) => {
-              return (
-                <div key={post.id} className={styles.post}>
-                  <div className={styles.postHeader}>
-                    <div className={styles.postHeaderLeft}>
-                      <span className={styles.postTitle}>{post.title}</span>
-                      <div>
-                        <span className={styles.postAuthor}>
-                          {post.author.username}
-                        </span>
-                        {" posted on "}
-                        <span className={styles.postDate}>
-                          {formatDateTime(post.date)}
-                        </span>
+            <AnimatePresence>
+              {posts.map((post) => {
+                return (
+                  <motion.div
+                    key={post.id}
+                    className={styles.post}
+                    variants={itemTransition}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit">
+                    <div className={styles.postHeader}>
+                      <div className={styles.postHeaderLeft}>
+                        <span className={styles.postTitle}>{post.title}</span>
+                        <div>
+                          <span className={styles.postAuthor}>
+                            {post.author.username}
+                          </span>
+                          {" posted on "}
+                          <span className={styles.postDate}>
+                            {formatDateTime(post.date)}
+                          </span>
+                        </div>
+                      </div>
+                      <div className={styles.postHeaderRight}>
+                        {post.author.username === user && (
+                          <>
+                            <Button
+                              secondary
+                              icon={IoTrash}
+                              onClick={() => {
+                                setDeletePostId(post.id);
+                                setIsDeleteModalOpen(true);
+                              }}
+                            />
+                            <Button
+                              secondary
+                              icon={MdModeEdit}
+                              onClick={() => {
+                                setEditPostId(post.id);
+                                setPostTitleInput(post.title);
+                                setPostContentInput(post.content);
+                                setIsEditModalOpen(true);
+                              }}
+                            />
+                          </>
+                        )}
+                        <Button secondary icon={MdReply} />
                       </div>
                     </div>
-                    <div className={styles.postHeaderRight}>
-                      {post.author.username === user && (
-                        <>
-                          <Button
-                            secondary
-                            icon={IoTrash}
-                            onClick={() => {
-                              setDeletePostId(post.id);
-                              setIsDeleteModalOpen(true);
-                            }}
-                          />
-                          <Button
-                            secondary
-                            icon={MdModeEdit}
-                            onClick={() => {
-                              setEditPostId(post.id);
-                              setPostTitleInput(post.title);
-                              setPostContentInput(post.content);
-                              setIsEditModalOpen(true);
-                            }}
-                          />
-                        </>
-                      )}
-                      <Button secondary icon={MdReply} />
-                    </div>
-                  </div>
-                  <div className={styles.postContent}>{post.content}</div>
-                </div>
-              );
-            })}
+                    <div className={styles.postContent}>{post.content}</div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
           </div>
         </div>
       </SidebarLayout>
