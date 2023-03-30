@@ -29,9 +29,10 @@ interface Props {
   handleClose: () => void;
   children?: React.ReactNode;
   title: string;
+  width?: string;
 }
 
-const Modal = ({ status, handleClose, children, title }: Props) => {
+const Modal = ({ status, handleClose, children, title, width }: Props) => {
   return (
     <AnimatePresence initial={false} mode="wait" onExitComplete={() => null}>
       {status && (
@@ -39,6 +40,7 @@ const Modal = ({ status, handleClose, children, title }: Props) => {
           <motion.div
             onClick={(e) => e.stopPropagation()}
             className={styles.modal}
+            style={{ width: width }}
             variants={modalTransition}
             initial="hidden"
             animate="visible"
@@ -47,7 +49,7 @@ const Modal = ({ status, handleClose, children, title }: Props) => {
               <div className={styles.modalTitle}>{title}</div>
               <BsXLg className={styles.closeButton} onClick={handleClose} />
             </div>
-            <div className={styles.modalBody}>{children}</div>
+            {children}
           </motion.div>
         </ModalBackdrop>
       )}

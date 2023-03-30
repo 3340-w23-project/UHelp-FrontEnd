@@ -32,7 +32,6 @@ li {
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
   border-radius: 0.25rem;
   text-align: center;
   font-size: 1.25rem;
@@ -82,8 +81,16 @@ li {
   }
 }
 
+.btn-icon {
+  padding: 0.4rem;
+}
+
 .btn-base {
   padding: 0.75rem 1.5rem;
+}
+
+.btn-gap {
+  gap: 0.6rem;
 }
 
 input[type="submit"] {

@@ -36,7 +36,7 @@ const HeroSection = ({
 
         <Button
           xl
-          Icon={MdOutlineLogin}
+          icon={MdOutlineLogin}
           href={actionHref}
           label={actionLabel}
         />

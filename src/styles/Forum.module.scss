@@ -73,7 +73,7 @@
 
         .postHeaderRight {
           display: flex;
-          gap: 1rem;
+          gap: 0.5rem;
         }
       }
 
@@ -188,8 +188,8 @@
   .modal {
     display: flex;
     flex-direction: column;
-    width: clamp(35%, 550px, 90%);
-    height: min(50%, 500px);
+    max-width: 90%;
+    max-height: 70%;
     border-radius: 5px;
     background-color: var(--tertiary-color);
 
@@ -216,65 +216,81 @@
         cursor: pointer;
 
         &:hover {
-          background-color: var(--secondary-color);
+          background-color: rgba(0, 0, 0, 0.1);
         }
       }
     }
 
-    .modalBody {
+    .modalBodyWrapper {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      gap: 1em;
       width: 100%;
       height: 100%;
-      padding: 1.5em;
       overflow-y: auto;
 
-      .modalForm {
+      .modalBody {
         display: flex;
         flex-direction: column;
+        justify-content: center;
+        align-items: center;
         gap: 1em;
         width: 100%;
         height: 100%;
+        padding: 1.5em;
+
+        .modalForm {
+          display: flex;
+          flex-direction: column;
+          gap: 1em;
+          width: 100%;
+          height: 100%;
+        }
+
+        .modalLabel {
+          display: flex;
+          align-items: flex-start;
+          width: 100%;
+          gap: 0.5em;
+          flex-direction: column;
+          font-weight: 500;
+          font-size: 1.2em;
+          color: var(--secondary-color);
+
+          input[type="text"] {
+            width: 100%;
+            padding: 0.5em 1em;
+            border-radius: 5px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background-color: rgb(217, 212, 195, 0.3);
+
+            &:focus {
+              outline: none;
+              border: 1px solid #eaeaea;
+            }
+          }
+
+          textarea {
+            width: 100%;
+            padding: 0.5em 1em;
+            border-radius: 5px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background-color: rgb(217, 212, 195, 0.3);
+            height: 200px;
+            resize: vertical;
+
+            &:focus {
+              outline: none;
+              border: 1px solid #eaeaea;
+            }
+          }
+        }
       }
 
-      .modalLabel {
+      .modalFooter {
+        justify-self: flex-end;
         display: flex;
-        align-items: flex-start;
-        width: 100%;
-        gap: 0.5em;
-        flex-direction: column;
-        font-weight: 500;
-        font-size: 1.2em;
-        color: var(--secondary-color);
-
-        input[type="text"] {
-          width: 100%;
-          padding: 0.5em 1em;
-          border-radius: 5px;
-          border: 1px solid rgba(0, 0, 0, 0.1);
-          background-color: rgb(217, 212, 195, 0.3);
-
-          &:focus {
-            outline: none;
-            border: 1px solid #eaeaea;
-          }
-        }
-
-        textarea {
-          width: 100%;
-          padding: 0.5em 1em;
-          border-radius: 5px;
-          border: 1px solid rgba(0, 0, 0, 0.1);
-          background-color: rgb(217, 212, 195, 0.3);
-          height: 200px;
-
-          &:focus {
-            outline: none;
-            border: 1px solid #eaeaea;
-          }
-        }
+        justify-content: center;
+        padding: 1em 1.5em;
       }
     }
   }

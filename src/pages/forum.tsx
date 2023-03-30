@@ -6,6 +6,9 @@ import { AppConfig } from "@/utils/AppConfig";
 import Head from "next/head";
 import Modal from "@/components/Forum/Modal";
 import Cookies from "universal-cookie";
+import jwt from "jwt-decode";
+import { IoTrash } from "react-icons/io5";
+import { MdReply } from "react-icons/md";
 
 type Post = {
   id: number;
@@ -22,7 +25,12 @@ type Post = {
 function Forum() {
   const cookies = new Cookies();
   const [posts, setPosts] = useState<Post[]>([]);
+  const [user, setUser] = useState("");
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deletePostId, setDeletePostId] = useState(0);
+
   const closeModal = () => setIsModalOpen(false);
   const [postTitleInput, setPostTitleInput] = useState("");
   const [postContentInput, setPostContentInput] = useState("");
@@ -63,6 +71,15 @@ function Forum() {
     fetchPosts();
   };
 
+  const deletePost = async (id: number) => {
+    fetch(`/api/post/${id}/delete`, {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + cookies.get("access_token"),
+      },
+    }).then(() => fetchPosts());
+  };
+
   const formatDateTime = (date: string) => {
     const postedDate = new Date(date);
     const localOffset = new Date().getTimezoneOffset();
@@ -83,6 +100,8 @@ function Forum() {
       window.location.href = "/signin";
     } else {
       fetchPosts();
+      const decoded: any = jwt(cookies.get("access_token"));
+      setUser(decoded.sub);
     }
   }, []);
 
@@ -122,7 +141,17 @@ function Forum() {
                       </div>
                     </div>
                     <div className={styles.postHeaderRight}>
-                      <Button sm secondary label="Reply" />
+                      {post.author.username === user && (
+                        <Button
+                          secondary
+                          icon={IoTrash}
+                          onClick={() => {
+                            setDeletePostId(post.id);
+                            setDeleteModalOpen(true);
+                          }}
+                        />
+                      )}
+                      <Button secondary icon={MdReply} />
                     </div>
                   </div>
                   <div className={styles.postContent}>{post.content}</div>
@@ -132,37 +161,71 @@ function Forum() {
           </div>
         </div>
       </SidebarLayout>
-      <Modal status={isModalOpen} handleClose={closeModal} title={"New Post"}>
-        <div className={styles.modalForm}>
-          <label className={styles.modalLabel}>
-            Post Title
-            <input
-              type="text"
-              value={postTitleInput}
-              onChange={(e) => {
-                setPostTitleInput(e.target.value);
-              }}
-            />
-          </label>
-          <label className={styles.modalLabel}>
-            Post Content
-            <textarea
-              value={postContentInput}
-              onChange={(e) => {
-                setPostContentInput(e.target.value);
-              }}
-            />
-          </label>
+
+      {/* New Post Modal */}
+      <Modal
+        status={isModalOpen}
+        handleClose={closeModal}
+        title={"New Post"}
+        width={"30%"}>
+        <div className={styles.modalBodyWrapper}>
+          <div className={styles.modalBody}>
+            <div className={styles.modalForm}>
+              <label className={styles.modalLabel}>
+                Post Title
+                <input
+                  type="text"
+                  value={postTitleInput}
+                  onChange={(e) => {
+                    setPostTitleInput(e.target.value);
+                  }}
+                />
+              </label>
+              <label className={styles.modalLabel}>
+                Post Content
+                <textarea
+                  value={postContentInput}
+                  onChange={(e) => {
+                    setPostContentInput(e.target.value);
+                  }}
+                />
+              </label>
+            </div>
+            <div className="centerRow">
+              {error && <p className={styles.error}>{error}</p>}
+            </div>
+          </div>
+          <div className={styles.modalFooter}>
+            <Button
+              secondary
+              sm
+              onClick={() => addPost()}
+              label={"Add Post"}></Button>
+          </div>
         </div>
-        <div className="centerRow">
-          {error && <p className={styles.error}>{error}</p>}
-        </div>
-        <div className="centerRow">
-          <Button
-            secondary
-            sm
-            onClick={() => addPost()}
-            label={"Add Post"}></Button>
+      </Modal>
+
+      {/* Delete Post Modal */}
+      <Modal
+        status={deleteModalOpen}
+        handleClose={() => setDeleteModalOpen(false)}
+        title={"Delete Post"}>
+        <div className={styles.modalBodyWrapper}>
+          <div className={styles.modalBody}>
+            <div className="centerRow">
+              <p>Are you sure you want to permanently delete this post?</p>
+            </div>
+          </div>
+          <div className={styles.modalFooter}>
+            <Button
+              secondary
+              sm
+              onClick={() => {
+                deletePost(deletePostId);
+                setDeleteModalOpen(false);
+              }}
+              label={"Delete Post"}></Button>
+          </div>
         </div>
       </Modal>
     </>
