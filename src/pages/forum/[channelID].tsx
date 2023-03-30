@@ -10,6 +10,7 @@ import jwt from "jwt-decode";
 import { IoTrash } from "react-icons/io5";
 import { MdReply, MdModeEdit } from "react-icons/md";
 import { AnimatePresence, motion } from "framer-motion";
+import { useRouter } from "next/router";
 
 type Post = {
   id: number;
@@ -48,8 +49,12 @@ const itemTransition = {
 
 function Forum() {
   const cookies = new Cookies();
+  const router = useRouter();
+  const { channelID } = router.query;
+
   const [posts, setPosts] = useState<Post[]>([]);
   const [user, setUser] = useState("");
+  const [channelName, setChannelName] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -62,9 +67,12 @@ function Forum() {
   const [error, setError] = useState("");
 
   const fetchPosts = async () => {
-    const res = await fetch("/api/post/all");
-    const data = await res.json();
-    setPosts(data);
+    fetch(`/api/channel/${channelID}/posts`).then((res) =>
+      res.json().then((data) => {
+        setChannelName(data.channel_name);
+        setPosts(data.posts);
+      })
+    );
   };
 
   const addPost = async () => {
@@ -85,6 +93,7 @@ function Forum() {
       body: JSON.stringify({
         title: postTitleInput,
         content: postContentInput,
+        channel_id: channelID,
       }),
     });
     const data = await res.json();
@@ -158,11 +167,13 @@ function Forum() {
     if (!cookies.get("access_token")) {
       window.location.href = "/signin";
     } else {
-      fetchPosts();
+      if (router.isReady) {
+        fetchPosts();
+      }
       const decoded: any = jwt(cookies.get("access_token"));
       setUser(decoded.sub);
     }
-  }, []);
+  }, [router]);
 
   return (
     <>
@@ -171,7 +182,7 @@ function Forum() {
       </Head>
       <SidebarLayout>
         <div className={styles.header}>
-          <h2>Thread Name</h2>
+          <h2>{channelName}</h2>
           <div className={styles.headerButtons}>
             <Button
               sm

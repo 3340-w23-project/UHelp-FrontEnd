@@ -10,6 +10,15 @@ const nextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: "/forum",
+        destination: "/forum/1",
+        permanent: true,
+      },
+    ];
+  }
 };
 
 module.exports = nextConfig;
