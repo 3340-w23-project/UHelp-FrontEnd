@@ -53,9 +53,11 @@ function Sidebar() {
             <span className={styles.category}>{category.name}</span>
             <ul>
               {category.channels.map((channel) => (
-                <li key={channel.id} className={styles.classItem}>
-                  <Link href={`/forum/${channel.id}`}>{channel.name}</Link>
-                </li>
+                <Link href={`/forum/${channel.id}`}>
+                  <li key={channel.id} className={styles.classItem}>
+                    {channel.name}
+                  </li>
+                </Link>
               ))}
             </ul>
           </div>
