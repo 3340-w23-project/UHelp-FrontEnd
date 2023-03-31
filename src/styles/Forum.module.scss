@@ -47,7 +47,6 @@
       padding: 1rem;
       border-radius: 0.5rem;
       background-color: #f2ebda;
-      cursor: pointer;
 
       .postHeader {
         display: flex;
@@ -68,6 +67,11 @@
 
           .postAuthor {
             font-weight: 500;
+
+            .userIcon {
+              font-size: 0.9rem;
+              margin-right: 0.25rem;
+            }
           }
         }
 

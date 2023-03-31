@@ -9,6 +9,7 @@ import Cookies from "universal-cookie";
 import jwt from "jwt-decode";
 import { IoTrash } from "react-icons/io5";
 import { MdReply, MdModeEdit } from "react-icons/md";
+import { FaUserAlt } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
 
@@ -209,6 +210,7 @@ function Forum() {
                         <span className={styles.postTitle}>{post.title}</span>
                         <div>
                           <span className={styles.postAuthor}>
+                            <FaUserAlt className={styles.userIcon} />
                             {post.author.username}
                           </span>
                           {" posted on "}
