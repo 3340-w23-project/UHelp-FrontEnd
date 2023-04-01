@@ -264,7 +264,7 @@ function Forum({ isSignedIn, username }: Props) {
         fetchPosts();
       }
     }
-  }, [router.isReady, isSignedIn]);
+  }, [router, isSignedIn]);
 
   function renderReplies(replies: Reply[], postID: number): JSX.Element[] {
     return replies.map((reply) => {
