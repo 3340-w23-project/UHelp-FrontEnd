@@ -120,11 +120,12 @@ function Forum({ isSignedIn, username }: Props) {
     if (data.error) {
       setError(data.error);
       return;
+    } else {
+      fetchPosts();
     }
     setIsModalOpen(false);
     setPostTitleInput("");
     setPostContentInput("");
-    fetchPosts();
   };
 
   const addReply = async (id: number, parent_id: number) => {
@@ -149,10 +150,11 @@ function Forum({ isSignedIn, username }: Props) {
     if (data.error) {
       setError(data.error);
       return;
+    } else {
+      fetchPosts();
     }
     setIsReplyModalOpen(false);
     setPostContentInput("");
-    fetchPosts();
   };
 
   const deleteReply = async (id: number) => {
@@ -187,10 +189,11 @@ function Forum({ isSignedIn, username }: Props) {
     if (data.error) {
       setError(data.error);
       return;
+    } else {
+      fetchPosts();
     }
     setIsEditModalOpen(false);
     setPostContentInput("");
-    fetchPosts();
   };
 
   const deletePost = async (id: number) => {
@@ -229,12 +232,13 @@ function Forum({ isSignedIn, username }: Props) {
     if (data.error) {
       setError(data.error);
       return;
+    } else {
+      fetchPosts();
     }
     setIsEditModalOpen(false);
     setPostID(0);
     setPostTitleInput("");
     setPostContentInput("");
-    fetchPosts();
   };
 
   const formatDateTime = (date: string) => {
@@ -258,7 +262,6 @@ function Forum({ isSignedIn, username }: Props) {
         router.push("/signin");
       } else {
         fetchPosts();
-        console.log(posts);
       }
     }
   }, [router.isReady, isSignedIn]);
