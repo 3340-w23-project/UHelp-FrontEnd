@@ -10,41 +10,43 @@ import { useRouter } from "next/router";
 type Props = {
   isScrolled: boolean;
   isMobile: boolean;
+  isSignedIn: boolean;
+  username: string;
 };
 
-function SignIn({ isScrolled, isMobile }: Props) {
+function SignIn({ isScrolled, isMobile, isSignedIn, username }: Props) {
   const cookies = new Cookies();
   const router = useRouter();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [usernameInput, setUsernameInput] = useState("");
+  const [passwordInput, setPasswordInput] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (cookies.get("access_token")) {
-      router.push("/");
+    if (isSignedIn) {
+      router.push("/forum");
     }
-  }, [router, cookies]);
+  }, [router, isSignedIn]);
 
   const validate = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (username === "") {
+    if (usernameInput === "") {
       setError("Username cannot be empty");
-    } else if (password === "") {
+    } else if (passwordInput === "") {
       setError("Password cannot be empty");
     } else {
-      login();
+      signIn();
     }
   };
 
-  const login = () => {
+  const signIn = () => {
     fetch("/api/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        username: username,
-        password: password,
+        username: usernameInput,
+        password: passwordInput,
       }),
     })
       .then((res) => {
@@ -62,44 +64,51 @@ function SignIn({ isScrolled, isMobile }: Props) {
           cookies.set("access_token", data.access_token, {
             expires: new Date(decoded.exp * 1000),
           });
-          window.location.href = "/";
+          router.push("/forum");
         }
       });
   };
 
   return (
-    <>
-      <Navbar isScrolled={isScrolled} isMobile={isMobile} />
-      <div className={styles.wrapper}>
-        <form className={styles.container} onSubmit={validate}>
-          <h1 className={styles.header}>Sign In</h1>
-          <Field
-            label="Username"
-            type="text"
-            id="username"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <Field
-            label="Password"
-            type="password"
-            id="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <div className={styles.error}>{error}</div>
-          <div className={styles.submit}>
-            <input
-              type="submit"
-              value="Sign In"
-              className="btn btn-sm btn-secondary"
+    !isSignedIn && (
+      <>
+        <Navbar
+          isScrolled={isScrolled}
+          isMobile={isMobile}
+          isSignedIn={isSignedIn}
+          username={username}
+        />
+        <div className={styles.wrapper}>
+          <form className={styles.container} onSubmit={validate}>
+            <h1 className={styles.header}>Sign In</h1>
+            <Field
+              label="Username"
+              type="text"
+              id="username"
+              placeholder="Username"
+              value={usernameInput}
+              onChange={(e) => setUsernameInput(e.target.value)}
             />
-          </div>
-        </form>
-      </div>
-    </>
+            <Field
+              label="Password"
+              type="password"
+              id="password"
+              placeholder="Password"
+              value={passwordInput}
+              onChange={(e) => setPasswordInput(e.target.value)}
+            />
+            <div className={styles.error}>{error}</div>
+            <div className={styles.submit}>
+              <input
+                type="submit"
+                value="Sign In"
+                className="btn btn-sm btn-secondary"
+              />
+            </div>
+          </form>
+        </div>
+      </>
+    )
   );
 }
 

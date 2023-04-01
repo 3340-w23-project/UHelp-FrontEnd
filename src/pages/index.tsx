@@ -8,18 +8,31 @@ import { sections } from "@/utils/HomeData";
 type HomeProps = {
   isScrolled: boolean;
   isMobile: boolean;
+  isSignedIn: boolean;
+  username: string;
 };
 
-export default function Home({ isScrolled, isMobile }: HomeProps) {
+export default function Home({
+  isScrolled,
+  isMobile,
+  isSignedIn,
+  username,
+}: HomeProps) {
   return (
     <>
       <MetaTags />
       <main>
-        <Navbar isScrolled={isScrolled} isMobile={isMobile} />
+        <Navbar
+          isScrolled={isScrolled}
+          isMobile={isMobile}
+          isSignedIn={isSignedIn}
+          username={username}
+        />
         <HeroSection
           description="Get _Help_ and _Connect_ with Peers."
           actionLabel="Join Now"
           actionHref="/signup"
+          isSignedIn={isSignedIn}
         />
         {sections.map((section, index) => (
           <Section

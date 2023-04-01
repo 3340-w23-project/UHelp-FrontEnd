@@ -4,50 +4,53 @@ import Cookies from "universal-cookie";
 import styles from "@/styles/signin.module.scss";
 import { Navbar } from "@/components/Navbar/Navbar";
 import Field from "@/components/Login/Field";
+import jwt from "jwt-decode";
 
 type Props = {
   isScrolled: boolean;
   isMobile: boolean;
+  isSignedIn: boolean;
+  username: string;
 };
 
-function SignUp({ isScrolled, isMobile }: Props) {
+function SignUp({ isScrolled, isMobile, isSignedIn, username }: Props) {
   const cookies = new Cookies();
   const router = useRouter();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [usernameInput, setUsernameInput] = useState("");
+  const [passwordInput, setPasswordInput] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (cookies.get("access_token")) {
-      router.push("/");
+    if (isSignedIn) {
+      router.push("/forum");
     }
-  }, [router, cookies]);
+  }, [router, isSignedIn]);
 
   const validate = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (username.length < 3 || username.length > 20) {
+    if (usernameInput.length < 3 || usernameInput.length > 20) {
       setError("Username must be between 3 and 20 characters");
-    } else if (password.length < 4) {
+    } else if (passwordInput.length < 4) {
       setError("Password must be at least 4 characters");
     } else {
-      signup();
+      signUp();
     }
   };
 
-  const signup = () => {
+  const signUp = () => {
     fetch("/api/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        username: username,
-        password: password,
+        username: usernameInput,
+        password: passwordInput,
       }),
     })
       .then((res) => {
         if (res.status === 201) {
-          router.push("/signin");
+          signIn();
         } else if (res.status === 409) {
           setError("User already exists");
         } else {
@@ -59,9 +62,45 @@ function SignUp({ isScrolled, isMobile }: Props) {
       });
   };
 
+  const signIn = () => {
+    fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: usernameInput,
+        password: passwordInput,
+      }),
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        } else if (res.status === 401) {
+          setError("Incorrect username or password");
+        } else {
+          setError("Something went wrong");
+        }
+      })
+      .then((data) => {
+        if (data) {
+          const decoded: any = jwt(data.access_token);
+          cookies.set("access_token", data.access_token, {
+            expires: new Date(decoded.exp * 1000),
+          });
+          router.push("/forum");
+        }
+      });
+  };
+
   return (
     <>
-      <Navbar isScrolled={isScrolled} isMobile={isMobile} />
+      <Navbar
+        isScrolled={isScrolled}
+        isMobile={isMobile}
+        isSignedIn={isSignedIn}
+        username={username}
+      />
       <div className={styles.wrapper}>
         <form className={styles.container} onSubmit={validate}>
           <h1 className={styles.header}>Sign Up</h1>
@@ -70,16 +109,16 @@ function SignUp({ isScrolled, isMobile }: Props) {
             type="text"
             id="username"
             placeholder="Username"
-            onChange={(e) => setUsername(e.target.value)}
-            value={username}
+            onChange={(e) => setUsernameInput(e.target.value)}
+            value={usernameInput}
           />
           <Field
             label="Password"
             type="password"
             id="password"
             placeholder="Password"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
+            onChange={(e) => setPasswordInput(e.target.value)}
+            value={passwordInput}
           />
           <div className={styles.error}>{error}</div>
           <div className={styles.submit}>

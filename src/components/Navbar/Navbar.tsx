@@ -5,42 +5,18 @@ import { MenuItem } from "./MenuItem";
 import { AppConfig } from "@/utils/AppConfig";
 import className from "classnames";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import Cookies from "universal-cookie";
-import jwt from "jwt-decode";
-
+import { useState } from "react";
+import Account from "./Account";
 import { GiHamburgerMenu } from "react-icons/gi";
 
 type NavbarProps = {
   isScrolled: boolean;
   isMobile: boolean;
+  isSignedIn: boolean;
+  username: string;
 };
 
-function Navbar({ isScrolled, isMobile }: NavbarProps) {
-  const [isLogged, setIsLogged] = useState(false);
-  const [user, setUser] = useState("");
-  const cookies = new Cookies();
-  const signOut = () => {
-    cookies.remove("access_token");
-    fetch("/api/logout", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    window.location.href = "/";
-  };
-
-  useEffect(() => {
-    if (cookies.get("access_token")) {
-      setIsLogged(true);
-      const decoded: any = jwt(cookies.get("access_token"));
-      setUser(decoded.sub);
-    } else {
-      setIsLogged(false);
-    }
-  }, [cookies]);
-
+function Navbar({ isScrolled, isMobile, isSignedIn, username }: NavbarProps) {
   return (
     <div
       className={className(styles.navbar, { [styles.scrolled]: isScrolled })}>
@@ -61,22 +37,14 @@ function Navbar({ isScrolled, isMobile }: NavbarProps) {
       {!isMobile ? (
         <nav className={styles.menu}>
           <ul>
-            {isLogged ? (
+            <MenuItem label="Home" href="/" />
+            {isSignedIn ? (
               <>
-                <MenuItem label="Home" href="/" />
                 <MenuItem href="/forum/1" label="Forum" />
-                <span className={styles.user}>{user}</span>
-                <Button
-                  sm
-                  secondary
-                  href="/signout"
-                  label="Sign Out"
-                  onClick={signOut}
-                />
+                <Account username={username} />
               </>
             ) : (
               <>
-                <MenuItem label="Home" href="/" />
                 <MenuItem label="Sign In" href="/signin" />
                 <li>
                   <Button sm secondary href="/signup" label="Sign Up" />

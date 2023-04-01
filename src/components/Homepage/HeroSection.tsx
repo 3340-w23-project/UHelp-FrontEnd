@@ -9,12 +9,14 @@ type HeroSectionProps = {
   description: string;
   actionLabel: string;
   actionHref: string;
+  isSignedIn: boolean;
 };
 
 const HeroSection = ({
   description,
   actionLabel,
   actionHref,
+  isSignedIn,
 }: HeroSectionProps) => {
   return (
     <>
@@ -37,8 +39,8 @@ const HeroSection = ({
         <Button
           xl
           icon={MdOutlineLogin}
-          href={actionHref}
-          label={actionLabel}
+          href={isSignedIn ? "/forum/1" : actionHref}
+          label={isSignedIn ? "Go to Forum" : actionLabel}
         />
       </div>
     </>

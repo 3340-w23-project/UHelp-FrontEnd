@@ -1,0 +1,56 @@
+.account {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-radius: 5px;
+  border: 1px solid #b8b2a3;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 5px 10px -3px,
+    rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
+  padding: 0.5rem 1rem;
+  background-color: #f2ebda;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: bold;
+
+  .arrow {
+    margin-top: 0.2rem;
+    transition: transform 0.2s ease;
+  }
+
+  .openArrow {
+    transform: rotate(180deg);
+    transition: transform 0.2s ease;
+  }
+
+  .userIcon {
+    font-size: 1rem;
+  }
+}
+
+.signOutContainer {
+  position: absolute;
+  top: 45px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background-color: #ec9e90;
+  color: #62332b;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  border: 1px solid #62332b;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #c4786b;
+  }
+
+  .signOutItem {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+  }
+}

@@ -35,7 +35,7 @@ const Button = ({
     <div className={btnClass} onClick={onClick}>
       <>
         {Icon && <Icon />}
-        {href ? <Link href={"/signup"}>{label}</Link> : <span>{label}</span>}
+        {href ? <Link href={href}>{label}</Link> : <span>{label}</span>}
       </>
     </div>
   );

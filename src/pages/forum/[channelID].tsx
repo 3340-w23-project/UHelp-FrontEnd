@@ -6,12 +6,12 @@ import { AppConfig } from "@/utils/AppConfig";
 import Head from "next/head";
 import Modal from "@/components/Forum/Modal";
 import Cookies from "universal-cookie";
-import jwt from "jwt-decode";
 import { IoTrash } from "react-icons/io5";
 import { MdReply, MdModeEdit } from "react-icons/md";
 import { FaUserAlt } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
+import Account from "@/components/Navbar/Account";
 
 type Post = {
   id: number;
@@ -48,13 +48,17 @@ const itemTransition = {
   },
 };
 
-function Forum() {
+type Props = {
+  isSignedIn: boolean;
+  username: string;
+};
+
+function Forum({ isSignedIn, username }: Props) {
   const cookies = new Cookies();
   const router = useRouter();
   const { channelID } = router.query;
 
   const [posts, setPosts] = useState<Post[]>([]);
-  const [user, setUser] = useState("");
   const [channelName, setChannelName] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -165,210 +169,266 @@ function Forum() {
   };
 
   useEffect(() => {
-    if (!cookies.get("access_token")) {
-      window.location.href = "/signin";
-    } else {
-      if (router.isReady) {
+    if (router.isReady) {
+      if (!isSignedIn) {
+        router.push("/signin");
+      } else {
         fetchPosts();
       }
-      const decoded: any = jwt(cookies.get("access_token"));
-      setUser(decoded.sub);
     }
-  }, [router]);
+  }, [router.isReady, isSignedIn]);
 
   return (
-    <>
-      <Head>
-        <title>{`${AppConfig.siteName} - Forum`}</title>
-      </Head>
-      <SidebarLayout>
-        <div className={styles.header}>
-          <h2>{channelName}</h2>
-          <div className={styles.headerButtons}>
-            <Button
-              sm
-              secondary
-              label="New Post"
-              onClick={() => setIsModalOpen(true)}
-            />
+    isSignedIn && (
+      <>
+        <Head>
+          <title>{`${AppConfig.siteName} - Forum`}</title>
+        </Head>
+        <SidebarLayout>
+          <div className={styles.header}>
+            <h2>{channelName}</h2>
+            <div className={styles.headerButtons}>
+              <Button
+                sm
+                secondary
+                label="New Post"
+                onClick={() => setIsModalOpen(true)}
+              />
+              <Account username={username} />
+            </div>
           </div>
-        </div>
-        <div className={styles.contentWrapper}>
-          <div className={styles.postsWrapper}>
-            <AnimatePresence>
-              {posts.map((post) => {
-                return (
-                  <motion.div
-                    key={post.id}
-                    className={styles.post}
-                    variants={itemTransition}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit">
-                    <div className={styles.postHeader}>
-                      <div className={styles.postHeaderLeft}>
-                        <span className={styles.postTitle}>{post.title}</span>
-                        <div>
-                          <span className={styles.postAuthor}>
-                            <FaUserAlt className={styles.userIcon} />
-                            {post.author.username}
-                          </span>
-                          {" posted on "}
-                          <span className={styles.postDate}>
-                            {formatDateTime(post.date)}
-                          </span>
+          <div className={styles.contentWrapper}>
+            <div className={styles.postsWrapper}>
+              <AnimatePresence>
+                {posts.map((post) => {
+                  return (
+                    <>
+                      <motion.div
+                        key={post.id}
+                        className={styles.post}
+                        variants={itemTransition}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit">
+                        <div className={styles.postHeader}>
+                          <div className={styles.postHeaderLeft}>
+                            <span className={styles.postTitle}>
+                              {post.title}
+                            </span>
+                            <div>
+                              <span className={styles.postAuthor}>
+                                <FaUserAlt className={styles.userIcon} />
+                                {post.author.username}
+                              </span>
+                              {" posted on "}
+                              <span className={styles.postDate}>
+                                {formatDateTime(post.date)}
+                              </span>
+                            </div>
+                          </div>
+                          <div className={styles.postHeaderRight}>
+                            {post.author.username === username && (
+                              <>
+                                <Button
+                                  secondary
+                                  icon={IoTrash}
+                                  onClick={() => {
+                                    setDeletePostId(post.id);
+                                    setIsDeleteModalOpen(true);
+                                  }}
+                                />
+                                <Button
+                                  secondary
+                                  icon={MdModeEdit}
+                                  onClick={() => {
+                                    setEditPostId(post.id);
+                                    setPostTitleInput(post.title);
+                                    setPostContentInput(post.content);
+                                    setIsEditModalOpen(true);
+                                  }}
+                                />
+                              </>
+                            )}
+                            <Button secondary icon={MdReply} />
+                          </div>
                         </div>
-                      </div>
-                      <div className={styles.postHeaderRight}>
-                        {post.author.username === user && (
-                          <>
-                            <Button
-                              secondary
-                              icon={IoTrash}
-                              onClick={() => {
-                                setDeletePostId(post.id);
-                                setIsDeleteModalOpen(true);
-                              }}
-                            />
-                            <Button
-                              secondary
-                              icon={MdModeEdit}
-                              onClick={() => {
-                                setEditPostId(post.id);
-                                setPostTitleInput(post.title);
-                                setPostContentInput(post.content);
-                                setIsEditModalOpen(true);
-                              }}
-                            />
-                          </>
-                        )}
-                        <Button secondary icon={MdReply} />
-                      </div>
-                    </div>
-                    <div className={styles.postContent}>{post.content}</div>
-                  </motion.div>
-                );
-              })}
-            </AnimatePresence>
+                        <div className={styles.postContent}>{post.content}</div>
+                      </motion.div>
+                      {post.replies.length > 0 && (
+                        <motion.div
+                          key={post.id + "replies"}
+                          className={styles.repliesWrapper}
+                          variants={itemTransition}
+                          initial="hidden"
+                          animate="visible"
+                          exit="exit">
+                          {post.replies.map((reply: any) => {
+                            return (
+                              <div className={styles.post} key={reply.id}>
+                                <div className={styles.postHeader}>
+                                  <div className={styles.postHeaderLeft}>
+                                    <span className={styles.postAuthor}>
+                                      <FaUserAlt className={styles.userIcon} />
+                                      {reply.writer.username}
+                                    </span>
+                                    {` replied on ${formatDateTime(
+                                      reply.date
+                                    )}`}
+                                  </div>
+                                  <div className={styles.postHeaderRight}>
+                                    {reply.writer.username === username && (
+                                      <>
+                                        <Button
+                                          secondary
+                                          icon={IoTrash}
+                                          onClick={() => {
+                                            setIsDeleteModalOpen(true);
+                                          }}
+                                        />
+                                        <Button
+                                          secondary
+                                          icon={MdModeEdit}
+                                          onClick={() => {
+                                            setIsEditModalOpen(true);
+                                          }}
+                                        />
+                                      </>
+                                    )}
+                                    <Button secondary icon={MdReply} />
+                                  </div>
+                                </div>
+                                <div className={styles.postContent}>
+                                  {reply.content}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </motion.div>
+                      )}
+                    </>
+                  );
+                })}
+              </AnimatePresence>
+            </div>
           </div>
-        </div>
-      </SidebarLayout>
+        </SidebarLayout>
 
-      {/* New Post Modal */}
-      <Modal
-        status={isModalOpen}
-        handleClose={() => setIsModalOpen(false)}
-        title={"New Post"}
-        width={"30%"}>
-        <div className={styles.modalBodyWrapper}>
-          <div className={styles.modalBody}>
-            <div className={styles.modalForm}>
-              <label className={styles.modalLabel}>
-                Post Title
-                <input
-                  type="text"
-                  value={postTitleInput}
-                  onChange={(e) => {
-                    setPostTitleInput(e.target.value);
-                  }}
-                />
-              </label>
-              <label className={styles.modalLabel}>
-                Post Content
-                <textarea
-                  value={postContentInput}
-                  onChange={(e) => {
-                    setPostContentInput(e.target.value);
-                  }}
-                />
-              </label>
+        {/* New Post Modal */}
+        <Modal
+          status={isModalOpen}
+          handleClose={() => setIsModalOpen(false)}
+          title={"New Post"}
+          width={"30%"}>
+          <div className={styles.modalBodyWrapper}>
+            <div className={styles.modalBody}>
+              <div className={styles.modalForm}>
+                <label className={styles.modalLabel}>
+                  Post Title
+                  <input
+                    type="text"
+                    value={postTitleInput}
+                    onChange={(e) => {
+                      setPostTitleInput(e.target.value);
+                    }}
+                  />
+                </label>
+                <label className={styles.modalLabel}>
+                  Post Content
+                  <textarea
+                    value={postContentInput}
+                    onChange={(e) => {
+                      setPostContentInput(e.target.value);
+                    }}
+                  />
+                </label>
+              </div>
+              <div className="centerRow">
+                {error && <p className={styles.error}>{error}</p>}
+              </div>
             </div>
-            <div className="centerRow">
-              {error && <p className={styles.error}>{error}</p>}
+            <div className={styles.modalFooter}>
+              <Button
+                secondary
+                sm
+                onClick={() => addPost()}
+                label={"Add Post"}></Button>
             </div>
           </div>
-          <div className={styles.modalFooter}>
-            <Button
-              secondary
-              sm
-              onClick={() => addPost()}
-              label={"Add Post"}></Button>
-          </div>
-        </div>
-      </Modal>
+        </Modal>
 
-      {/* Edit Post Modal */}
-      <Modal
-        status={isEditModalOpen}
-        handleClose={() => {
-          setIsEditModalOpen(false);
-          setEditPostId(0);
-          setPostTitleInput("");
-          setPostContentInput("");
-        }}
-        title={"Edit Post"}
-        width={"30%"}>
-        <div className={styles.modalBodyWrapper}>
-          <div className={styles.modalBody}>
-            <div className={styles.modalForm}>
-              <label className={styles.modalLabel}>
-                Post Title
-                <input
-                  type="text"
-                  value={postTitleInput}
-                  onChange={(e) => {
-                    setPostTitleInput(e.target.value);
-                  }}
-                />
-              </label>
-              <label className={styles.modalLabel}>
-                Post Content
-                <textarea
-                  value={postContentInput}
-                  onChange={(e) => {
-                    setPostContentInput(e.target.value);
-                  }}
-                />
-              </label>
+        {/* Edit Post Modal */}
+        <Modal
+          status={isEditModalOpen}
+          handleClose={() => {
+            setIsEditModalOpen(false);
+            setEditPostId(0);
+            setPostTitleInput("");
+            setPostContentInput("");
+          }}
+          title={"Edit Post"}
+          width={"30%"}>
+          <div className={styles.modalBodyWrapper}>
+            <div className={styles.modalBody}>
+              <div className={styles.modalForm}>
+                <label className={styles.modalLabel}>
+                  Post Title
+                  <input
+                    type="text"
+                    value={postTitleInput}
+                    onChange={(e) => {
+                      setPostTitleInput(e.target.value);
+                    }}
+                  />
+                </label>
+                <label className={styles.modalLabel}>
+                  Post Content
+                  <textarea
+                    value={postContentInput}
+                    onChange={(e) => {
+                      setPostContentInput(e.target.value);
+                    }}
+                  />
+                </label>
+              </div>
+              <div className="centerRow">
+                {error && <p className={styles.error}>{error}</p>}
+              </div>
             </div>
-            <div className="centerRow">
-              {error && <p className={styles.error}>{error}</p>}
+            <div className={styles.modalFooter}>
+              <Button
+                secondary
+                sm
+                onClick={() => updatePost(editPostId)}
+                label={"Update Post"}></Button>
             </div>
           </div>
-          <div className={styles.modalFooter}>
-            <Button
-              secondary
-              sm
-              onClick={() => updatePost(editPostId)}
-              label={"Update Post"}></Button>
-          </div>
-        </div>
-      </Modal>
+        </Modal>
 
-      {/* Delete Post Modal */}
-      <Modal
-        status={isDeleteModalOpen}
-        handleClose={() => setIsDeleteModalOpen(false)}
-        title={"Delete Post"}>
-        <div className={styles.modalBodyWrapper}>
-          <div className={styles.modalBody}>
-            <div className="centerRow">
-              <p>Are you sure you want to permanently delete this post?</p>
+        {/* Delete Post Modal */}
+        <Modal
+          status={isDeleteModalOpen}
+          handleClose={() => setIsDeleteModalOpen(false)}
+          title={"Delete Post"}>
+          <div className={styles.modalBodyWrapper}>
+            <div className={styles.modalBody}>
+              <div className="centerRow">
+                <p>Are you sure you want to permanently delete this post?</p>
+              </div>
+            </div>
+            <div className={styles.modalFooter}>
+              <Button
+                secondary
+                sm
+                onClick={() => {
+                  deletePost(deletePostId);
+                  setIsDeleteModalOpen(false);
+                }}
+                label={"Delete Post"}></Button>
             </div>
           </div>
-          <div className={styles.modalFooter}>
-            <Button
-              secondary
-              sm
-              onClick={() => {
-                deletePost(deletePostId);
-                setIsDeleteModalOpen(false);
-              }}
-              label={"Delete Post"}></Button>
-          </div>
-        </div>
-      </Modal>
-    </>
+        </Modal>
+      </>
+    )
   );
 }
 
