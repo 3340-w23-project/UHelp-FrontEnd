@@ -87,7 +87,7 @@ function Forum({ isSignedIn, username }: Props) {
   const [error, setError] = useState("");
 
   const { data: posts, mutate: fetchPosts } = useSWR<Post[]>(
-    `/api/channel/${channelID}/posts`,
+    `/api/channel/${channelID ? channelID : "1"}/posts`,
     async (url) => {
       const res = await fetch(url);
       const data = await res.json();
@@ -270,70 +270,87 @@ function Forum({ isSignedIn, username }: Props) {
         });
   };
 
-  function renderReplies(replies: Reply[], postID: number): JSX.Element[] {
-    return replies.map((reply) => {
-      return (
-        <>
-          <div
-            key={reply.id}
-            className={styles.post}
-            style={{
-              marginLeft: (reply.depth + 1) * 20,
-              width: `calc(100% - ${(reply.depth + 1) * 20}px)`,
-            }}>
-            <div className={styles.postHeader}>
-              <div className={styles.postHeaderLeft}>
-                <div>
-                  <span className={styles.postAuthor}>
-                    <FaUserAlt className={styles.userIcon} />
-                    {reply.author.username}
-                  </span>
-                  {` replied ${formatDateTime(reply.date)}`}
-                </div>
-              </div>
-              <div className={styles.postHeaderRight}>
-                {reply.author.username === username && (
-                  <>
-                    <Button
-                      tertiary
-                      icon={IoTrash}
-                      onClick={() => {
-                        setReplyID(reply.id);
-                        setActionType("reply");
-                        setIsDeleteModalOpen(true);
-                      }}
-                    />
-                    <Button
-                      tertiary
-                      icon={MdModeEdit}
-                      onClick={() => {
-                        setPostID(postID);
-                        setActionType("reply");
-                        setReplyID(reply.id);
-                        setPostContentInput(reply.content);
-                        setIsEditModalOpen(true);
-                      }}
-                    />
-                  </>
-                )}
-                <Button
-                  tertiary
-                  icon={MdReply}
-                  onClick={() => {
-                    setPostID(postID);
-                    setReplyID(reply.id);
-                    setIsReplyModalOpen(true);
-                  }}
-                />
-              </div>
-            </div>
-            <div className={styles.replyContent}>{reply.content}</div>
+  const renderPost = (isReply: boolean, post: any, postID: number) => (
+    <div
+      key={post.id}
+      className={styles.post}
+      style={
+        isReply
+          ? {
+              marginLeft: (post.depth + 1) * 20,
+              width: `calc(100% - ${(post.depth + 1) * 20}px)`,
+            }
+          : {}
+      }>
+      <div className={styles.postHeader}>
+        <div className={styles.postHeaderLeft}>
+          {!isReply && <span className={styles.postTitle}>{post.title}</span>}
+          <div>
+            <span className={styles.postAuthor}>
+              <FaUserAlt className={styles.userIcon} />
+              {post.author.username}
+            </span>
+            {` ${isReply ? "replied" : "posted"} ${formatDateTime(post.date)}`}
           </div>
-          {reply.replies.length > 0 && renderReplies(reply.replies, postID)}
-        </>
-      );
-    });
-  }
+        </div>
+        <div className={styles.postHeaderRight}>
+          {post.author.username === username && (
+            <>
+              <Button
+                tertiary
+                icon={IoTrash}
+                onClick={() => {
+                  if (isReply) setReplyID(post.id);
+                  else setPostID(post.id);
+                  setActionType(isReply ? "reply" : "post");
+                  setIsDeleteModalOpen(true);
+                }}
+              />
+              <Button
+                tertiary
+                icon={MdModeEdit}
+                onClick={() => {
+                  if (isReply) {
+                    setPostID(postID);
+                    setReplyID(post.id);
+                  } else {
+                    setPostID(post.id);
+                    setPostTitleInput(post.title);
+                  }
+                  setActionType(isReply ? "reply" : "post");
+                  setPostContentInput(post.content);
+                  setIsEditModalOpen(true);
+                }}
+              />
+            </>
+          )}
+          <Button
+            tertiary
+            icon={MdReply}
+            onClick={() => {
+              if (isReply) {
+                setPostID(postID);
+                setReplyID(post.id);
+              } else {
+                setPostID(post.id);
+                setReplyID(0);
+              }
+              setIsReplyModalOpen(true);
+            }}
+          />
+        </div>
+      </div>
+      <div className={styles.postContent}>{post.content}</div>
+    </div>
+  );
+
+  const renderReplies = (replies: Reply[], postID: number): JSX.Element[] =>
+    replies.map((reply) => (
+      <div key={reply.id}>
+        {renderPost(true, reply, postID)}
+        {reply.replies.length > 0 && renderReplies(reply.replies, postID)}
+      </div>
+    ));
 
   return (
     isSignedIn && (
@@ -357,79 +374,26 @@ function Forum({ isSignedIn, username }: Props) {
           <div className={styles.contentWrapper}>
             <div className={styles.postsWrapper}>
               <AnimatePresence>
-                {posts?.map((post) => {
-                  return (
-                    <motion.div
-                      key={post.id}
-                      className={styles.postWrapper}
-                      variants={itemTransition}
-                      initial="hidden"
-                      animate="visible"
-                      exit="exit">
-                      <div className={styles.post}>
-                        <div className={styles.postHeader}>
-                          <div className={styles.postHeaderLeft}>
-                            <span className={styles.postTitle}>
-                              {post.title}
-                            </span>
-                            <div>
-                              <span className={styles.postAuthor}>
-                                <FaUserAlt className={styles.userIcon} />
-                                {post.author.username}
-                              </span>
-                              {` posted ${formatDateTime(post.date)}`}
-                            </div>
-                          </div>
-                          <div className={styles.postHeaderRight}>
-                            {post.author.username === username && (
-                              <>
-                                <Button
-                                  tertiary
-                                  icon={IoTrash}
-                                  onClick={() => {
-                                    setPostID(post.id);
-                                    setActionType("post");
-                                    setIsDeleteModalOpen(true);
-                                  }}
-                                />
-                                <Button
-                                  tertiary
-                                  icon={MdModeEdit}
-                                  onClick={() => {
-                                    setPostID(post.id);
-                                    setActionType("post");
-                                    setPostTitleInput(post.title);
-                                    setPostContentInput(post.content);
-                                    setIsEditModalOpen(true);
-                                  }}
-                                />
-                              </>
-                            )}
-                            <Button
-                              tertiary
-                              icon={MdReply}
-                              onClick={() => {
-                                setIsReplyModalOpen(true);
-                                setPostID(post.id);
-                                setReplyID(0);
-                              }}
-                            />
-                          </div>
-                        </div>
-                        <div className={styles.postContent}>{post.content}</div>
-                      </div>
-                      {post.replies.length > 0 && (
-                        <motion.div
-                          variants={itemTransition}
-                          initial="hidden"
-                          animate="visible"
-                          exit="exit">
-                          {renderReplies(post.replies, post.id)}
-                        </motion.div>
-                      )}
-                    </motion.div>
-                  );
-                })}
+                {posts?.map((post) => (
+                  <motion.div
+                    key={post.id}
+                    className={styles.postWrapper}
+                    variants={itemTransition}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit">
+                    {renderPost(false, post, post.id)}
+                    {post.replies.length > 0 && (
+                      <motion.div
+                        variants={itemTransition}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit">
+                        {renderReplies(post.replies, post.id)}
+                      </motion.div>
+                    )}
+                  </motion.div>
+                ))}
               </AnimatePresence>
             </div>
           </div>
