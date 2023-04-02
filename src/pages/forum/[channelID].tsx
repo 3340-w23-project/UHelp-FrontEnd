@@ -7,7 +7,7 @@ import Head from "next/head";
 import Modal from "@/components/Forum/Modal";
 import Cookies from "universal-cookie";
 import { IoTrash } from "react-icons/io5";
-import { MdReply, MdModeEdit } from "react-icons/md";
+import { MdReply, MdModeEdit, MdPostAdd } from "react-icons/md";
 import { FaUserAlt } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
@@ -365,6 +365,7 @@ function Forum({ isSignedIn, username }: Props) {
               <Button
                 sm
                 tertiary
+                icon={MdPostAdd}
                 label="New Post"
                 onClick={() => setIsModalOpen(true)}
               />
