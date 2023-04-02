@@ -6,6 +6,8 @@ import Cookies from "universal-cookie";
 import { useState, useEffect, FormEvent } from "react";
 import jwt from "jwt-decode";
 import { useRouter } from "next/router";
+import Head from "next/head";
+import { AppConfig } from "@/utils/AppConfig";
 
 type Props = {
   isScrolled: boolean;
@@ -72,6 +74,9 @@ function SignIn({ isScrolled, isMobile, isSignedIn, username }: Props) {
   return (
     !isSignedIn && (
       <>
+        <Head>
+        <title>{`${AppConfig.siteName} - Sign In`}</title>
+        </Head>
         <Navbar
           isScrolled={isScrolled}
           isMobile={isMobile}

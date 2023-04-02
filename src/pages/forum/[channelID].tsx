@@ -13,6 +13,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
 import Account from "@/components/Navbar/Account";
 import useSWR from "swr";
+import { zeroRightClassName } from "react-remove-scroll-bar";
 
 type Author = {
   id: number;
@@ -341,7 +342,7 @@ function Forum({ isSignedIn, username }: Props) {
           <title>{`${AppConfig.siteName} - Forum`}</title>
         </Head>
         <SidebarLayout>
-          <div className={styles.header}>
+          <div className={`${styles.header} ${zeroRightClassName}`}>
             <h2>{channelName}</h2>
             <div className={styles.headerButtons}>
               <Button

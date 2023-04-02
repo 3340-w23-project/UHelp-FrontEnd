@@ -5,6 +5,8 @@ import styles from "@/styles/signin.module.scss";
 import { Navbar } from "@/components/Navbar/Navbar";
 import Field from "@/components/Login/Field";
 import jwt from "jwt-decode";
+import Head from "next/head";
+import { AppConfig } from "@/utils/AppConfig";
 
 type Props = {
   isScrolled: boolean;
@@ -95,6 +97,9 @@ function SignUp({ isScrolled, isMobile, isSignedIn, username }: Props) {
 
   return (
     <>
+      <Head>
+        <title>{`${AppConfig.siteName} - Sign Up`}</title>
+      </Head>
       <Navbar
         isScrolled={isScrolled}
         isMobile={isMobile}
