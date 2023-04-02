@@ -12,6 +12,7 @@ import { FaUserAlt } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
 import Account from "@/components/Navbar/Account";
+import useSWR from "swr";
 
 type Author = {
   id: number;
@@ -37,6 +38,11 @@ type Post = {
   title: string;
 };
 
+type Props = {
+  isSignedIn: boolean;
+  username: string;
+};
+
 const itemTransition = {
   hidden: {
     y: -20,
@@ -60,18 +66,10 @@ const itemTransition = {
   },
 };
 
-type Props = {
-  isSignedIn: boolean;
-  username: string;
-};
-
 function Forum({ isSignedIn, username }: Props) {
   const cookies = new Cookies();
   const router = useRouter();
   const { channelID } = router.query;
-
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [channelName, setChannelName] = useState("");
 
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -79,6 +77,7 @@ function Forum({ isSignedIn, username }: Props) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
 
+  const [channelName, setChannelName] = useState("");
   const [postID, setPostID] = useState(0);
   const [replyID, setReplyID] = useState(0);
   const [actionType, setActionType] = useState("post");
@@ -86,175 +85,16 @@ function Forum({ isSignedIn, username }: Props) {
   const [postContentInput, setPostContentInput] = useState("");
   const [error, setError] = useState("");
 
-  const fetchPosts = async () => {
-    fetch(`/api/channel/${channelID}/posts`).then((res) =>
-      res.json().then((data) => {
-        setChannelName(data.channel_name);
-        setPosts(data.posts);
-      })
-    );
-  };
-
-  const addPost = async () => {
-    if (postTitleInput === "") {
-      setError("Title cannot be empty");
-      return;
-    } else if (postContentInput === "") {
-      setError("Content cannot be empty");
-      return;
-    }
-
-    const res = await fetch("/api/post/new", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + cookies.get("access_token"),
-      },
-      body: JSON.stringify({
-        title: postTitleInput,
-        content: postContentInput,
-        channel_id: channelID,
-      }),
-    });
-    const data = await res.json();
-    if (data.error) {
-      setError(data.error);
-      return;
-    } else {
-      fetchPosts();
-    }
-    setIsModalOpen(false);
-    setPostTitleInput("");
-    setPostContentInput("");
-  };
-
-  const addReply = async (id: number, parent_id: number) => {
-    if (postContentInput === "") {
-      setError("Reply cannot be empty");
-      return;
-    }
-
-    const res = await fetch(`/api/post/${id}/reply`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + cookies.get("access_token"),
-      },
-      body: JSON.stringify({
-        content: postContentInput,
-        post_id: postID,
-        parent_reply_id: parent_id,
-      }),
-    });
-    const data = await res.json();
-    if (data.error) {
-      setError(data.error);
-      return;
-    } else {
-      fetchPosts();
-    }
-    setIsReplyModalOpen(false);
-    setPostContentInput("");
-  };
-
-  const deleteReply = async (id: number) => {
-    fetch(`/api/reply/${id}/delete`, {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + cookies.get("access_token"),
-      },
-    }).then(() => {
-      setIsDeleteModalOpen(false);
-      fetchPosts();
-    });
-  };
-
-  const updateReply = async (id: number) => {
-    if (postContentInput === "") {
-      setError("Reply cannot be empty");
-      return;
-    }
-
-    const res = await fetch(`/api/reply/${id}/update`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + cookies.get("access_token"),
-      },
-      body: JSON.stringify({
-        content: postContentInput,
-      }),
-    });
-    const data = await res.json();
-    if (data.error) {
-      setError(data.error);
-      return;
-    } else {
-      fetchPosts();
-    }
-    setIsEditModalOpen(false);
-    setPostContentInput("");
-  };
-
-  const deletePost = async (id: number) => {
-    fetch(`/api/post/${id}/delete`, {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + cookies.get("access_token"),
-      },
-    }).then(() => {
-      setIsDeleteModalOpen(false);
-      fetchPosts();
-    });
-  };
-
-  const updatePost = async (id: number) => {
-    if (postTitleInput === "") {
-      setError("Title cannot be empty");
-      return;
-    } else if (postContentInput === "") {
-      setError("Content cannot be empty");
-      return;
-    }
-
-    const res = await fetch(`/api/post/${id}/update`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + cookies.get("access_token"),
-      },
-      body: JSON.stringify({
-        title: postTitleInput,
-        content: postContentInput,
-      }),
-    });
-    const data = await res.json();
-    if (data.error) {
-      setError(data.error);
-      return;
-    } else {
-      fetchPosts();
-    }
-    setIsEditModalOpen(false);
-    setPostID(0);
-    setPostTitleInput("");
-    setPostContentInput("");
-  };
-
-  const formatDateTime = (date: string) => {
-    const postedDate = new Date(date);
-    const localOffset = new Date().getTimezoneOffset();
-    const localTime = new Date(postedDate.getTime() - localOffset * 60 * 1000);
-
-    const formattedDate = localTime.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-    });
-    return formattedDate;
-  };
+  const { data: posts, mutate: fetchPosts } = useSWR<Post[]>(
+    `/api/channel/${channelID}/posts`,
+    async (url) => {
+      const res = await fetch(url);
+      const data = await res.json();
+      setChannelName(data.channel_name);
+      return data.posts;
+    },
+    { refreshInterval: 5000 }
+  );
 
   useEffect(() => {
     if (router.isReady) {
@@ -266,6 +106,169 @@ function Forum({ isSignedIn, username }: Props) {
     }
   }, [router, isSignedIn]);
 
+  const authHeader = {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + cookies.get("access_token"),
+  };
+
+  const handleResponse = (data: any, setError: Function, mutate: Function) =>
+    data.error ? setError(data.error) : mutate();
+
+  const checkInput = (title: string, content: string) =>
+    title === ""
+      ? "Title cannot be empty"
+      : content === ""
+      ? "Content cannot be empty"
+      : null;
+
+  const addPost = () => {
+    const error = checkInput(postTitleInput, postContentInput);
+    if (error) {
+      setError(error);
+      return;
+    }
+
+    fetch("/api/post/new", {
+      method: "POST",
+      headers: authHeader,
+      body: JSON.stringify({
+        title: postTitleInput,
+        content: postContentInput,
+        channel_id: channelID,
+      }),
+    })
+      .then((res) => res.json())
+      .then(({ error }) => {
+        handleResponse({ error }, setError, fetchPosts);
+        setIsModalOpen(false);
+        setPostTitleInput("");
+        setPostContentInput("");
+      })
+      .catch(console.error);
+  };
+
+  const addReply = (id: number, parent_id: number) => {
+    if (postContentInput === "") {
+      setError("Reply cannot be empty");
+      return;
+    }
+
+    fetch(`/api/post/${id}/reply`, {
+      method: "POST",
+      headers: authHeader,
+      body: JSON.stringify({
+        content: postContentInput,
+        post_id: postID,
+        parent_reply_id: parent_id,
+      }),
+    })
+      .then((res) => res.json())
+      .then(({ error }) => {
+        handleResponse({ error }, setError, fetchPosts);
+        setIsReplyModalOpen(false);
+        setPostContentInput("");
+      })
+      .catch(console.error);
+  };
+
+  const deletePost = (id: number) => {
+    fetch(`/api/post/${id}/delete`, {
+      method: "POST",
+      headers: authHeader,
+    })
+      .then(() => {
+        setIsDeleteModalOpen(false);
+        fetchPosts();
+      })
+      .catch(console.error);
+  };
+
+  const deleteReply = (id: number) => {
+    fetch(`/api/reply/${id}/delete`, {
+      method: "POST",
+      headers: authHeader,
+    })
+      .then(() => {
+        setIsDeleteModalOpen(false);
+        fetchPosts();
+      })
+      .catch(console.error);
+  };
+
+  const updatePost = (id: number) => {
+    const error = checkInput(postTitleInput, postContentInput);
+    if (error) {
+      setError(error);
+      return;
+    }
+
+    fetch(`/api/post/${id}/update`, {
+      method: "POST",
+      headers: authHeader,
+      body: JSON.stringify({
+        title: postTitleInput,
+        content: postContentInput,
+      }),
+    })
+      .then((res) => res.json())
+      .then(({ error }) => {
+        handleResponse({ error }, setError, fetchPosts);
+        setIsEditModalOpen(false);
+        setPostID(0);
+        setPostTitleInput("");
+        setPostContentInput("");
+      })
+      .catch(console.error);
+  };
+
+  const updateReply = (id: number) => {
+    if (postContentInput === "") {
+      setError("Reply cannot be empty");
+      return;
+    }
+
+    fetch(`/api/reply/${id}/update`, {
+      method: "POST",
+      headers: authHeader,
+      body: JSON.stringify({
+        content: postContentInput,
+      }),
+    })
+      .then((res) => res.json())
+      .then(({ error }) => {
+        handleResponse({ error }, setError, fetchPosts);
+        setIsEditModalOpen(false);
+        setPostContentInput("");
+      })
+      .catch(console.error);
+  };
+
+  const formatDateTime = (date: string) => {
+    const postedDate = new Date(date);
+    const localOffset = new Date().getTimezoneOffset();
+    const localTime = new Date(postedDate.getTime() - localOffset * 60 * 1000);
+    const now = new Date();
+    const diffInMs = Math.abs(now.getTime() - localTime.getTime());
+    const diffInSeconds = Math.round(diffInMs / 1000);
+    const diffInMinutes = Math.round(diffInMs / (1000 * 60));
+    const diffInHours = Math.round(diffInMs / (1000 * 60 * 60));
+
+    return diffInSeconds < 60
+      ? diffInSeconds + "s ago"
+      : diffInMinutes < 60
+      ? diffInMinutes + "m ago"
+      : diffInHours < 24
+      ? diffInHours + "h ago"
+      : "on " +
+        localTime.toLocaleString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "numeric",
+          minute: "numeric",
+        });
+  };
+
   function renderReplies(replies: Reply[], postID: number): JSX.Element[] {
     return replies.map((reply) => {
       return (
@@ -274,8 +277,8 @@ function Forum({ isSignedIn, username }: Props) {
             key={reply.id}
             className={styles.post}
             style={{
-              marginLeft: (reply.depth + 1) * 15,
-              width: `calc(100% - ${(reply.depth + 1) * 15}px)`,
+              marginLeft: (reply.depth + 1) * 20,
+              width: `calc(100% - ${(reply.depth + 1) * 20}px)`,
             }}>
             <div className={styles.postHeader}>
               <div className={styles.postHeaderLeft}>
@@ -284,10 +287,7 @@ function Forum({ isSignedIn, username }: Props) {
                     <FaUserAlt className={styles.userIcon} />
                     {reply.author.username}
                   </span>
-                  {" replied on "}
-                  <span className={styles.postDate}>
-                    {formatDateTime(reply.date)}
-                  </span>
+                  {` replied ${formatDateTime(reply.date)}`}
                 </div>
               </div>
               <div className={styles.postHeaderRight}>
@@ -356,7 +356,7 @@ function Forum({ isSignedIn, username }: Props) {
           <div className={styles.contentWrapper}>
             <div className={styles.postsWrapper}>
               <AnimatePresence>
-                {posts.map((post) => {
+                {posts?.map((post) => {
                   return (
                     <motion.div
                       key={post.id}
@@ -376,10 +376,7 @@ function Forum({ isSignedIn, username }: Props) {
                                 <FaUserAlt className={styles.userIcon} />
                                 {post.author.username}
                               </span>
-                              {" posted on "}
-                              <span className={styles.postDate}>
-                                {formatDateTime(post.date)}
-                              </span>
+                              {` posted ${formatDateTime(post.date)}`}
                             </div>
                           </div>
                           <div className={styles.postHeaderRight}>
