@@ -8,13 +8,18 @@
   gap: 0.6rem;
   border-radius: 5px;
   border: 1px solid #b8b2a3;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 5px 10px -3px,
-    rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
-  padding: 0.5rem 1rem;
   background-color: #f2ebda;
-  cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 4px;
+  padding: 0.5rem 1rem;
   font-size: 1.2rem;
   font-weight: bold;
+  transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 4px;
+    background-color: #e5ddc9;
+  }
 
   .arrow {
     margin-top: 0.2rem;

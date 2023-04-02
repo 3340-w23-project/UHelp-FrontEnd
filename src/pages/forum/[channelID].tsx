@@ -294,7 +294,7 @@ function Forum({ isSignedIn, username }: Props) {
                 {reply.author.username === username && (
                   <>
                     <Button
-                      secondary
+                      tertiary
                       icon={IoTrash}
                       onClick={() => {
                         setReplyID(reply.id);
@@ -303,7 +303,7 @@ function Forum({ isSignedIn, username }: Props) {
                       }}
                     />
                     <Button
-                      secondary
+                      tertiary
                       icon={MdModeEdit}
                       onClick={() => {
                         setPostID(postID);
@@ -316,7 +316,7 @@ function Forum({ isSignedIn, username }: Props) {
                   </>
                 )}
                 <Button
-                  secondary
+                  tertiary
                   icon={MdReply}
                   onClick={() => {
                     setPostID(postID);
@@ -346,7 +346,7 @@ function Forum({ isSignedIn, username }: Props) {
             <div className={styles.headerButtons}>
               <Button
                 sm
-                secondary
+                tertiary
                 label="New Post"
                 onClick={() => setIsModalOpen(true)}
               />
@@ -383,7 +383,7 @@ function Forum({ isSignedIn, username }: Props) {
                             {post.author.username === username && (
                               <>
                                 <Button
-                                  secondary
+                                  tertiary
                                   icon={IoTrash}
                                   onClick={() => {
                                     setPostID(post.id);
@@ -392,7 +392,7 @@ function Forum({ isSignedIn, username }: Props) {
                                   }}
                                 />
                                 <Button
-                                  secondary
+                                  tertiary
                                   icon={MdModeEdit}
                                   onClick={() => {
                                     setPostID(post.id);
@@ -405,7 +405,7 @@ function Forum({ isSignedIn, username }: Props) {
                               </>
                             )}
                             <Button
-                              secondary
+                              tertiary
                               icon={MdReply}
                               onClick={() => {
                                 setIsReplyModalOpen(true);

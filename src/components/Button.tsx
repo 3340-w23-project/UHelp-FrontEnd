@@ -5,6 +5,7 @@ type ButtonProps = {
   xl?: boolean;
   sm?: boolean;
   secondary?: boolean;
+  tertiary?: boolean;
   label?: string;
   href?: string;
   icon?: React.FunctionComponent<any>;
@@ -18,14 +19,16 @@ const Button = ({
   xl,
   sm,
   secondary,
+  tertiary,
   onClick,
 }: ButtonProps) => {
   const btnClass = className({
     btn: true,
     "btn-xl": xl,
     "btn-sm": sm,
-    "btn-primary": !secondary,
+    "btn-primary": !secondary && !tertiary,
     "btn-secondary": secondary,
+    "btn-tertiary": tertiary,
     "btn-base": !xl && !sm && !Icon,
     "btn-icon": Icon && !label,
     "btn-gap": Icon && label,

@@ -37,9 +37,8 @@ li {
   font-size: 1.25rem;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 5px 10px -3px,
-    rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 4px;
+  transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
@@ -49,8 +48,7 @@ li {
   user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 
   &:hover {
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 8px 13px -3px,
-      rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 4px;
   }
 }
 
@@ -78,6 +76,16 @@ li {
 
   &:hover {
     background-color: rgba(25, 23, 21, 0.8);
+  }
+}
+
+.btn-tertiary {
+  border: 1px solid #b8b2a3;
+  background-color: #f2ebda;
+  color: var(--secondary-color);
+
+  &:hover {
+    background-color: #e5ddc9;
   }
 }
 
