@@ -1,4 +1,4 @@
-## UHelp Frontend
+# UHelp Frontend
 
 This is the frontend for UHelp, a website created for students to connect and get help on their academic and personal goals. The website allows students to create an account, join various channels based on their interests, and connect with other students who can provide support and guidance.
 

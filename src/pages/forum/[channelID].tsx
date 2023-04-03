@@ -80,7 +80,7 @@ function Forum({ isSignedIn, username }: Props) {
 
   const [channelName, setChannelName] = useState("");
   const [postID, setPostID] = useState(0);
-  const [replyID, setReplyID] = useState(0);
+  const [replyID, setReplyID] = useState<number | null>(null);
   const [actionType, setActionType] = useState("post");
   const [postTitleInput, setPostTitleInput] = useState("");
   const [postContentInput, setPostContentInput] = useState("");
@@ -148,7 +148,7 @@ function Forum({ isSignedIn, username }: Props) {
       .catch(console.error);
   };
 
-  const addReply = (id: number, parent_id: number) => {
+  const addReply = (id: number, parent_id: number | null) => {
     if (postContentInput === "") {
       setError("Reply cannot be empty");
       return;
@@ -159,7 +159,7 @@ function Forum({ isSignedIn, username }: Props) {
       headers: authHeader,
       body: JSON.stringify({
         content: postContentInput,
-        post_id: postID,
+        post_id: id,
         parent_reply_id: parent_id,
       }),
     })
@@ -184,7 +184,7 @@ function Forum({ isSignedIn, username }: Props) {
       .catch(console.error);
   };
 
-  const deleteReply = (id: number) => {
+  const deleteReply = (id: number | null) => {
     fetch(`/api/reply/${id}/delete`, {
       method: "POST",
       headers: authHeader,
@@ -222,7 +222,7 @@ function Forum({ isSignedIn, username }: Props) {
       .catch(console.error);
   };
 
-  const updateReply = (id: number) => {
+  const updateReply = (id: number | null) => {
     if (postContentInput === "") {
       setError("Reply cannot be empty");
       return;
@@ -333,7 +333,7 @@ function Forum({ isSignedIn, username }: Props) {
                 setReplyID(post.id);
               } else {
                 setPostID(post.id);
-                setReplyID(0);
+                setReplyID(null);
               }
               setIsReplyModalOpen(true);
             }}
