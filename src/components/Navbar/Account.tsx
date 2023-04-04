@@ -36,6 +36,7 @@ function Account({ username }: Props) {
   const signOut = () => {
     console.log("signing out");
     cookies.remove("access_token", { path: "/" });
+    cookies.remove("access_token", { path: "/forum" });
     fetch("/api/logout", {
       method: "POST",
       headers: {
@@ -61,8 +62,9 @@ function Account({ username }: Props) {
               animate={"enter"}
               exit={"exit"}
               variants={menuAnimation}
-              onMouseLeave={() => setIsOpen(false)}>
-              <div className={styles.signOutItem} onClick={() => signOut()}>
+              onMouseLeave={() => setIsOpen(false)}
+              onClick={() => signOut()}>
+              <div className={styles.signOutItem}>
                 <IoMdExit />
                 {"Logout"}
               </div>
