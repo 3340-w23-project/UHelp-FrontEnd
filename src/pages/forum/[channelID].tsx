@@ -21,22 +21,24 @@ type Author = {
 };
 
 type Reply = {
-  author: Author;
+  id: number;
   content: string;
+  author: Author;
   date: string;
   depth: number;
-  id: number;
   parent_reply_id: number | null;
-  replies: Reply[];
+  edited?: boolean;
+  replies?: Reply[];
 };
 
 type Post = {
-  author: Author;
-  content: string;
-  date: string;
   id: number;
-  replies: Reply[];
   title: string;
+  content: string;
+  author: Author;
+  date: string;
+  edited?: boolean;
+  replies?: Reply[];
 };
 
 type Props = {
@@ -291,6 +293,9 @@ function Forum({ isSignedIn, username }: Props) {
               {post.author.username}
             </span>
             {` ${isReply ? "replied" : "posted"} ${formatDateTime(post.date)}`}
+            {post.edited && (
+              <span className={styles.postEdited}> &#x2022; (edited)</span>
+            )}
           </div>
         </div>
         <div className={styles.postHeaderRight}>
@@ -348,7 +353,9 @@ function Forum({ isSignedIn, username }: Props) {
     replies.map((reply) => (
       <div key={reply.id}>
         {renderPost(true, reply, postID)}
-        {reply.replies.length > 0 && renderReplies(reply.replies, postID)}
+        {reply.replies &&
+          reply.replies.length > 0 &&
+          renderReplies(reply.replies, postID)}
       </div>
     ));
 
@@ -384,7 +391,7 @@ function Forum({ isSignedIn, username }: Props) {
                     animate="visible"
                     exit="exit">
                     {renderPost(false, post, post.id)}
-                    {post.replies.length > 0 && (
+                    {post.replies && post.replies.length > 0 && (
                       <motion.div
                         variants={itemTransition}
                         initial="hidden"
