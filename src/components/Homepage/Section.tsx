@@ -26,10 +26,10 @@ const Section = (props: SectionProps) => (
           <Image
             alt={props.imageAlt ? props.imageAlt : ""}
             src={props.image!}
-            layout={"fill"}
             sizes={"(max-width: 768px) 100vw, 50vw"}
             object-fit={"fill"}
             quality={100}
+            fill
           />
         </div>
       )}

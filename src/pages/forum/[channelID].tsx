@@ -44,6 +44,7 @@ type Post = {
 type Props = {
   isSignedIn: boolean;
   username: string;
+  displayName: string;
 };
 
 const itemTransition = {
@@ -69,7 +70,7 @@ const itemTransition = {
   },
 };
 
-function Forum({ isSignedIn, username }: Props) {
+function Forum({ isSignedIn, username, displayName }: Props) {
   const cookies = new Cookies();
   const router = useRouter();
   const { channelID } = router.query;
@@ -99,15 +100,15 @@ function Forum({ isSignedIn, username }: Props) {
     { refreshInterval: 5000 }
   );
 
-  useEffect(() => {
-    if (router.isReady) {
-      if (!isSignedIn) {
-        router.push("/signin");
-      } else {
-        fetchPosts();
-      }
-    }
-  }, [router, isSignedIn]);
+  // useEffect(() => {
+  //   if (router.isReady) {
+  //     if (!isSignedIn) {
+  //       router.push("/signin");
+  //     } else {
+  //       fetchPosts();
+  //     }
+  //   }
+  // }, [router, isSignedIn]);
 
   const authHeader = {
     "Content-Type": "application/json",
@@ -290,7 +291,7 @@ function Forum({ isSignedIn, username }: Props) {
           <div>
             <span className={styles.postAuthor}>
               <FaUserAlt className={styles.userIcon} />
-              {post.author.username}
+              {post.author.display_name}
             </span>
             {` ${isReply ? "replied" : "posted"} ${formatDateTime(post.date)}`}
             {post.edited && (
@@ -376,7 +377,7 @@ function Forum({ isSignedIn, username }: Props) {
                 label="New Post"
                 onClick={() => setIsModalOpen(true)}
               />
-              <Account username={username} />
+              <Account displayName={displayName} />
             </div>
           </div>
           <div className={styles.contentWrapper}>

@@ -14,9 +14,16 @@ type NavbarProps = {
   isMobile: boolean;
   isSignedIn: boolean;
   username: string;
+  displayName: string;
 };
 
-function Navbar({ isScrolled, isMobile, isSignedIn, username }: NavbarProps) {
+function Navbar({
+  isScrolled,
+  isMobile,
+  isSignedIn,
+  username,
+  displayName,
+}: NavbarProps) {
   return (
     <div
       className={className(styles.navbar, { [styles.scrolled]: isScrolled })}>
@@ -41,7 +48,7 @@ function Navbar({ isScrolled, isMobile, isSignedIn, username }: NavbarProps) {
             {isSignedIn ? (
               <>
                 <MenuItem href="/forum/1" label="Forum" />
-                <Account username={username} />
+                <Account displayName={displayName} />
               </>
             ) : (
               <>

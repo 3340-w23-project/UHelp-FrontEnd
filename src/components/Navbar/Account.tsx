@@ -4,14 +4,16 @@ import { AnimatePresence, motion } from "framer-motion";
 import { FaUserAlt, FaChevronDown } from "react-icons/fa";
 import { IoMdExit } from "react-icons/io";
 import Cookies from "universal-cookie";
+import { useRouter } from "next/router";
 
 type Props = {
-  username: string;
+  displayName: string;
   children?: React.ReactNode;
 };
 
-function Account({ username }: Props) {
+function Account({ displayName }: Props) {
   const cookies = new Cookies();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
   const menuAnimation = {
@@ -43,14 +45,14 @@ function Account({ username }: Props) {
         "Content-Type": "application/json",
       },
     });
-    window.location.href = "/";
+    router.push("/");
   };
 
   return (
     <>
       <div className={styles.account} onClick={() => setIsOpen(!isOpen)}>
         <FaUserAlt className={styles.userIcon} />
-        <div>{username}</div>
+        <div>{displayName}</div>
         <FaChevronDown
           className={`${styles.arrow} ${isOpen ? styles.openArrow : ""}`}
         />

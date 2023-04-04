@@ -10,6 +10,7 @@ type HomeProps = {
   isMobile: boolean;
   isSignedIn: boolean;
   username: string;
+  displayName: string;
 };
 
 export default function Home({
@@ -17,6 +18,7 @@ export default function Home({
   isMobile,
   isSignedIn,
   username,
+  displayName,
 }: HomeProps) {
   return (
     <>
@@ -27,6 +29,7 @@ export default function Home({
           isMobile={isMobile}
           isSignedIn={isSignedIn}
           username={username}
+          displayName={displayName}
         />
         <HeroSection
           description="Get _Help_ and _Connect_ with Peers."

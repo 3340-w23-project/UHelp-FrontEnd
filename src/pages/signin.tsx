@@ -14,9 +14,16 @@ type Props = {
   isMobile: boolean;
   isSignedIn: boolean;
   username: string;
+  displayName: string;
 };
 
-function SignIn({ isScrolled, isMobile, isSignedIn, username }: Props) {
+function SignIn({
+  isScrolled,
+  isMobile,
+  isSignedIn,
+  username,
+  displayName,
+}: Props) {
   const cookies = new Cookies();
   const router = useRouter();
   const [usernameInput, setUsernameInput] = useState("");
@@ -41,7 +48,7 @@ function SignIn({ isScrolled, isMobile, isSignedIn, username }: Props) {
   };
 
   const signIn = () => {
-    fetch("/api/login", {
+    fetch("/api/signin", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -75,13 +82,14 @@ function SignIn({ isScrolled, isMobile, isSignedIn, username }: Props) {
     !isSignedIn && (
       <>
         <Head>
-        <title>{`${AppConfig.siteName} - Sign In`}</title>
+          <title>{`${AppConfig.siteName} - Sign In`}</title>
         </Head>
         <Navbar
           isScrolled={isScrolled}
           isMobile={isMobile}
           isSignedIn={isSignedIn}
           username={username}
+          displayName={displayName}
         />
         <div className={styles.wrapper}>
           <form className={styles.container} onSubmit={validate}>

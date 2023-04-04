@@ -13,9 +13,16 @@ type Props = {
   isMobile: boolean;
   isSignedIn: boolean;
   username: string;
+  displayName: string;
 };
 
-function SignUp({ isScrolled, isMobile, isSignedIn, username }: Props) {
+function SignUp({
+  isScrolled,
+  isMobile,
+  isSignedIn,
+  username,
+  displayName,
+}: Props) {
   const cookies = new Cookies();
   const router = useRouter();
   const [usernameInput, setUsernameInput] = useState("");
@@ -65,7 +72,7 @@ function SignUp({ isScrolled, isMobile, isSignedIn, username }: Props) {
   };
 
   const signIn = () => {
-    fetch("/api/login", {
+    fetch("/api/signin", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -105,6 +112,7 @@ function SignUp({ isScrolled, isMobile, isSignedIn, username }: Props) {
         isMobile={isMobile}
         isSignedIn={isSignedIn}
         username={username}
+        displayName={displayName}
       />
       <div className={styles.wrapper}>
         <form className={styles.container} onSubmit={validate}>
