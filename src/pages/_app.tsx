@@ -63,7 +63,7 @@ export default function App({ Component, pageProps }: AppProps) {
     } else {
       setIsSignedIn(false);
     }
-  }, [cookies]);
+  }, [cookies.get("access_token")]);
 
   return (
     <Component

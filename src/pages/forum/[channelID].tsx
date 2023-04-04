@@ -18,6 +18,7 @@ import { zeroRightClassName } from "react-remove-scroll-bar";
 type Author = {
   id: number;
   username: string;
+  display_name: string;
 };
 
 type Reply = {
@@ -100,15 +101,15 @@ function Forum({ isSignedIn, username, displayName }: Props) {
     { refreshInterval: 5000 }
   );
 
-  // useEffect(() => {
-  //   if (router.isReady) {
-  //     if (!isSignedIn) {
-  //       router.push("/signin");
-  //     } else {
-  //       fetchPosts();
-  //     }
-  //   }
-  // }, [router, isSignedIn]);
+  useEffect(() => {
+    if (router.isReady) {
+      if (!isSignedIn) {
+        router.push("/signin");
+      } else {
+        fetchPosts();
+      }
+    }
+  }, [router, isSignedIn]);
 
   const authHeader = {
     "Content-Type": "application/json",
