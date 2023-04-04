@@ -60,7 +60,8 @@
         background-color: #f2ebda;
         border-left: 5px solid var(--secondary-color);
         font-size: 1.2rem;
-        box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(0, 0, 0, 0.1) 0px 0px 0px 1px;
+        box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+          rgba(0, 0, 0, 0.1) 0px 0px 0px 1px;
 
         .postHeader {
           display: flex;
@@ -101,22 +102,7 @@
 
         .postContent {
           color: #373737;
-        }
-
-        .postFooter {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          gap: 1rem;
           font-size: 1.2rem;
-          color: var(--secondary-color);
-
-          .postAuthor {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-right: 0.5rem;
-          }
         }
       }
     }
