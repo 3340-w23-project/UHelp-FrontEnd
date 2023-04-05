@@ -9,6 +9,7 @@ import Button from "@/components/Button";
 import useSWR from "swr";
 import { AppConfig } from "@/utils/AppConfig";
 import { IoTrash } from "react-icons/io5";
+import { AiFillLike } from "react-icons/ai";
 import { MdReply, MdModeEdit, MdPostAdd } from "react-icons/md";
 import { FaUserAlt } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
@@ -90,10 +91,15 @@ function Forum({ isSignedIn, username, displayName }: Props) {
   const [postContentInput, setPostContentInput] = useState("");
   const [error, setError] = useState("");
 
+  const authHeader = {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + cookies.get("access_token"),
+  };
+
   const { data: posts, mutate: fetchPosts } = useSWR<Post[]>(
     `/api/channel/${channelID ? channelID : "1"}/posts`,
     async (url) => {
-      const res = await fetch(url);
+      const res = await fetch(url, { method: "GET", headers: authHeader });
       const data = await res.json();
       setChannelName(data.channel_name);
       return data.posts;
@@ -110,11 +116,6 @@ function Forum({ isSignedIn, username, displayName }: Props) {
       }
     }
   }, [router, isSignedIn]);
-
-  const authHeader = {
-    "Content-Type": "application/json",
-    Authorization: "Bearer " + cookies.get("access_token"),
-  };
 
   const handleResponse = (data: any, setError: Function, mutate: Function) =>
     data.error ? setError(data.error) : mutate();
@@ -248,6 +249,18 @@ function Forum({ isSignedIn, username, displayName }: Props) {
       .catch(console.error);
   };
 
+  const like = (id: number, type: string) => {
+    fetch(`/api/${type}/${id}/like`, {
+      method: "POST",
+      headers: authHeader,
+    })
+      .then((res) => res.json())
+      .then(({ error }) => {
+        handleResponse({ error }, setError, fetchPosts);
+      })
+      .catch(console.error);
+  };
+
   const formatDateTime = (date: string) => {
     const postedDate = new Date(date);
     const localOffset = new Date().getTimezoneOffset();
@@ -349,6 +362,21 @@ function Forum({ isSignedIn, username, displayName }: Props) {
         </div>
       </div>
       <div className={styles.postContent}>{post.content}</div>
+      <div className={styles.postFooter}>
+        <motion.span
+          whileTap={{
+            scale: [null, 1.1],
+            y: [null, -2],
+          }}
+          className={`${styles.postLikes}${
+            post.liked ? " " + styles.liked : ""
+          }`}
+          onClick={() =>
+            like(isReply ? post.id : postID, isReply ? "reply" : "post")
+          }>
+          {post.likes} <AiFillLike className={styles.likeIcon} />
+        </motion.span>
+      </div>
     </div>
   );
 

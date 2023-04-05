@@ -52,7 +52,6 @@
 
       .post {
         @include flex($direction: column);
-        width: 100%;
         padding: 1rem;
         margin-bottom: 1rem;
         border-radius: 0 0.5rem 0.5rem 0;
@@ -87,6 +86,44 @@
 
           .postHeaderRight {
             @include flex($gap: 0.5rem);
+          }
+        }
+
+        .postFooter {
+          @include flex($justify: space-between, $align: center, $gap: 1rem);
+          margin-top: 1rem;
+
+          .postLikes {
+            @include inline-flex($align: center, $gap: 0.5rem);
+            @include font(
+              $size: 1rem,
+              $align: center,
+              $color: var(--secondary-color)
+            );
+            border-radius: 0.25rem;
+            padding: 0.2rem 0.4rem;
+            border: 1px solid #b8b2a3;
+            background-color: #f2ebda;
+            box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 4px;
+            user-select: none;
+            transition: background-color 0.2s ease;
+            cursor: pointer;
+
+            &:hover {
+              background-color: #e5ddc9;
+            }
+
+            .likeIcon {
+              font-size: 1rem;
+            }
+          }
+
+          .liked {
+            background-color: #f4dea8;
+
+            &:hover {
+              background-color: #e6d19e !important;
+            }
           }
         }
 
@@ -252,10 +289,11 @@
             border-radius: 5px;
             border: 1px solid rgba(0, 0, 0, 0.1);
             background-color: rgb(217, 212, 195, 0.3);
+            transition: border 0.25s ease;
 
             &:focus {
               outline: none;
-              border: 1px solid #eaeaea;
+              border: 1px solid rgba(0, 0, 0, 0.2);
             }
           }
 
@@ -266,10 +304,11 @@
             border: 1px solid rgba(0, 0, 0, 0.1);
             background-color: rgb(217, 212, 195, 0.3);
             resize: vertical;
+            transition: border 0.25s ease;
 
             &:focus {
               outline: none;
-              border: 1px solid #eaeaea;
+              border: 1px solid rgba(0, 0, 0, 0.2);
             }
           }
         }
