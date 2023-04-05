@@ -264,7 +264,7 @@ function Forum({ isSignedIn, username, displayName }: Props) {
     })
       .then((res) => res.json())
       .then(({ error }) => {
-        handleResponse({ error }, setError, fetchPosts);
+        setError(error);
       })
       .catch(console.error);
   };
