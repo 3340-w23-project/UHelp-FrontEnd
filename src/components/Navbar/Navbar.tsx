@@ -1,12 +1,13 @@
+import { useState } from "react";
 import styles from "@/styles/Navbar.module.scss";
 import Link from "next/link";
 import className from "classnames";
 import Image from "next/image";
 import Account from "./Account";
 import Button from "../Button";
+import MobileMenu from "./MobileMenu";
 import { MenuItem } from "./MenuItem";
 import { AppConfig } from "@/utils/AppConfig";
-import { GiHamburgerMenu } from "react-icons/gi";
 
 type NavbarProps = {
   isScrolled: boolean;
@@ -21,9 +22,12 @@ function Navbar({
   isSignedIn,
   displayName,
 }: NavbarProps) {
+  const [active, setActive] = useState<boolean>(false);
   return (
     <div
-      className={className(styles.navbar, { [styles.scrolled]: isScrolled })}>
+      className={className(styles.navbar, {
+        [styles.scrolled]: isScrolled || active,
+      })}>
       <div className={styles.logo}>
         <Link href="/">
           <Image
@@ -58,9 +62,7 @@ function Navbar({
           </ul>
         </nav>
       ) : (
-        <div className={styles.menu}>
-          <GiHamburgerMenu className={styles.mobileMenuButtton} />
-        </div>
+        <MobileMenu active={active} setActive={setActive} />
       )}
     </div>
   );
