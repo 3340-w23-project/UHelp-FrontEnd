@@ -1,11 +1,11 @@
 import React, { useState, useEffect, FormEvent } from "react";
-import { useRouter } from "next/router";
-import Cookies from "universal-cookie";
 import styles from "@/styles/Authorization.module.scss";
-import { Navbar } from "@/components/Navbar/Navbar";
+import Cookies from "universal-cookie";
 import Field from "@/components/Authorization/Field";
 import jwt from "jwt-decode";
 import Head from "next/head";
+import Navbar from "@/components/Navbar/Navbar";
+import { useRouter } from "next/router";
 import { AppConfig } from "@/utils/AppConfig";
 
 type Props = {
@@ -111,7 +111,6 @@ function SignUp({
         isScrolled={isScrolled}
         isMobile={isMobile}
         isSignedIn={isSignedIn}
-        username={username}
         displayName={displayName}
       />
       <div className={styles.wrapper}>

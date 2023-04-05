@@ -1,8 +1,8 @@
 import Link from "next/link";
 import styles from "@/styles/Footer.module.scss";
+import Image from "next/image";
 import { AppConfig } from "@/utils/AppConfig";
 import { FaGithub } from "react-icons/fa";
-import Image from "next/image";
 
 const Footer = () => (
   <div className={styles.footerWrapper}>
@@ -30,4 +30,4 @@ const Footer = () => (
   </div>
 );
 
-export { Footer };
+export default Footer;

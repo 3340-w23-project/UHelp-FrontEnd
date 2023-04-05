@@ -1,19 +1,17 @@
 import styles from "@/styles/Navbar.module.scss";
 import Link from "next/link";
-import { Button } from "../Button";
-import { MenuItem } from "./MenuItem";
-import { AppConfig } from "@/utils/AppConfig";
 import className from "classnames";
 import Image from "next/image";
-import { useState } from "react";
 import Account from "./Account";
+import Button from "../Button";
+import { MenuItem } from "./MenuItem";
+import { AppConfig } from "@/utils/AppConfig";
 import { GiHamburgerMenu } from "react-icons/gi";
 
 type NavbarProps = {
   isScrolled: boolean;
   isMobile: boolean;
   isSignedIn: boolean;
-  username: string;
   displayName: string;
 };
 
@@ -21,7 +19,6 @@ function Navbar({
   isScrolled,
   isMobile,
   isSignedIn,
-  username,
   displayName,
 }: NavbarProps) {
   return (
@@ -69,4 +66,4 @@ function Navbar({
   );
 }
 
-export { Navbar };
+export default Navbar;

@@ -1,15 +1,14 @@
-import { Navbar } from "@/components/Navbar/Navbar";
-import { Section } from "@/components/Homepage/Section";
-import { Footer } from "@/components/Footer";
 import HeroSection from "@/components/Homepage/HeroSection";
 import MetaTags from "@/components/MetaTags";
+import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar/Navbar";
+import Section from "@/components/Homepage/Section";
 import { sections } from "@/utils/HomeData";
 
 type HomeProps = {
   isScrolled: boolean;
   isMobile: boolean;
   isSignedIn: boolean;
-  username: string;
   displayName: string;
 };
 
@@ -17,7 +16,6 @@ export default function Home({
   isScrolled,
   isMobile,
   isSignedIn,
-  username,
   displayName,
 }: HomeProps) {
   return (
@@ -28,7 +26,6 @@ export default function Home({
           isScrolled={isScrolled}
           isMobile={isMobile}
           isSignedIn={isSignedIn}
-          username={username}
           displayName={displayName}
         />
         <HeroSection

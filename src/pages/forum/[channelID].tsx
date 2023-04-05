@@ -1,18 +1,18 @@
-import SidebarLayout from "@/layouts/ForumLayout";
 import React, { useEffect, useState } from "react";
+import SidebarLayout from "@/layouts/ForumLayout";
 import styles from "@/styles/Forum.module.scss";
-import { Button } from "@/components/Button";
-import { AppConfig } from "@/utils/AppConfig";
 import Head from "next/head";
 import Modal from "@/components/Forum/Modal";
 import Cookies from "universal-cookie";
+import Account from "@/components/Navbar/Account";
+import Button from "@/components/Button";
+import useSWR from "swr";
+import { AppConfig } from "@/utils/AppConfig";
 import { IoTrash } from "react-icons/io5";
 import { MdReply, MdModeEdit, MdPostAdd } from "react-icons/md";
 import { FaUserAlt } from "react-icons/fa";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useRouter } from "next/router";
-import Account from "@/components/Navbar/Account";
-import useSWR from "swr";
 import { zeroRightClassName } from "react-remove-scroll-bar";
 
 type Author = {
@@ -48,25 +48,17 @@ type Props = {
   displayName: string;
 };
 
-const itemTransition = {
-  hidden: {
-    y: -20,
+const postAnimation = {
+  initial: {
+    y: -15,
     opacity: 0,
   },
   visible: {
     y: 0,
     opacity: 1,
     transition: {
-      duration: 0.25,
-      ease: "easeOut",
-    },
-  },
-  exit: {
-    y: -20,
-    opacity: 0,
-    transition: {
-      duration: 0.25,
-      ease: "easeOut",
+      duration: 0.3,
+      ease: "easeInOut",
     },
   },
 };
@@ -294,10 +286,11 @@ function Forum({ isSignedIn, username, displayName }: Props) {
               <FaUserAlt className={styles.userIcon} />
               {post.author.display_name}
             </span>
-            {` ${isReply ? "replied" : "posted"} ${formatDateTime(post.date)}`}
-            {post.edited && (
-              <span className={styles.postEdited}> &#x2022; (edited)</span>
-            )}
+            <span className={styles.postDetails}>
+              {` \u2022 ${formatDateTime(post.date)}${
+                post.edited ? " \u2022 (edited)" : ""
+              }`}
+            </span>
           </div>
         </div>
         <div className={styles.postHeaderRight}>
@@ -383,28 +376,31 @@ function Forum({ isSignedIn, username, displayName }: Props) {
           </div>
           <div className={styles.contentWrapper}>
             <div className={styles.postsWrapper}>
-              <AnimatePresence>
-                {posts?.map((post) => (
+              {posts?.length === 0 ? (
+                <div className={styles.noPosts}>
+                  <h3>No posts yet</h3>
+                  <p>Be the first to post!</p>
+                </div>
+              ) : (
+                posts?.map((post) => (
                   <motion.div
                     key={post.id}
                     className={styles.postWrapper}
-                    variants={itemTransition}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit">
+                    variants={postAnimation}
+                    initial="initial"
+                    animate="visible">
                     {renderPost(false, post, post.id)}
                     {post.replies && post.replies.length > 0 && (
                       <motion.div
-                        variants={itemTransition}
-                        initial="hidden"
-                        animate="visible"
-                        exit="exit">
+                        variants={postAnimation}
+                        initial="initial"
+                        animate="visible">
                         {renderReplies(post.replies, post.id)}
                       </motion.div>
                     )}
                   </motion.div>
-                ))}
-              </AnimatePresence>
+                ))
+              )}
             </div>
           </div>
         </SidebarLayout>

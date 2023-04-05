@@ -1,9 +1,9 @@
 import React from "react";
-import { Button } from "../Button";
 import styles from "@/styles/Home.module.scss";
+import Button from "../Button";
+import BackgroundPage from "./HeroBackground";
 import { AppConfig } from "@/utils/AppConfig";
 import { MdOutlineLogin } from "react-icons/md";
-import BackgroundPage from "./HeroBackground";
 
 type HeroSectionProps = {
   description: string;

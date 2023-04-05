@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import styles from "@/styles/Account.module.scss";
+import Cookies from "universal-cookie";
 import { AnimatePresence, motion } from "framer-motion";
 import { FaUserAlt, FaChevronDown } from "react-icons/fa";
 import { IoMdExit } from "react-icons/io";
-import Cookies from "universal-cookie";
 import { useRouter } from "next/router";
 
 type Props = {

@@ -1,12 +1,12 @@
 import React from "react";
 import styles from "@/styles/Authorization.module.scss";
-import { Navbar } from "@/components/Navbar/Navbar";
 import Field from "@/components/Authorization/Field";
-import Cookies from "universal-cookie";
-import { useState, useEffect, FormEvent } from "react";
-import jwt from "jwt-decode";
-import { useRouter } from "next/router";
 import Head from "next/head";
+import Cookies from "universal-cookie";
+import jwt from "jwt-decode";
+import Navbar from "@/components/Navbar/Navbar";
+import { useState, useEffect, FormEvent } from "react";
+import { useRouter } from "next/router";
 import { AppConfig } from "@/utils/AppConfig";
 
 type Props = {
@@ -88,7 +88,6 @@ function SignIn({
           isScrolled={isScrolled}
           isMobile={isMobile}
           isSignedIn={isSignedIn}
-          username={username}
           displayName={displayName}
         />
         <div className={styles.wrapper}>

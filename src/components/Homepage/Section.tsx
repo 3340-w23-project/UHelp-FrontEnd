@@ -1,7 +1,7 @@
 import styles from "@/styles/Home.module.scss";
 import className from "classnames";
 import Image from "next/image";
-import { Button } from "../Button";
+import Button from "../Button";
 
 type SectionProps = {
   heading?: string;
@@ -52,4 +52,4 @@ const Section = (props: SectionProps) => (
   </div>
 );
 
-export { Section };
+export default Section;
