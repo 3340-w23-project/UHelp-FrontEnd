@@ -11,7 +11,7 @@ import { AppConfig } from "@/utils/AppConfig";
 import { IoTrash } from "react-icons/io5";
 import { MdReply, MdModeEdit, MdPostAdd } from "react-icons/md";
 import { FaUserAlt } from "react-icons/fa";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { zeroRightClassName } from "react-remove-scroll-bar";
 
@@ -56,6 +56,14 @@ const postAnimation = {
   visible: {
     y: 0,
     opacity: 1,
+    transition: {
+      duration: 0.3,
+      ease: "easeInOut",
+    },
+  },
+  exit: {
+    y: 15,
+    opacity: 0,
     transition: {
       duration: 0.3,
       ease: "easeInOut",
@@ -346,12 +354,17 @@ function Forum({ isSignedIn, username, displayName }: Props) {
 
   const renderReplies = (replies: Reply[], postID: number): JSX.Element[] =>
     replies.map((reply) => (
-      <div key={reply.id}>
+      <motion.div
+        key={reply.id}
+        variants={postAnimation}
+        initial="initial"
+        animate="visible"
+        exit="exit">
         {renderPost(true, reply, postID)}
-        {reply.replies &&
-          reply.replies.length > 0 &&
-          renderReplies(reply.replies, postID)}
-      </div>
+        <AnimatePresence>
+          {reply.replies && renderReplies(reply.replies, postID)}
+        </AnimatePresence>
+      </motion.div>
     ));
 
   return (
@@ -376,31 +389,34 @@ function Forum({ isSignedIn, username, displayName }: Props) {
           </div>
           <div className={styles.contentWrapper}>
             <div className={styles.postsWrapper}>
-              {posts?.length === 0 ? (
-                <div className={styles.noPosts}>
-                  <h3>No posts yet</h3>
-                  <p>Be the first to post!</p>
-                </div>
-              ) : (
-                posts?.map((post) => (
+              <AnimatePresence mode="popLayout">
+                {posts && posts.length === 0 ? (
                   <motion.div
-                    key={post.id}
-                    className={styles.postWrapper}
+                    className={styles.noPosts}
                     variants={postAnimation}
                     initial="initial"
-                    animate="visible">
-                    {renderPost(false, post, post.id)}
-                    {post.replies && post.replies.length > 0 && (
-                      <motion.div
-                        variants={postAnimation}
-                        initial="initial"
-                        animate="visible">
-                        {renderReplies(post.replies, post.id)}
-                      </motion.div>
-                    )}
+                    animate="visible"
+                    exit="exit">
+                    <h3>No posts yet</h3>
+                    <p>Be the first to post!</p>
                   </motion.div>
-                ))
-              )}
+                ) : (
+                  posts?.map((post) => (
+                    <motion.div
+                      key={post.id}
+                      className={styles.postWrapper}
+                      variants={postAnimation}
+                      initial="initial"
+                      animate="visible"
+                      exit="exit">
+                      {renderPost(false, post, post.id)}
+                      <AnimatePresence>
+                        {post.replies && renderReplies(post.replies, post.id)}
+                      </AnimatePresence>
+                    </motion.div>
+                  ))
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </SidebarLayout>
@@ -419,6 +435,7 @@ function Forum({ isSignedIn, username, displayName }: Props) {
                   <input
                     type="text"
                     value={postTitleInput}
+                    autoFocus
                     onChange={(e) => {
                       setPostTitleInput(e.target.value);
                     }}
@@ -550,6 +567,7 @@ function Forum({ isSignedIn, username, displayName }: Props) {
                   Reply Content
                   <textarea
                     value={postContentInput}
+                    autoFocus
                     onChange={(e) => {
                       setPostContentInput(e.target.value);
                     }}
