@@ -111,7 +111,8 @@ function Forum({ isSignedIn, username, displayName }: Props) {
 
   const { data: posts, mutate: fetchPosts } = useSWR<Post[]>(
     postsApiUrl,
-    postsFetcher
+    postsFetcher,
+    { refreshInterval: 5000 }
   );
 
   useEffect(() => {
