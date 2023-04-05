@@ -111,8 +111,7 @@ function Forum({ isSignedIn, username, displayName }: Props) {
 
   const { data: posts, mutate: fetchPosts } = useSWR<Post[]>(
     postsApiUrl,
-    postsFetcher,
-    { refreshInterval: 10000 }
+    postsFetcher
   );
 
   useEffect(() => {
@@ -257,8 +256,8 @@ function Forum({ isSignedIn, username, displayName }: Props) {
       .catch(console.error);
   };
 
-  const like = (id: number, type: string) => {
-    fetch(`/api/${type}/${id}/like`, {
+  const like = (id: number, isReply: boolean, depth: number) => {
+    fetch(`/api/${isReply ? "reply" : "post"}/${id}/like`, {
       method: "POST",
       headers: authHeader,
     })
@@ -266,6 +265,8 @@ function Forum({ isSignedIn, username, displayName }: Props) {
       .then(({ error }) => {
         if (error) {
           setError(error);
+        } else {
+          handleLike(id, isReply, depth);
         }
       })
       .catch(console.error);
@@ -416,12 +417,7 @@ function Forum({ isSignedIn, username, displayName }: Props) {
             post.liked ? " " + styles.liked : ""
           }`}
           onClick={() => {
-            like(isReply ? post.id : postID, isReply ? "reply" : "post");
-            handleLike(
-              isReply ? post.id : postID,
-              isReply,
-              isReply ? post.depth : 0
-            );
+            like(isReply ? post.id : postID, isReply, isReply ? post.depth : 0);
           }}>
           {post.likes} <AiFillLike className={styles.likeIcon} />
         </motion.span>
