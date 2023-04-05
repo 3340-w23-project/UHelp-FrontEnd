@@ -3,13 +3,14 @@ import styles from "@/styles/Forum.module.scss";
 
 type Props = {
   children: React.ReactNode;
+  isMobile: boolean;
 };
 
-const SidebarLayout = ({ children }: Props) => {
+const SidebarLayout = ({ children, isMobile }: Props) => {
   return (
     <>
       <div className={styles.wrapper}>
-        <Sidebar />
+        {isMobile ? null : <Sidebar />}
         {children}
       </div>
     </>

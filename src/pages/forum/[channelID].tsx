@@ -49,6 +49,7 @@ type Post = {
 
 type Props = {
   isSignedIn: boolean;
+  isMobile: boolean;
   username: string;
   displayName: string;
 };
@@ -76,7 +77,7 @@ const postAnimation = {
   },
 };
 
-function Forum({ isSignedIn, username, displayName }: Props) {
+function Forum({ isSignedIn, username, displayName, isMobile }: Props) {
   const cookies = new Cookies();
   const router = useRouter();
   const { channelID } = router.query;
@@ -340,8 +341,10 @@ function Forum({ isSignedIn, username, displayName }: Props) {
       style={
         isReply
           ? {
-              marginLeft: (post.depth + 1) * 20,
-              width: `calc(100% - ${(post.depth + 1) * 20}px)`,
+              marginLeft: (post.depth + 1) * (isMobile ? 10 : 20),
+              width: `calc(100% - ${
+                (post.depth + 1) * (isMobile ? 10 : 20)
+              }px)`,
             }
           : {}
       }>
@@ -447,51 +450,59 @@ function Forum({ isSignedIn, username, displayName }: Props) {
         <Head>
           <title>{`${AppConfig.siteName} - Forum`}</title>
         </Head>
-        <SidebarLayout>
-          <div className={`${styles.header} ${zeroRightClassName}`}>
-            <h2>{channelName}</h2>
-            <div className={styles.headerButtons}>
-              <Button
-                sm
-                tertiary
-                icon={MdPostAdd}
-                label="New Post"
-                onClick={() => setIsModalOpen(true)}
-              />
-              <Account displayName={displayName} />
+        <SidebarLayout isMobile={isMobile}>
+          <div
+            style={{
+              width: isMobile ? "100%" : "calc(100% - 300px)",
+              marginLeft: isMobile ? "0" : "300px",
+            }}>
+            <div
+              className={`${styles.header} ${zeroRightClassName}`}
+              style={{ width: isMobile ? "100%" : "calc(100% - 300px)" }}>
+              <h2>{channelName}</h2>
+              <div className={styles.headerButtons}>
+                <Button
+                  sm
+                  tertiary
+                  icon={MdPostAdd}
+                  label="New Post"
+                  onClick={() => setIsModalOpen(true)}
+                />
+                <Account displayName={displayName} />
+              </div>
             </div>
-          </div>
-          <div className={styles.contentWrapper}>
-            <div className={styles.postsWrapper}>
-              <AnimatePresence mode="popLayout">
-                {posts && posts.length === 0 ? (
-                  <motion.div
-                    className={styles.noPosts}
-                    variants={postAnimation}
-                    initial="initial"
-                    animate="visible"
-                    exit="exit">
-                    <h3>No posts yet</h3>
-                    <p>Be the first to post!</p>
-                  </motion.div>
-                ) : (
-                  posts &&
-                  posts.map((post) => (
+            <div className={styles.contentWrapper}>
+              <div className={styles.postsWrapper}>
+                <AnimatePresence mode="popLayout">
+                  {posts && posts.length === 0 ? (
                     <motion.div
-                      key={post.id}
-                      className={styles.postWrapper}
+                      className={styles.noPosts}
                       variants={postAnimation}
                       initial="initial"
                       animate="visible"
                       exit="exit">
-                      {renderPost(false, post, post.id)}
-                      <AnimatePresence>
-                        {post.replies && renderReplies(post.replies, post.id)}
-                      </AnimatePresence>
+                      <h3>No posts yet</h3>
+                      <p>Be the first to post!</p>
                     </motion.div>
-                  ))
-                )}
-              </AnimatePresence>
+                  ) : (
+                    posts &&
+                    posts.map((post) => (
+                      <motion.div
+                        key={post.id}
+                        className={styles.postWrapper}
+                        variants={postAnimation}
+                        initial="initial"
+                        animate="visible"
+                        exit="exit">
+                        {renderPost(false, post, post.id)}
+                        <AnimatePresence>
+                          {post.replies && renderReplies(post.replies, post.id)}
+                        </AnimatePresence>
+                      </motion.div>
+                    ))
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
           </div>
         </SidebarLayout>

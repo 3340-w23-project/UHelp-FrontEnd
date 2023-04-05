@@ -3,8 +3,7 @@
 .header {
   @include flex($align: center, $justify: space-between);
   position: fixed;
-  width: calc(100% - 300px);
-  margin: auto auto 2rem 300px;
+  margin-bottom: 2rem;
   padding: 1rem 4rem;
   box-shadow: inset 0 -1px 0 0 rgba(0, 0, 0, 0.1);
   background-color: var(--tertiary-color);
@@ -21,9 +20,8 @@
 
 .contentWrapper {
   @include flex($direction: column);
-  @include size($width: 100%, $maxWidth: calc(100% - 300px), $minHeight: 100vh);
+  @include size($minHeight: 100vh);
   padding: 6rem 4rem 4rem 4rem;
-  margin-left: 300px;
   background-color: var(--tertiary-color);
 
   .postsWrapper {

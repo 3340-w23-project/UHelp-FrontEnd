@@ -21,7 +21,6 @@ function Sidebar() {
   const router = useRouter();
   const { channelID } = router.query;
   const [categories, setCategories] = useState([] as Category[]);
-  const [selectedCategory, setSelectedCategory] = useState(0);
 
   const fetchCategories = async () => {
     fetch("/api/categories")
