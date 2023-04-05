@@ -112,7 +112,7 @@ function Forum({ isSignedIn, username, displayName }: Props) {
   const { data: posts, mutate: fetchPosts } = useSWR<Post[]>(
     postsApiUrl,
     postsFetcher,
-    { refreshInterval: 5000 }
+    { refreshInterval: 10000 }
   );
 
   useEffect(() => {
@@ -264,12 +264,14 @@ function Forum({ isSignedIn, username, displayName }: Props) {
     })
       .then((res) => res.json())
       .then(({ error }) => {
-        setError(error);
+        if (error) {
+          setError(error);
+        }
       })
       .catch(console.error);
   };
 
-  const handleLike = (id: number, type: string, depth = 0) => {
+  const handleLike = (id: number, isReply: boolean, depth: number = 0) => {
     const updateLikes = (data: Post[] | undefined, depth: number): Post[] => {
       if (data && depth === 0) {
         return data.map((post: Post) =>
@@ -285,17 +287,15 @@ function Forum({ isSignedIn, username, displayName }: Props) {
         if (!data) return [];
         return data.map((post: any) =>
           post.replies
-            ? {
-                ...post,
-                replies: updateLikes(post.replies, depth - 1),
-              }
+            ? { ...post, replies: updateLikes(post.replies, depth - 1) }
             : post
         );
       }
     };
 
-    const updatedPosts =
-      type === "post" ? updateLikes(posts, 0) : updateLikes(posts, depth + 1);
+    const updatedPosts = isReply
+      ? updateLikes(posts, depth + 1)
+      : updateLikes(posts, 0);
 
     fetchPosts(postsFetcher(postsApiUrl), {
       optimisticData: updatedPosts,
@@ -419,7 +419,7 @@ function Forum({ isSignedIn, username, displayName }: Props) {
             like(isReply ? post.id : postID, isReply ? "reply" : "post");
             handleLike(
               isReply ? post.id : postID,
-              isReply ? "reply" : "post",
+              isReply,
               isReply ? post.depth : 0
             );
           }}>
