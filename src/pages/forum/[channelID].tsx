@@ -29,6 +29,8 @@ type Reply = {
   date: string;
   depth: number;
   parent_reply_id: number | null;
+  likes: number;
+  liked: boolean;
   edited?: boolean;
   replies?: Reply[];
 };
@@ -40,6 +42,8 @@ type Post = {
   author: Author;
   date: string;
   edited?: boolean;
+  likes: number;
+  liked: boolean;
   replies?: Reply[];
 };
 
@@ -96,14 +100,18 @@ function Forum({ isSignedIn, username, displayName }: Props) {
     Authorization: "Bearer " + cookies.get("access_token"),
   };
 
+  let postsApiUrl = `/api/channel/${channelID ? channelID : "1"}/posts`;
+
+  const postsFetcher = async (url: string): Promise<Post[]> => {
+    const res = await fetch(url, { method: "GET", headers: authHeader });
+    const data = await res.json();
+    setChannelName(data.channel_name);
+    return data.posts;
+  };
+
   const { data: posts, mutate: fetchPosts } = useSWR<Post[]>(
-    `/api/channel/${channelID ? channelID : "1"}/posts`,
-    async (url) => {
-      const res = await fetch(url, { method: "GET", headers: authHeader });
-      const data = await res.json();
-      setChannelName(data.channel_name);
-      return data.posts;
-    },
+    postsApiUrl,
+    postsFetcher,
     { refreshInterval: 5000 }
   );
 
@@ -261,6 +269,42 @@ function Forum({ isSignedIn, username, displayName }: Props) {
       .catch(console.error);
   };
 
+  const handleLike = (id: number, type: string, depth = 0) => {
+    const updateLikes = (data: Post[] | undefined, depth: number): Post[] => {
+      if (data && depth === 0) {
+        return data.map((post: Post) =>
+          post.id === id
+            ? {
+                ...post,
+                liked: !post.liked,
+                likes: post.liked ? post.likes - 1 : post.likes + 1,
+              }
+            : post
+        );
+      } else {
+        if (!data) return [];
+        return data.map((post: any) =>
+          post.replies
+            ? {
+                ...post,
+                replies: updateLikes(post.replies, depth - 1),
+              }
+            : post
+        );
+      }
+    };
+
+    const updatedPosts =
+      type === "post" ? updateLikes(posts, 0) : updateLikes(posts, depth + 1);
+
+    fetchPosts(postsFetcher(postsApiUrl), {
+      optimisticData: updatedPosts,
+      rollbackOnError: true,
+      populateCache: true,
+      revalidate: false,
+    });
+  };
+
   const formatDateTime = (date: string) => {
     const postedDate = new Date(date);
     const localOffset = new Date().getTimezoneOffset();
@@ -371,9 +415,14 @@ function Forum({ isSignedIn, username, displayName }: Props) {
           className={`${styles.postLikes}${
             post.liked ? " " + styles.liked : ""
           }`}
-          onClick={() =>
-            like(isReply ? post.id : postID, isReply ? "reply" : "post")
-          }>
+          onClick={() => {
+            like(isReply ? post.id : postID, isReply ? "reply" : "post");
+            handleLike(
+              isReply ? post.id : postID,
+              isReply ? "reply" : "post",
+              isReply ? post.depth : 0
+            );
+          }}>
           {post.likes} <AiFillLike className={styles.likeIcon} />
         </motion.span>
       </div>
@@ -429,7 +478,8 @@ function Forum({ isSignedIn, username, displayName }: Props) {
                     <p>Be the first to post!</p>
                   </motion.div>
                 ) : (
-                  posts?.map((post) => (
+                  posts &&
+                  posts.map((post) => (
                     <motion.div
                       key={post.id}
                       className={styles.postWrapper}
