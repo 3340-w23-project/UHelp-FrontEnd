@@ -1,9 +1,9 @@
 import React, { useState, useEffect, FormEvent } from "react";
 import { useRouter } from "next/router";
 import Cookies from "universal-cookie";
-import styles from "@/styles/signin.module.scss";
+import styles from "@/styles/Authorization.module.scss";
 import { Navbar } from "@/components/Navbar/Navbar";
-import Field from "@/components/Login/Field";
+import Field from "@/components/Authorization/Field";
 import jwt from "jwt-decode";
 import Head from "next/head";
 import { AppConfig } from "@/utils/AppConfig";

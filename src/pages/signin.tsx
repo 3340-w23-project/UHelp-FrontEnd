@@ -1,7 +1,7 @@
 import React from "react";
-import styles from "@/styles/signin.module.scss";
+import styles from "@/styles/Authorization.module.scss";
 import { Navbar } from "@/components/Navbar/Navbar";
-import Field from "@/components/Login/Field";
+import Field from "@/components/Authorization/Field";
 import Cookies from "universal-cookie";
 import { useState, useEffect, FormEvent } from "react";
 import jwt from "jwt-decode";

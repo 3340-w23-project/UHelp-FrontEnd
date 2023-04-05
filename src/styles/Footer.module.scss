@@ -1,25 +1,25 @@
-@use "variables" as *;
+@import "./variables.scss";
 
 .footerWrapper {
   width: 100%;
   background-color: var(--secondary-color);
 
   .footer {
-    @include flexCenter;
-    flex-direction: column;
-    color: var(--tertiary-color);
-    gap: 1rem;
+    @include flex(
+      $align: center,
+      $justify: center,
+      $direction: column,
+      $gap: 1rem
+    );
+    @include font($size: 1rem, $color: var(--tertiary-color), $align: center);
     padding: 2rem;
-    text-align: center;
-    font-size: 1rem;
     max-width: var(--max-width);
     margin: 0 auto;
 
     .icon {
       @include flexCenter;
+      @include size($width: 2rem, $height: 2rem);
       font-size: 2rem;
-      width: 2rem;
-      height: 2rem;
 
       svg {
         fill: var(--tertiary-color);

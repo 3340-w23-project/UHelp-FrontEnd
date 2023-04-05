@@ -1,18 +1,17 @@
+@import "./variables.scss";
+
 .account {
+  @include flex($align: center, $gap: 0.6rem);
+  @include font($size: 1.2rem, $weight: bold);
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
   position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
+  padding: 0.5rem 1rem;
   border-radius: 5px;
   border: 1px solid #b8b2a3;
   background-color: #f2ebda;
   box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 4px;
-  padding: 0.5rem 1rem;
-  font-size: 1.2rem;
-  font-weight: bold;
   transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
   cursor: pointer;
 
@@ -38,10 +37,10 @@
 
 .signOutContainer {
   position: absolute;
+  width: 100%;
   top: 45px;
   left: 0;
   right: 0;
-  width: 100%;
   background-color: #ec9e90;
   color: #62332b;
   padding: 0.5rem 1rem;
@@ -54,8 +53,6 @@
   }
 
   .signOutItem {
-    display: inline-flex;
-    align-items: flex-end;
-    gap: 0.5rem;
+    @include inline-flex($align: flex-end, $gap: 0.5rem);
   }
 }

@@ -1,4 +1,4 @@
-@use "variables" as *;
+@import "./variables.scss";
 
 .sectionWrapper {
   width: 100%;
@@ -6,11 +6,9 @@
   border-bottom: 1px solid #eaeaea;
 
   .section {
-    @include flexCenter;
+    @include flex($align: center, $justify: center, $gap: 5rem);
     width: 100%;
     max-width: var(--max-width);
-    justify-content: center;
-    gap: 5rem;
     padding: 4rem 1rem;
     margin: 0 auto;
     text-align: center;
@@ -18,7 +16,7 @@
     &.reverse {
       flex-direction: row-reverse;
     }
-    
+
     .imageContainer {
       flex-basis: 90%;
       position: relative;
@@ -26,56 +24,62 @@
     }
 
     .contentContainer {
-      @include flexCenter;
-      flex-direction: column;
-      gap: 1.5rem;
+      @include flex(
+        $align: center,
+        $justify: center,
+        $direction: column,
+        $gap: 1.5rem
+      );
       flex-basis: 100%;
 
       .heading {
-        color: var(--secondary-color);
-        line-height: 3rem;
-        font-weight: 700;
-        font-size: 1.5em;
+        @include font(
+          $size: 1.5rem,
+          $weight: 700,
+          $color: var(--secondary-color),
+          $lineHeight: 3rem
+        );
         margin-bottom: 0.5rem;
       }
 
       .description {
-        color: rgb(104, 112, 124);
-        font-size: 1.2rem;
-        line-height: 1.8rem;
+        @include font(
+          $size: 1.2rem,
+          $lineHeight: 1.8rem,
+          $color: rgb(47, 47, 48)
+        );
       }
     }
   }
 }
 
 .background {
+  @include fillParent;
   position: absolute;
-  width: 100%;
-  height: 100%;
   z-index: -1;
   background-color: rgba(253, 250, 239, 0.75);
 }
 
 .backgroundImage {
+  @include size($width: 100%, $height: 100vh);
   position: absolute;
-  height: 100vh;
-  width: 100%;
   overflow: hidden;
   z-index: -1;
   opacity: 0.1;
 }
 
 .heroSectionWrapper {
-  @include flexCenter;
-  flex-direction: column;
+  @include flex($direction: column, $align: center, $justify: center);
   width: 100%;
   min-height: 100vh;
 
   .heading {
-    color: var(--secondary-color);
-    line-height: 4.5rem;
-    font-weight: 700;
-    font-size: 7rem;
+    @include font(
+      $size: 7rem,
+      $weight: 700,
+      $lineHeight: 4.5rem,
+      $color: var(--secondary-color)
+    );
     margin-bottom: 4rem;
     z-index: 1 !important;
   }
@@ -85,9 +89,7 @@
   }
 
   .description {
-    color: var(--secondary-color);
-    font-weight: 700;
-    font-size: 1.5rem;
+    @include font($size: 1.5rem, $weight: 700, $color: var(--secondary-color));
     margin-bottom: 2rem;
   }
 }
