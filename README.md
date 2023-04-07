@@ -1,6 +1,9 @@
 # UHelp Frontend
 
+![uhelp](https://user-images.githubusercontent.com/60056206/230519320-dc2aebf7-7464-4d0f-bd7d-d343120d8a24.png)
+
 This is the frontend for UHelp, a website created for students to connect and get help on their academic and personal goals. The website allows students to create an account, join various channels based on their interests, and connect with other students who can provide support and guidance.
+
 
 ## Technologies Used
 
