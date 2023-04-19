@@ -8,33 +8,26 @@ import Navbar from "@/components/Navbar/Navbar";
 import { useState, useEffect, FormEvent } from "react";
 import { useRouter } from "next/router";
 import { AppConfig } from "@/utils/AppConfig";
+import { useAppSelector } from "@/redux/store";
 
 type Props = {
   isScrolled: boolean;
   isMobile: boolean;
-  isSignedIn: boolean;
-  username: string;
-  displayName: string;
 };
 
-function SignIn({
-  isScrolled,
-  isMobile,
-  isSignedIn,
-  username,
-  displayName,
-}: Props) {
+function SignIn({ isScrolled, isMobile }: Props) {
   const cookies = new Cookies();
   const router = useRouter();
   const [usernameInput, setUsernameInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [error, setError] = useState("");
+  const isAuth = useAppSelector((state) => state.user.isAuth);
 
   useEffect(() => {
-    if (isSignedIn) {
+    if (isAuth) {
       router.push("/forum");
     }
-  }, [router, isSignedIn]);
+  }, [router, isAuth]);
 
   const validate = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -79,17 +72,12 @@ function SignIn({
   };
 
   return (
-    !isSignedIn && (
+    !isAuth && (
       <>
         <Head>
           <title>{`${AppConfig.siteName} - Sign In`}</title>
         </Head>
-        <Navbar
-          isScrolled={isScrolled}
-          isMobile={isMobile}
-          isSignedIn={isSignedIn}
-          displayName={displayName}
-        />
+        <Navbar isScrolled={isScrolled} isMobile={isMobile} />
         <div className={styles.wrapper}>
           <form className={styles.container} onSubmit={validate}>
             <h1 className={styles.header}>Sign In</h1>

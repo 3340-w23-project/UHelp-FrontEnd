@@ -15,6 +15,7 @@ import { FaUserAlt } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { zeroRightClassName } from "react-remove-scroll-bar";
+import { useAppSelector } from "@/redux/store";
 
 type Author = {
   id: number;
@@ -48,7 +49,6 @@ type Post = {
 };
 
 type Props = {
-  isSignedIn: boolean;
   isMobile: boolean;
   username: string;
   displayName: string;
@@ -77,10 +77,13 @@ const postAnimation = {
   },
 };
 
-function Forum({ isSignedIn, username, displayName, isMobile }: Props) {
+function Forum({ isMobile }: Props) {
   const cookies = new Cookies();
   const router = useRouter();
   const { channelID } = router.query;
+
+  const isAuth = useAppSelector((state) => state.user.isAuth);
+  const username = useAppSelector((state) => state.user.username);
 
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -112,7 +115,7 @@ function Forum({ isSignedIn, username, displayName, isMobile }: Props) {
       return [];
     }
 
-    if (channelName === null) setChannelName(data.channel_name);
+    setChannelName(data.channel_name);
     return data.posts;
   };
 
@@ -124,13 +127,13 @@ function Forum({ isSignedIn, username, displayName, isMobile }: Props) {
 
   useEffect(() => {
     if (router.isReady) {
-      if (!isSignedIn) {
+      if (!isAuth) {
         router.push("/signin");
       } else {
         fetchPosts();
       }
     }
-  }, [router, isSignedIn]);
+  }, [router, isAuth]);
 
   const handleResponse = (data: any, setError: Function, mutate: Function) =>
     data.error ? setError(data.error) : mutate();
@@ -451,7 +454,7 @@ function Forum({ isSignedIn, username, displayName, isMobile }: Props) {
     ));
 
   return (
-    isSignedIn && (
+    isAuth && (
       <>
         <Head>
           <title>{`${AppConfig.siteName} - Forum`}</title>
@@ -474,7 +477,7 @@ function Forum({ isSignedIn, username, displayName, isMobile }: Props) {
                   label="New Post"
                   onClick={() => setIsModalOpen(true)}
                 />
-                <Account displayName={displayName} />
+                <Account />
               </div>
             </div>
             <div className={styles.contentWrapper}>

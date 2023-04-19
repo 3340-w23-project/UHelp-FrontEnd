@@ -7,32 +7,28 @@ import Head from "next/head";
 import Navbar from "@/components/Navbar/Navbar";
 import { useRouter } from "next/router";
 import { AppConfig } from "@/utils/AppConfig";
+import { useAppSelector } from "@/redux/store";
 
 type Props = {
   isScrolled: boolean;
   isMobile: boolean;
-  isSignedIn: boolean;
   username: string;
   displayName: string;
 };
 
-function SignUp({
-  isScrolled,
-  isMobile,
-  isSignedIn,
-  displayName,
-}: Props) {
+function SignUp({ isScrolled, isMobile }: Props) {
   const cookies = new Cookies();
   const router = useRouter();
   const [usernameInput, setUsernameInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [error, setError] = useState("");
+  const isAuth = useAppSelector((state) => state.user.isAuth);
 
   useEffect(() => {
-    if (isSignedIn) {
+    if (isAuth) {
       router.push("/forum");
     }
-  }, [router, isSignedIn]);
+  }, [router, isAuth]);
 
   const validate = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -102,12 +98,7 @@ function SignUp({
       <Head>
         <title>{`${AppConfig.siteName} - Sign Up`}</title>
       </Head>
-      <Navbar
-        isScrolled={isScrolled}
-        isMobile={isMobile}
-        isSignedIn={isSignedIn}
-        displayName={displayName}
-      />
+      <Navbar isScrolled={isScrolled} isMobile={isMobile} />
       <div className={styles.wrapper}>
         <form className={styles.container} onSubmit={validate}>
           <h1 className={styles.header}>Sign Up</h1>

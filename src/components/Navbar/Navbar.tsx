@@ -1,4 +1,3 @@
-import { useState } from "react";
 import styles from "@/styles/Navbar.module.scss";
 import Link from "next/link";
 import className from "classnames";
@@ -6,22 +5,18 @@ import Image from "next/image";
 import Account from "./Account";
 import Button from "../Button";
 import MobileMenu from "./MobileMenu";
+import { useState } from "react";
 import { MenuItem } from "./MenuItem";
 import { AppConfig } from "@/utils/AppConfig";
+import { useAppSelector } from "@/redux/store";
 
 type NavbarProps = {
   isScrolled: boolean;
   isMobile: boolean;
-  isSignedIn: boolean;
-  displayName: string;
 };
 
-function Navbar({
-  isScrolled,
-  isMobile,
-  isSignedIn,
-  displayName,
-}: NavbarProps) {
+function Navbar({ isScrolled, isMobile }: NavbarProps) {
+  const isAuth = useAppSelector((state) => state.user.isAuth);
   const [active, setActive] = useState<boolean>(false);
   return (
     <div
@@ -46,10 +41,10 @@ function Navbar({
         <nav className={styles.menu}>
           <ul>
             <MenuItem label="Home" href="/" />
-            {isSignedIn ? (
+            {isAuth ? (
               <>
                 <MenuItem href="/forum/1" label="Forum" />
-                <Account displayName={displayName} />
+                <Account />
               </>
             ) : (
               <>

@@ -4,20 +4,20 @@ import Button from "../Button";
 import BackgroundPage from "./HeroBackground";
 import { AppConfig } from "@/utils/AppConfig";
 import { MdOutlineLogin } from "react-icons/md";
+import { useAppSelector } from "@/redux/store";
 
 type HeroSectionProps = {
   description: string;
   actionLabel: string;
   actionHref: string;
-  isSignedIn: boolean;
 };
 
 const HeroSection = ({
   description,
   actionLabel,
   actionHref,
-  isSignedIn,
 }: HeroSectionProps) => {
+  const isAuth = useAppSelector((state) => state.user.isAuth);
   return (
     <>
       <BackgroundPage />
@@ -39,8 +39,8 @@ const HeroSection = ({
         <Button
           xl
           icon={MdOutlineLogin}
-          href={isSignedIn ? "/forum/1" : actionHref}
-          label={isSignedIn ? "Go to Forum" : actionLabel}
+          href={isAuth ? "/forum/1" : actionHref}
+          label={isAuth ? "Go to Forum" : actionLabel}
         />
       </div>
     </>
