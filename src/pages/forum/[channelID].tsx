@@ -88,7 +88,7 @@ function Forum({ isSignedIn, username, displayName, isMobile }: Props) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
 
-  const [channelName, setChannelName] = useState("");
+  const [channelName, setChannelName] = useState(null);
   const [postID, setPostID] = useState(0);
   const [replyID, setReplyID] = useState<number | null>(null);
   const [actionType, setActionType] = useState("post");
@@ -106,14 +106,20 @@ function Forum({ isSignedIn, username, displayName, isMobile }: Props) {
   const postsFetcher = async (url: string): Promise<Post[]> => {
     const res = await fetch(url, { method: "GET", headers: authHeader });
     const data = await res.json();
-    setChannelName(data.channel_name);
+
+    if (res.status === 401) {
+      router.push("/signin");
+      return [];
+    }
+
+    if (channelName === null) setChannelName(data.channel_name);
     return data.posts;
   };
 
   const { data: posts, mutate: fetchPosts } = useSWR<Post[]>(
     postsApiUrl,
     postsFetcher,
-    { refreshInterval: 5000 }
+    { refreshInterval: 10000 }
   );
 
   useEffect(() => {

@@ -20,7 +20,6 @@ function SignUp({
   isScrolled,
   isMobile,
   isSignedIn,
-  username,
   displayName,
 }: Props) {
   const cookies = new Cookies();
@@ -46,8 +45,8 @@ function SignUp({
     }
   };
 
-  const signUp = () => {
-    fetch("/api/signup", {
+  const signUp = async () => {
+    const res = await fetch("/api/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -56,19 +55,15 @@ function SignUp({
         username: usernameInput,
         password: passwordInput,
       }),
-    })
-      .then((res) => {
-        if (res.status === 201) {
-          signIn();
-        } else if (res.status === 409) {
-          setError("User already exists");
-        } else {
-          setError("Something went wrong, please try again later");
-        }
-      })
-      .catch((err) => {
-        setError("Something went wrong, please try again later");
-      });
+    });
+    if (res.status === 201) {
+      signIn();
+    } else if (res.status === 409) {
+      setError("Username already exists");
+    } else {
+      const data = await res.json();
+      setError(data.msg);
+    }
   };
 
   const signIn = () => {
