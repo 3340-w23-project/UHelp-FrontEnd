@@ -15,7 +15,8 @@ import { FaUserAlt } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { zeroRightClassName } from "react-remove-scroll-bar";
-import { useAppSelector } from "@/redux/store";
+import { useAppSelector, useAppDispatch } from "@/redux/store";
+import { setChannelName } from "@/redux/slices/channelSlice";
 
 type Author = {
   id: number;
@@ -50,8 +51,6 @@ type Post = {
 
 type Props = {
   isMobile: boolean;
-  username: string;
-  displayName: string;
 };
 
 const postAnimation = {
@@ -82,8 +81,10 @@ function Forum({ isMobile }: Props) {
   const router = useRouter();
   const { channelID } = router.query;
 
+  const dispatch = useAppDispatch();
   const isAuth = useAppSelector((state) => state.user.isAuth);
   const username = useAppSelector((state) => state.user.username);
+  const channelName = useAppSelector((state) => state.channel.channelName);
 
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -91,7 +92,6 @@ function Forum({ isMobile }: Props) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
 
-  const [channelName, setChannelName] = useState(null);
   const [postID, setPostID] = useState(0);
   const [replyID, setReplyID] = useState<number | null>(null);
   const [actionType, setActionType] = useState("post");
@@ -103,10 +103,11 @@ function Forum({ isMobile }: Props) {
     "Content-Type": "application/json",
     Authorization: "Bearer " + cookies.get("access_token"),
   };
-
-  let postsApiUrl = `/api/channel/${channelID ? channelID : "1"}/posts`;
+  const postsApiUrl = `/api/channel/${channelID}/posts`;
 
   const postsFetcher = async (url: string): Promise<Post[]> => {
+    if (!channelID) return [];
+
     const res = await fetch(url, { method: "GET", headers: authHeader });
     const data = await res.json();
 
@@ -115,7 +116,8 @@ function Forum({ isMobile }: Props) {
       return [];
     }
 
-    setChannelName(data.channel_name);
+    if (channelName !== data.channel_name)
+      dispatch(setChannelName(data.channel_name));
     return data.posts;
   };
 

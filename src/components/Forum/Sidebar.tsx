@@ -5,6 +5,8 @@ import Image from "next/image";
 import { AppConfig } from "@/utils/AppConfig";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
+import { useAppDispatch } from "@/redux/store";
+import { setChannelName } from "@/redux/slices/channelSlice";
 
 type Category = {
   id: number;
@@ -19,6 +21,7 @@ type Channel = {
 
 function Sidebar() {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const { channelID } = router.query;
   const [categories, setCategories] = useState([] as Category[]);
 
@@ -57,7 +60,12 @@ function Sidebar() {
             <span className={styles.category}>{category.name}</span>
             <ul>
               {category.channels.map((channel) => (
-                <Link key={channel.id} href={`/forum/${channel.id}`}>
+                <Link
+                  key={channel.id}
+                  href={`/forum/${channel.id}`}
+                  onClick={() => {
+                    dispatch(setChannelName(channel.name));
+                  }}>
                   <li
                     className={
                       parseInt(channelID as string) === channel.id
