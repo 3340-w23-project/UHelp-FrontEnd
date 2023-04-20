@@ -17,63 +17,11 @@ import { useRouter } from "next/router";
 import { zeroRightClassName } from "react-remove-scroll-bar";
 import { useAppSelector, useAppDispatch } from "@/redux/store";
 import { setChannelName } from "@/redux/slices/channelSlice";
-
-type Author = {
-  id: number;
-  username: string;
-  display_name: string;
-};
-
-type Reply = {
-  id: number;
-  content: string;
-  author: Author;
-  date: string;
-  depth: number;
-  parent_reply_id: number | null;
-  likes: number;
-  liked: boolean;
-  edited?: boolean;
-  replies?: Reply[];
-};
-
-type Post = {
-  id: number;
-  title: string;
-  content: string;
-  author: Author;
-  date: string;
-  edited?: boolean;
-  likes: number;
-  liked: boolean;
-  replies?: Reply[];
-};
+import { Post, Reply } from "@/utils/Types";
+import { postAnimation } from "@/utils/Animations";
 
 type Props = {
   isMobile: boolean;
-};
-
-const postAnimation = {
-  initial: {
-    y: -15,
-    opacity: 0,
-  },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.3,
-      ease: "easeInOut",
-    },
-  },
-  exit: {
-    y: 15,
-    opacity: 0,
-    transition: {
-      duration: 0.3,
-      ease: "easeInOut",
-    },
-  },
 };
 
 function Forum({ isMobile }: Props) {

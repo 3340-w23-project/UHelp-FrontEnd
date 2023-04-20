@@ -6,31 +6,13 @@ import { FaUserAlt, FaChevronDown } from "react-icons/fa";
 import { IoMdExit } from "react-icons/io";
 import { useRouter } from "next/router";
 import { useAppSelector } from "@/redux/store";
+import { menuAnimation } from "@/utils/Animations";
 
 function Account() {
   const cookies = new Cookies();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const displayName = useAppSelector((state) => state.user.displayName);
-
-  const menuAnimation = {
-    enter: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.1,
-        ease: "easeOut",
-      },
-    },
-    exit: {
-      y: -5,
-      opacity: 0,
-      transition: {
-        duration: 0.1,
-        ease: "easeIn",
-      },
-    },
-  };
 
   const signOut = () => {
     cookies.remove("access_token", { path: "/" });

@@ -1,4 +1,4 @@
-import Sidebar from "@/components/Forum/Sidebar";
+import Sidebar from "@/components/Forum/Sidebar/Sidebar";
 import styles from "@/styles/Forum.module.scss";
 
 type Props = {
