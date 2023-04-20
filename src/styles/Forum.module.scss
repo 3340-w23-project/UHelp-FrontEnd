@@ -32,9 +32,48 @@
     .noPosts {
       @include fillParent;
       @include font($size: 1.8rem, $align: center, $lineHeight: 1.5);
+      margin-top: 2rem;
 
       p {
         @include font($size: 1.2rem, $color: #373737);
+      }
+
+      .loadingIndicator {
+        display: inline-block;
+        position: relative;
+
+        div {
+          transform-origin: 30px 30px;
+          animation: loading 0.8s linear infinite;
+
+          &:after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 2.25px;
+            left: 27.75px;
+            width: 4.5px;
+            height: 13.5px;
+            border-radius: 20%;
+            background: #373737;
+          }
+
+          @for $i from 1 through 12 {
+            &:nth-child(#{$i}) {
+              transform: rotate(#{(30 * $i) - 30}deg);
+              animation-delay: #{-0.8 + (0.06 * $i)}s;
+            }
+          }
+        }
+      }
+
+      @keyframes loading {
+        0% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
       }
     }
 

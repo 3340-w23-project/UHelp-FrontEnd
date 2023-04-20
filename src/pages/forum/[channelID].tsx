@@ -108,6 +108,7 @@ function Forum({ isMobile }: Props) {
   const postsFetcher = async (url: string): Promise<Post[]> => {
     if (!channelID) return [];
 
+    await new Promise((r) => setTimeout(r, 5000));
     const res = await fetch(url, { method: "GET", headers: authHeader });
     const data = await res.json();
 
@@ -121,11 +122,11 @@ function Forum({ isMobile }: Props) {
     return data.posts;
   };
 
-  const { data: posts, mutate: fetchPosts } = useSWR<Post[]>(
-    postsApiUrl,
-    postsFetcher,
-    { refreshInterval: 10000 }
-  );
+  const {
+    data: posts,
+    mutate: fetchPosts,
+    isLoading,
+  } = useSWR<Post[]>(postsApiUrl, postsFetcher, { refreshInterval: 10000 });
 
   useEffect(() => {
     if (router.isReady) {
@@ -485,6 +486,15 @@ function Forum({ isMobile }: Props) {
             <div className={styles.contentWrapper}>
               <div className={styles.postsWrapper}>
                 <AnimatePresence mode="popLayout">
+                  {isLoading && (
+                    <div className={styles.noPosts}>
+                      <div className={styles.loadingIndicator}>
+                        {Array.from({ length: 12 }, (_, i) => (
+                          <div key={i} />
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   {posts && posts.length === 0 ? (
                     <motion.div
                       className={styles.noPosts}
