@@ -23,6 +23,7 @@ function Sidebar() {
     categoriesFetcher,
     {
       revalidateOnFocus: false,
+      revalidateIfStale: false,
     }
   );
 
@@ -57,4 +58,4 @@ function Sidebar() {
   );
 }
 
-export default Sidebar;
+export default React.memo(Sidebar);

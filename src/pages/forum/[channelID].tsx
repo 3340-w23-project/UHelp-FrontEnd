@@ -233,18 +233,12 @@ function Forum() {
   };
 
   const like = (id: number, isReply: boolean, depth: number) => {
+    handleLike(id, isReply, depth);
     fetch(`/api/${isReply ? "reply" : "post"}/${id}/like`, {
       method: "POST",
       headers: authHeader,
     })
       .then((res) => res.json())
-      .then(({ error }) => {
-        if (error) {
-          dispatch(setError(error));
-        } else {
-          handleLike(id, isReply, depth);
-        }
-      })
       .catch(console.error);
   };
 
@@ -420,51 +414,49 @@ function Forum() {
 
   return (
     isAuth && (
-      <>
-        <SidebarLayout>
-          <div className={styles.contentWrapper}>
-            <div className={styles.postsWrapper}>
-              <AnimatePresence mode="popLayout">
-                {isLoading && (
-                  <div className={styles.noPosts}>
-                    <div className={styles.loadingIndicator}>
-                      {Array.from({ length: 12 }, (_, i) => (
-                        <div key={i} />
-                      ))}
-                    </div>
+      <SidebarLayout>
+        <div className={styles.contentWrapper}>
+          <div className={styles.postsWrapper}>
+            <AnimatePresence mode="popLayout">
+              {isLoading && (
+                <div className={styles.noPosts}>
+                  <div className={styles.loadingIndicator}>
+                    {Array.from({ length: 12 }, (_, i) => (
+                      <div key={i} />
+                    ))}
                   </div>
-                )}
-                {posts && posts.length === 0 ? (
+                </div>
+              )}
+              {posts && posts.length === 0 ? (
+                <motion.div
+                  className={styles.noPosts}
+                  variants={postAnimation}
+                  initial="initial"
+                  animate="visible"
+                  exit="exit">
+                  <h3>No posts yet</h3>
+                  <p>Be the first to post!</p>
+                </motion.div>
+              ) : (
+                posts &&
+                posts.map((post) => (
                   <motion.div
-                    className={styles.noPosts}
+                    key={post.id}
+                    className={styles.postWrapper}
                     variants={postAnimation}
                     initial="initial"
                     animate="visible"
                     exit="exit">
-                    <h3>No posts yet</h3>
-                    <p>Be the first to post!</p>
+                    {renderPost(false, post, post.id)}
+                    <AnimatePresence>
+                      {post.replies && renderReplies(post.replies, post.id)}
+                    </AnimatePresence>
                   </motion.div>
-                ) : (
-                  posts &&
-                  posts.map((post) => (
-                    <motion.div
-                      key={post.id}
-                      className={styles.postWrapper}
-                      variants={postAnimation}
-                      initial="initial"
-                      animate="visible"
-                      exit="exit">
-                      {renderPost(false, post, post.id)}
-                      <AnimatePresence>
-                        {post.replies && renderReplies(post.replies, post.id)}
-                      </AnimatePresence>
-                    </motion.div>
-                  ))
-                )}
-              </AnimatePresence>
-            </div>
+                ))
+              )}
+            </AnimatePresence>
           </div>
-        </SidebarLayout>
+        </div>
 
         {/* New Post Modal */}
         <Modal
@@ -632,7 +624,7 @@ function Forum() {
             </div>
           </div>
         </Modal>
-      </>
+      </SidebarLayout>
     )
   );
 }

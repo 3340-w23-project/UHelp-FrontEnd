@@ -11,7 +11,7 @@ import { setIsAuth } from "@/redux/slices/userSlice";
 import { menuAnimation } from "@/utils/Animations";
 import Link from "next/link";
 
-function Account() {
+let Account = () => {
   const cookies = new Cookies();
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -66,6 +66,6 @@ function Account() {
       </AnimatePresence>
     </div>
   );
-}
+};
 
-export default Account;
+export default React.memo(Account);
