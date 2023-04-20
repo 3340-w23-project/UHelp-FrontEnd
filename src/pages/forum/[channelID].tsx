@@ -235,14 +235,11 @@ function Forum() {
   };
 
   const like = (id: number, isReply: boolean, depth: number) => {
+    handleLike(id, isReply, depth);
     fetch(`/api/${isReply ? "reply" : "post"}/${id}/like`, {
       method: "POST",
       headers: authHeader,
-    })
-      .then((res) => res.json())
-      .then(() => {
-        handleLike(id, isReply, depth);
-      });
+    }).then((res) => res.json());
   };
 
   const handleLike = (id: number, isReply: boolean, depth: number = 0) => {
@@ -273,7 +270,7 @@ function Forum() {
 
     fetchPosts(postsFetcher(postsApiUrl), {
       optimisticData: updatedPosts,
-      rollbackOnError: true,
+      rollbackOnError: false,
       populateCache: true,
       revalidate: false,
     });
