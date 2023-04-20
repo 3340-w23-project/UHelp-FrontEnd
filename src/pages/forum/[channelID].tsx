@@ -234,15 +234,7 @@ function Forum() {
       .catch(console.error);
   };
 
-  const like = (id: number, isReply: boolean, depth: number) => {
-    handleLike(id, isReply, depth);
-    fetch(`/api/${isReply ? "reply" : "post"}/${id}/like`, {
-      method: "POST",
-      headers: authHeader,
-    }).then((res) => res.json());
-  };
-
-  const handleLike = (id: number, isReply: boolean, depth: number = 0) => {
+  const like = (id: number, isReply: boolean, depth: number = 0) => {
     const updateLikes = (data: Post[] | undefined, depth: number): Post[] => {
       if (data && depth === 0) {
         return data.map((post: Post) =>
@@ -268,8 +260,18 @@ function Forum() {
       ? updateLikes(posts, depth + 1)
       : updateLikes(posts, 0);
 
-    fetchPosts(postsFetcher(postsApiUrl), {
+    const updatedPostsFetcher = async (): Promise<Post[]> => {
+      const res = await fetch(`/api/${isReply ? "reply" : "post"}/${id}/like`, {
+        method: "GET",
+        headers: authHeader,
+      });
+      const data = await res.json();
+      return data.posts;
+    };
+
+    fetchPosts(updatedPostsFetcher(), {
       optimisticData: updatedPosts,
+      rollbackOnError: true,
       populateCache: true,
       revalidate: false,
     });
