@@ -270,7 +270,6 @@ function Forum() {
 
     fetchPosts(postsFetcher(postsApiUrl), {
       optimisticData: updatedPosts,
-      rollbackOnError: false,
       populateCache: true,
       revalidate: false,
     });
