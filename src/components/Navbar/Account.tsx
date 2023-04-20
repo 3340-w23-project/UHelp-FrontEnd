@@ -5,12 +5,14 @@ import { AnimatePresence, motion } from "framer-motion";
 import { FaUserAlt, FaChevronDown } from "react-icons/fa";
 import { IoMdExit } from "react-icons/io";
 import { useRouter } from "next/router";
-import { useAppSelector } from "@/redux/store";
+import { useAppSelector, useAppDispatch } from "@/redux/store";
+import { setIsAuth } from "@/redux/slices/userSlice";
 import { menuAnimation } from "@/utils/Animations";
 
 function Account() {
   const cookies = new Cookies();
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const displayName = useAppSelector((state) => state.user.displayName);
 
@@ -23,6 +25,7 @@ function Account() {
         "Content-Type": "application/json",
       },
     });
+    dispatch(setIsAuth(false));
     router.push("/");
   };
 

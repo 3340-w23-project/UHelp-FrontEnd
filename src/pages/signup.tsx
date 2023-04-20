@@ -1,7 +1,7 @@
 import React, { useState, useEffect, FormEvent } from "react";
-import styles from "@/styles/Authorization.module.scss";
+import styles from "@/styles/Auth.module.scss";
 import Cookies from "universal-cookie";
-import Field from "@/components/Authorization/Field";
+import Field from "@/components/Auth/Field";
 import jwt from "jwt-decode";
 import Head from "next/head";
 import Navbar from "@/components/Navbar/Navbar";

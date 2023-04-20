@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import SidebarLayout from "@/layouts/ForumLayout";
 import styles from "@/styles/Forum.module.scss";
 import Head from "next/head";
-import Modal from "@/components/Forum/Modal";
+import Modal from "@/components/Forum/Modal/Modal";
 import Cookies from "universal-cookie";
 import Account from "@/components/Navbar/Account";
 import Button from "@/components/Button";
+import Skeleton from "@/components/Forum/Skeleton";
 import useSWR from "swr";
 import { AppConfig } from "@/utils/AppConfig";
 import { IoTrash } from "react-icons/io5";
@@ -418,7 +419,11 @@ function Forum({ isMobile }: Props) {
             <div
               className={`${styles.header} ${zeroRightClassName}`}
               style={{ width: isMobile ? "100%" : "calc(100% - 300px)" }}>
-              <h2>{channelName}</h2>
+              {channelName ? (
+                <h2>{channelName}</h2>
+              ) : (
+                <Skeleton width={"8rem"} height={"1.5rem"} />
+              )}
               <div className={styles.headerButtons}>
                 <Button
                   sm
