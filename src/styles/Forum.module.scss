@@ -233,7 +233,7 @@
       }
 
       li {
-        @include font($size: 1.2rem, $weight: 600, $color: #373737);
+        @include font($size: 1.2rem, $weight: 600, $color: #1b1b1b);
         position: relative;
         padding: 0.2rem 0.4rem;
         margin-bottom: 0.5rem;

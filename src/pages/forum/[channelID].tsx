@@ -408,7 +408,9 @@ function Forum({ isMobile }: Props) {
     isAuth && (
       <>
         <Head>
-          <title>{`${AppConfig.siteName} - Forum`}</title>
+          <title>{`${AppConfig.siteName} - ${
+            channelName ? channelName : "Forum"
+          }`}</title>
         </Head>
         <SidebarLayout isMobile={isMobile}>
           <div
