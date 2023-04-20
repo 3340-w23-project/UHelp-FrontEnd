@@ -10,13 +10,11 @@ import { MenuItem } from "./MenuItem";
 import { AppConfig } from "@/utils/AppConfig";
 import { useAppSelector } from "@/redux/store";
 
-type NavbarProps = {
-  isScrolled: boolean;
-  isMobile: boolean;
-};
-
-function Navbar({ isScrolled, isMobile }: NavbarProps) {
+function Navbar() {
   const isAuth = useAppSelector((state) => state.user.isAuth);
+  const isMobile = useAppSelector((state) => state.app.isMobile);
+  const isScrolled = useAppSelector((state) => state.app.isScrolled);
+
   const [active, setActive] = useState<boolean>(false);
   return (
     <div

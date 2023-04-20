@@ -1,45 +1,51 @@
 import React, { useEffect, useState } from "react";
 import SidebarLayout from "@/layouts/ForumLayout";
 import styles from "@/styles/Forum.module.scss";
-import Head from "next/head";
 import Modal from "@/components/Forum/Modal/Modal";
 import Cookies from "universal-cookie";
-import Account from "@/components/Navbar/Account";
 import Button from "@/components/Button";
-import Skeleton from "@/components/Forum/Skeleton";
 import useSWR from "swr";
-import { AppConfig } from "@/utils/AppConfig";
 import { IoTrash } from "react-icons/io5";
 import { AiFillLike } from "react-icons/ai";
-import { MdReply, MdModeEdit, MdPostAdd } from "react-icons/md";
+import { MdReply, MdModeEdit } from "react-icons/md";
 import { FaUserAlt } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
-import { zeroRightClassName } from "react-remove-scroll-bar";
 import { useAppSelector, useAppDispatch } from "@/redux/store";
 import { setChannelName } from "@/redux/slices/channelSlice";
 import { Post, Reply } from "@/utils/Types";
 import { postAnimation } from "@/utils/Animations";
+import {
+  setIsPostModalOpen,
+  setIsReplyModalOpen,
+  setIsEditModalOpen,
+  setIsDeleteModalOpen,
+} from "@/redux/slices/forumSlice";
 
-type Props = {
-  isMobile: boolean;
-};
-
-function Forum({ isMobile }: Props) {
+function Forum() {
   const cookies = new Cookies();
   const router = useRouter();
   const { channelID } = router.query;
 
   const dispatch = useAppDispatch();
+  const isMobile = useAppSelector((state) => state.app.isMobile);
   const isAuth = useAppSelector((state) => state.user.isAuth);
   const username = useAppSelector((state) => state.user.username);
   const channelName = useAppSelector((state) => state.channel.channelName);
 
   // Modal states
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
+  const isPostModalOpen = useAppSelector(
+    (state) => state.forum.isPostModalOpen
+  );
+  const isReplyModalOpen = useAppSelector(
+    (state) => state.forum.isReplyModalOpen
+  );
+  const isEditModalOpen = useAppSelector(
+    (state) => state.forum.isEditModalOpen
+  );
+  const isDeleteModalOpen = useAppSelector(
+    (state) => state.forum.isDeleteModalOpen
+  );
 
   const [postID, setPostID] = useState(0);
   const [replyID, setReplyID] = useState<number | null>(null);
@@ -115,7 +121,7 @@ function Forum({ isMobile }: Props) {
       .then((res) => res.json())
       .then(({ error }) => {
         handleResponse({ error }, setError, fetchPosts);
-        setIsModalOpen(false);
+        dispatch(setIsPostModalOpen(false));
         setPostTitleInput("");
         setPostContentInput("");
       })
@@ -140,7 +146,7 @@ function Forum({ isMobile }: Props) {
       .then((res) => res.json())
       .then(({ error }) => {
         handleResponse({ error }, setError, fetchPosts);
-        setIsReplyModalOpen(false);
+        dispatch(setIsReplyModalOpen(false));
         setPostContentInput("");
       })
       .catch(console.error);
@@ -152,7 +158,7 @@ function Forum({ isMobile }: Props) {
       headers: authHeader,
     })
       .then(() => {
-        setIsDeleteModalOpen(false);
+        dispatch(setIsDeleteModalOpen(false));
         fetchPosts();
       })
       .catch(console.error);
@@ -164,7 +170,7 @@ function Forum({ isMobile }: Props) {
       headers: authHeader,
     })
       .then(() => {
-        setIsDeleteModalOpen(false);
+        dispatch(setIsDeleteModalOpen(false));
         fetchPosts();
       })
       .catch(console.error);
@@ -188,7 +194,7 @@ function Forum({ isMobile }: Props) {
       .then((res) => res.json())
       .then(({ error }) => {
         handleResponse({ error }, setError, fetchPosts);
-        setIsEditModalOpen(false);
+        dispatch(setIsEditModalOpen(false));
         setPostID(0);
         setPostTitleInput("");
         setPostContentInput("");
@@ -212,7 +218,7 @@ function Forum({ isMobile }: Props) {
       .then((res) => res.json())
       .then(({ error }) => {
         handleResponse({ error }, setError, fetchPosts);
-        setIsEditModalOpen(false);
+        dispatch(setIsEditModalOpen(false));
         setPostContentInput("");
       })
       .catch(console.error);
@@ -333,7 +339,7 @@ function Forum({ isMobile }: Props) {
                   if (isReply) setReplyID(post.id);
                   else setPostID(post.id);
                   setActionType(isReply ? "reply" : "post");
-                  setIsDeleteModalOpen(true);
+                  dispatch(setIsDeleteModalOpen(true));
                 }}
               />
               <Button
@@ -349,7 +355,7 @@ function Forum({ isMobile }: Props) {
                   }
                   setActionType(isReply ? "reply" : "post");
                   setPostContentInput(post.content);
-                  setIsEditModalOpen(true);
+                  dispatch(setIsEditModalOpen(true));
                 }}
               />
             </>
@@ -365,7 +371,7 @@ function Forum({ isMobile }: Props) {
                 setPostID(post.id);
                 setReplyID(null);
               }
-              setIsReplyModalOpen(true);
+              dispatch(setIsReplyModalOpen(true));
             }}
           />
         </div>
@@ -407,85 +413,55 @@ function Forum({ isMobile }: Props) {
   return (
     isAuth && (
       <>
-        <Head>
-          <title>{`${AppConfig.siteName} - ${
-            channelName ? channelName : "Forum"
-          }`}</title>
-        </Head>
-        <SidebarLayout isMobile={isMobile}>
-          <div
-            style={{
-              width: isMobile ? "100%" : "calc(100% - 300px)",
-              marginLeft: isMobile ? "0" : "300px",
-            }}>
-            <div
-              className={`${styles.header} ${zeroRightClassName}`}
-              style={{ width: isMobile ? "100%" : "calc(100% - 300px)" }}>
-              {channelName ? (
-                <h2>{channelName}</h2>
-              ) : (
-                <Skeleton width={"8rem"} height={"1.5rem"} />
-              )}
-              <div className={styles.headerButtons}>
-                <Button
-                  sm
-                  tertiary
-                  icon={MdPostAdd}
-                  label="New Post"
-                  onClick={() => setIsModalOpen(true)}
-                />
-                <Account />
-              </div>
-            </div>
-            <div className={styles.contentWrapper}>
-              <div className={styles.postsWrapper}>
-                <AnimatePresence mode="popLayout">
-                  {isLoading && (
-                    <div className={styles.noPosts}>
-                      <div className={styles.loadingIndicator}>
-                        {Array.from({ length: 12 }, (_, i) => (
-                          <div key={i} />
-                        ))}
-                      </div>
+        <SidebarLayout>
+          <div className={styles.contentWrapper}>
+            <div className={styles.postsWrapper}>
+              <AnimatePresence mode="popLayout">
+                {isLoading && (
+                  <div className={styles.noPosts}>
+                    <div className={styles.loadingIndicator}>
+                      {Array.from({ length: 12 }, (_, i) => (
+                        <div key={i} />
+                      ))}
                     </div>
-                  )}
-                  {posts && posts.length === 0 ? (
+                  </div>
+                )}
+                {posts && posts.length === 0 ? (
+                  <motion.div
+                    className={styles.noPosts}
+                    variants={postAnimation}
+                    initial="initial"
+                    animate="visible"
+                    exit="exit">
+                    <h3>No posts yet</h3>
+                    <p>Be the first to post!</p>
+                  </motion.div>
+                ) : (
+                  posts &&
+                  posts.map((post) => (
                     <motion.div
-                      className={styles.noPosts}
+                      key={post.id}
+                      className={styles.postWrapper}
                       variants={postAnimation}
                       initial="initial"
                       animate="visible"
                       exit="exit">
-                      <h3>No posts yet</h3>
-                      <p>Be the first to post!</p>
+                      {renderPost(false, post, post.id)}
+                      <AnimatePresence>
+                        {post.replies && renderReplies(post.replies, post.id)}
+                      </AnimatePresence>
                     </motion.div>
-                  ) : (
-                    posts &&
-                    posts.map((post) => (
-                      <motion.div
-                        key={post.id}
-                        className={styles.postWrapper}
-                        variants={postAnimation}
-                        initial="initial"
-                        animate="visible"
-                        exit="exit">
-                        {renderPost(false, post, post.id)}
-                        <AnimatePresence>
-                          {post.replies && renderReplies(post.replies, post.id)}
-                        </AnimatePresence>
-                      </motion.div>
-                    ))
-                  )}
-                </AnimatePresence>
-              </div>
+                  ))
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </SidebarLayout>
 
         {/* New Post Modal */}
         <Modal
-          status={isModalOpen}
-          handleClose={() => setIsModalOpen(false)}
+          status={isPostModalOpen}
+          handleClose={() => dispatch(setIsPostModalOpen(false))}
           title={"New Post"}
           width={"30%"}>
           <div className={styles.modalBodyWrapper}>
@@ -530,7 +506,7 @@ function Forum({ isMobile }: Props) {
         <Modal
           status={isEditModalOpen}
           handleClose={() => {
-            setIsEditModalOpen(false);
+            dispatch(setIsEditModalOpen(false));
             setPostID(0);
             setPostTitleInput("");
             setPostContentInput("");
@@ -586,7 +562,7 @@ function Forum({ isMobile }: Props) {
         {/* Delete Post Modal */}
         <Modal
           status={isDeleteModalOpen}
-          handleClose={() => setIsDeleteModalOpen(false)}
+          handleClose={() => dispatch(setIsDeleteModalOpen(false))}
           title={`Delete ${actionType === "post" ? "Post" : "Reply"}`}>
           <div className={styles.modalBodyWrapper}>
             <div className={styles.modalBody}>
@@ -617,7 +593,7 @@ function Forum({ isMobile }: Props) {
         <Modal
           status={isReplyModalOpen}
           handleClose={() => {
-            setIsReplyModalOpen(false);
+            dispatch(setIsReplyModalOpen(false));
           }}
           title={"Reply"}
           width={"30%"}>

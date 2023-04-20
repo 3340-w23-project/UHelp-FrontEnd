@@ -20,10 +20,10 @@ const backdropTransition = {
   },
 };
 
-interface Props {
+type Props = {
   children: React.ReactNode;
   onClick: () => void;
-}
+};
 
 const ModalBackdrop = ({ children, onClick }: Props) => {
   return (

@@ -6,10 +6,41 @@ import {
   setDisplayName,
   setIsAuth,
 } from "@/redux/slices/userSlice";
+import { setIsScrolled, setIsMobile } from "@/redux/slices/appSlice";
 
 function Startup() {
   const cookies = new Cookies();
   const dispatch = useAppDispatch();
+
+  const handleScroll = () => {
+    const scrollPosition = window.scrollY;
+    if (scrollPosition > 0) {
+      dispatch(setIsScrolled(true));
+    } else {
+      dispatch(setIsScrolled(false));
+    }
+  };
+
+  const handleResize = () => {
+    const width = window.innerWidth;
+    if (width < 768) {
+      dispatch(setIsMobile(true));
+    } else {
+      dispatch(setIsMobile(false));
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     if (cookies.get("access_token")) {

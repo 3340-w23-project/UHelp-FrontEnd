@@ -49,7 +49,7 @@ function Sidebar() {
             <CategoryComponent
               key={category.id}
               category={category}
-              channelID={channelID as string}
+              channelID={parseInt(channelID as string)}
             />
           ))}
       </div>

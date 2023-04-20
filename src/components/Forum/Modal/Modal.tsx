@@ -24,13 +24,13 @@ const modalTransition = {
   },
 };
 
-interface Props {
+type Props = {
   status: boolean;
   handleClose: () => void;
   children?: React.ReactNode;
   title: string;
   width?: string;
-}
+};
 
 const Modal = ({ status, handleClose, children, title, width }: Props) => {
   return (

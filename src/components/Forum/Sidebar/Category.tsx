@@ -10,7 +10,7 @@ import { categoryAnimation } from "@/utils/Animations";
 
 type Props = {
   category: Category;
-  channelID: string;
+  channelID: number;
 };
 
 function Category({ category, channelID }: Props) {
@@ -43,12 +43,10 @@ function Category({ category, channelID }: Props) {
                 }}>
                 <li
                   className={
-                    parseInt(channelID) === channel.id
-                      ? styles.selectedChannel
-                      : ""
+                    channelID === channel.id ? styles.selectedChannel : ""
                   }>
                   {channel.name}
-                  {parseInt(channelID) === channel.id && (
+                  {channelID === channel.id && (
                     <motion.div
                       className={styles.selected}
                       layoutId="selected"

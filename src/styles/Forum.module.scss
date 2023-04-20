@@ -216,7 +216,7 @@
 
       .category {
         @include flex($justify: space-between, $align: center);
-        @include font($size: 1.4rem, $weight: bold);
+        @include font($size: 1.3rem, $weight: bold);
         cursor: pointer;
         user-select: none;
 
@@ -233,9 +233,9 @@
       }
 
       li {
-        @include font($size: 1.2rem, $weight: 600, $color: #1b1b1b);
+        @include font($size: 1.2rem, $weight: 600, $color: #373737);
         position: relative;
-        padding: 0.2rem 0.4rem;
+        padding: 0.2rem 0.6rem;
         margin-bottom: 0.5rem;
         transition: all 0.1s ease;
         border-bottom: 1px solid rgba(0, 0, 0, 0.1);
@@ -247,6 +247,7 @@
 
         &.selectedChannel {
           background-color: rgb(234, 227, 205);
+          color: var(--secondary-color);
         }
 
         .selected {

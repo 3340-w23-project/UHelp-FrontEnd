@@ -9,14 +9,7 @@ import { useRouter } from "next/router";
 import { AppConfig } from "@/utils/AppConfig";
 import { useAppSelector } from "@/redux/store";
 
-type Props = {
-  isScrolled: boolean;
-  isMobile: boolean;
-  username: string;
-  displayName: string;
-};
-
-function SignUp({ isScrolled, isMobile }: Props) {
+function SignUp() {
   const cookies = new Cookies();
   const router = useRouter();
   const [usernameInput, setUsernameInput] = useState("");
@@ -98,7 +91,7 @@ function SignUp({ isScrolled, isMobile }: Props) {
       <Head>
         <title>{`${AppConfig.siteName} - Sign Up`}</title>
       </Head>
-      <Navbar isScrolled={isScrolled} isMobile={isMobile} />
+      <Navbar />
       <div className={styles.wrapper}>
         <form className={styles.container} onSubmit={validate}>
           <h1 className={styles.header}>Sign Up</h1>

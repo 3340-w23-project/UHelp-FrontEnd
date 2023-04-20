@@ -10,18 +10,15 @@ import { useRouter } from "next/router";
 import { AppConfig } from "@/utils/AppConfig";
 import { useAppSelector } from "@/redux/store";
 
-type Props = {
-  isScrolled: boolean;
-  isMobile: boolean;
-};
-
-function SignIn({ isScrolled, isMobile }: Props) {
+function SignIn() {
   const cookies = new Cookies();
   const router = useRouter();
   const [usernameInput, setUsernameInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [error, setError] = useState("");
   const isAuth = useAppSelector((state) => state.user.isAuth);
+  const isScrolled = useAppSelector((state) => state.app.isScrolled);
+  const isMobile = useAppSelector((state) => state.app.isMobile);
 
   useEffect(() => {
     if (isAuth) {
@@ -77,7 +74,7 @@ function SignIn({ isScrolled, isMobile }: Props) {
         <Head>
           <title>{`${AppConfig.siteName} - Sign In`}</title>
         </Head>
-        <Navbar isScrolled={isScrolled} isMobile={isMobile} />
+        <Navbar />
         <div className={styles.wrapper}>
           <form className={styles.container} onSubmit={validate}>
             <h1 className={styles.header}>Sign In</h1>
