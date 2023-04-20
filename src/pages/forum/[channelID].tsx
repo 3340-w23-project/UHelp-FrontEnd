@@ -88,7 +88,11 @@ function Forum() {
     data: posts,
     mutate: fetchPosts,
     isLoading,
-  } = useSWR<Post[]>(postsApiUrl, postsFetcher, { refreshInterval: 10000 });
+  } = useSWR<Post[]>(postsApiUrl, postsFetcher, {
+    refreshInterval: 10000,
+    refreshWhenHidden: false,
+    refreshWhenOffline: false,
+  });
 
   useEffect(() => {
     if (router.isReady) {
@@ -234,8 +238,11 @@ function Forum() {
     fetch(`/api/${isReply ? "reply" : "post"}/${id}/like`, {
       method: "POST",
       headers: authHeader,
-    }).then((res) => res.json());
-    handleLike(id, isReply, depth);
+    })
+      .then((res) => res.json())
+      .then(() => {
+        handleLike(id, isReply, depth);
+      });
   };
 
   const handleLike = (id: number, isReply: boolean, depth: number = 0) => {
