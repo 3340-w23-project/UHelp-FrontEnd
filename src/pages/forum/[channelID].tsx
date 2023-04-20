@@ -108,7 +108,6 @@ function Forum({ isMobile }: Props) {
   const postsFetcher = async (url: string): Promise<Post[]> => {
     if (!channelID) return [];
 
-    await new Promise((r) => setTimeout(r, 5000));
     const res = await fetch(url, { method: "GET", headers: authHeader });
     const data = await res.json();
 
