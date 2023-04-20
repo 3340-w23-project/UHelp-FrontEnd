@@ -94,8 +94,6 @@ function Forum() {
     if (router.isReady) {
       if (!isAuth) {
         router.push("/signin");
-      } else {
-        fetchPosts();
       }
     }
   }, [router, isAuth]);
@@ -233,13 +231,11 @@ function Forum() {
   };
 
   const like = (id: number, isReply: boolean, depth: number) => {
-    handleLike(id, isReply, depth);
     fetch(`/api/${isReply ? "reply" : "post"}/${id}/like`, {
       method: "POST",
       headers: authHeader,
-    })
-      .then((res) => res.json())
-      .catch(console.error);
+    }).then((res) => res.json());
+    handleLike(id, isReply, depth);
   };
 
   const handleLike = (id: number, isReply: boolean, depth: number = 0) => {
