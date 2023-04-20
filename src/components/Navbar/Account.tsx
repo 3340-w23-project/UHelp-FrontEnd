@@ -5,9 +5,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import { FaUserAlt, FaChevronDown } from "react-icons/fa";
 import { IoMdExit } from "react-icons/io";
 import { useRouter } from "next/router";
+import { FaHome } from "react-icons/fa";
 import { useAppSelector, useAppDispatch } from "@/redux/store";
 import { setIsAuth } from "@/redux/slices/userSlice";
 import { menuAnimation } from "@/utils/Animations";
+import Link from "next/link";
 
 function Account() {
   const cookies = new Cookies();
@@ -30,32 +32,39 @@ function Account() {
   };
 
   return (
-    <>
-      <div className={styles.account} onClick={() => setIsOpen(!isOpen)}>
+    <div className={styles.container}>
+      <div
+        className={`${styles.account} ${isOpen ? styles.open : ""}`}
+        onClick={() => setIsOpen(!isOpen)}>
         <FaUserAlt className={styles.userIcon} />
         <div>{displayName}</div>
         <FaChevronDown
           className={`${styles.arrow} ${isOpen ? styles.openArrow : ""}`}
         />
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              className={styles.signOutContainer}
-              initial={"exit"}
-              animate={"enter"}
-              exit={"exit"}
-              variants={menuAnimation}
-              onMouseLeave={() => setIsOpen(false)}
-              onClick={() => signOut()}>
-              <div className={styles.signOutItem}>
-                <IoMdExit />
-                {"Logout"}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
-    </>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            className={styles.dropDownContainer}
+            initial={"exit"}
+            animate={"enter"}
+            exit={"exit"}
+            variants={menuAnimation}
+            onMouseLeave={() => setIsOpen(false)}>
+            <Link className={styles.item} href="/">
+              <FaHome />
+              {"Home"}
+            </Link>
+            <div
+              className={`${styles.item} ${styles.logout}`}
+              onClick={() => signOut()}>
+              <IoMdExit />
+              {"Logout"}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 

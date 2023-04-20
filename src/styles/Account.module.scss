@@ -1,58 +1,76 @@
 @import "./variables.scss";
 
-.account {
-  @include flex($align: center, $gap: 0.6rem);
+.container {
   @include font($size: 1.2rem, $weight: bold);
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  user-select: none;
   position: relative;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  border: 1px solid #b8b2a3;
-  background-color: #f2ebda;
-  box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 4px;
-  transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  cursor: pointer;
 
-  &:hover {
+  .account {
+    @include flex($align: center, $gap: 1rem);
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    border: 1px solid #b8b2a3;
+    background-color: #f2ebda;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 4px;
+    transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    cursor: pointer;
+
+    &:hover {
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 4px;
+      background-color: #e5ddc9;
+    }
+
+    .arrow {
+      transform: rotate(-90deg);
+      margin-top: 0.2rem;
+      transition: transform 0.2s ease;
+    }
+
+    .openArrow {
+      transform: rotate(0deg);
+      transition: transform 0.2s ease;
+    }
+
+    .userIcon {
+      font-size: 1rem;
+    }
+  }
+
+  .open {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .dropDownContainer {
+    position: absolute;
+    max-width: 100%;
+    top: calc(100% - 2px);
+    left: 0;
+    background-color: #f2ebda;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border: 1px solid #b8b2a3;
+    border-top: 0;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 4px;
-    background-color: #e5ddc9;
-  }
+    transition: background-color 0.2s ease;
 
-  .arrow {
-    margin-top: 0.2rem;
-    transition: transform 0.2s ease;
-  }
+    .item {
+      @include inline-flex($align: flex-end, $gap: 0.5rem);
+      width: 100%;
+      border-top: 1px solid #b8b2a3;
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      transition: background-color 0.2s ease;
 
-  .openArrow {
-    transform: rotate(180deg);
-    transition: transform 0.2s ease;
-  }
+      &:hover {
+        background-color: #e5ddc9;
+      }
+    }
 
-  .userIcon {
-    font-size: 1rem;
-  }
-}
-
-.signOutContainer {
-  position: absolute;
-  width: 100%;
-  top: 45px;
-  left: 0;
-  right: 0;
-  background-color: #ec9e90;
-  color: #62332b;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  border: 1px solid #62332b;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: #c4786b;
-  }
-
-  .signOutItem {
-    @include inline-flex($align: flex-end, $gap: 0.5rem);
+    .logout {
+      color: #942a17;
+    }
   }
 }
