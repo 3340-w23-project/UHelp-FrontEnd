@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import SidebarLayout from "@/layouts/ForumLayout";
 import styles from "@/styles/Forum.module.scss";
 import Modal from "@/components/Forum/Modal/Modal";
@@ -20,6 +20,12 @@ import {
   setIsReplyModalOpen,
   setIsEditModalOpen,
   setIsDeleteModalOpen,
+  setPostID,
+  setReplyID,
+  setAction,
+  setPostTitleInput,
+  setPostContentInput,
+  setError,
 } from "@/redux/slices/forumSlice";
 
 function Forum() {
@@ -47,12 +53,14 @@ function Forum() {
     (state) => state.forum.isDeleteModalOpen
   );
 
-  const [postID, setPostID] = useState(0);
-  const [replyID, setReplyID] = useState<number | null>(null);
-  const [actionType, setActionType] = useState("post");
-  const [postTitleInput, setPostTitleInput] = useState("");
-  const [postContentInput, setPostContentInput] = useState("");
-  const [error, setError] = useState("");
+  const postID = useAppSelector((state) => state.forum.postID);
+  const replyID = useAppSelector((state) => state.forum.replyID);
+  const actionType = useAppSelector((state) => state.forum.action);
+  const postTitleInput = useAppSelector((state) => state.forum.postTitleInput);
+  const postContentInput = useAppSelector(
+    (state) => state.forum.postContentInput
+  );
+  const error = useAppSelector((state) => state.forum.error);
 
   const authHeader = {
     "Content-Type": "application/json",
@@ -105,7 +113,7 @@ function Forum() {
   const addPost = () => {
     const error = checkInput(postTitleInput, postContentInput);
     if (error) {
-      setError(error);
+      dispatch(setError(error));
       return;
     }
 
@@ -122,15 +130,15 @@ function Forum() {
       .then(({ error }) => {
         handleResponse({ error }, setError, fetchPosts);
         dispatch(setIsPostModalOpen(false));
-        setPostTitleInput("");
-        setPostContentInput("");
+        dispatch(setPostTitleInput(""));
+        dispatch(setPostContentInput(""));
       })
       .catch(console.error);
   };
 
   const addReply = (id: number, parent_id: number | null) => {
     if (postContentInput === "") {
-      setError("Reply cannot be empty");
+      dispatch(setError("Reply cannot be empty"));
       return;
     }
 
@@ -147,7 +155,7 @@ function Forum() {
       .then(({ error }) => {
         handleResponse({ error }, setError, fetchPosts);
         dispatch(setIsReplyModalOpen(false));
-        setPostContentInput("");
+        dispatch(setPostContentInput(""));
       })
       .catch(console.error);
   };
@@ -179,7 +187,7 @@ function Forum() {
   const updatePost = (id: number) => {
     const error = checkInput(postTitleInput, postContentInput);
     if (error) {
-      setError(error);
+      dispatch(setError(error));
       return;
     }
 
@@ -195,9 +203,9 @@ function Forum() {
       .then(({ error }) => {
         handleResponse({ error }, setError, fetchPosts);
         dispatch(setIsEditModalOpen(false));
-        setPostID(0);
-        setPostTitleInput("");
-        setPostContentInput("");
+        dispatch(setPostID(0));
+        dispatch(setPostTitleInput(""));
+        dispatch(setPostContentInput(""));
       })
       .catch(console.error);
   };
@@ -219,7 +227,7 @@ function Forum() {
       .then(({ error }) => {
         handleResponse({ error }, setError, fetchPosts);
         dispatch(setIsEditModalOpen(false));
-        setPostContentInput("");
+        dispatch(setPostContentInput(""));
       })
       .catch(console.error);
   };
@@ -232,7 +240,7 @@ function Forum() {
       .then((res) => res.json())
       .then(({ error }) => {
         if (error) {
-          setError(error);
+          dispatch(setError(error));
         } else {
           handleLike(id, isReply, depth);
         }
@@ -336,9 +344,9 @@ function Forum() {
                 tertiary
                 icon={IoTrash}
                 onClick={() => {
-                  if (isReply) setReplyID(post.id);
-                  else setPostID(post.id);
-                  setActionType(isReply ? "reply" : "post");
+                  if (isReply) dispatch(setReplyID(post.id));
+                  else dispatch(setPostID(post.id));
+                  dispatch(setAction(isReply ? "reply" : "post"));
                   dispatch(setIsDeleteModalOpen(true));
                 }}
               />
@@ -347,14 +355,14 @@ function Forum() {
                 icon={MdModeEdit}
                 onClick={() => {
                   if (isReply) {
-                    setPostID(postID);
-                    setReplyID(post.id);
+                    dispatch(setPostID(postID));
+                    dispatch(setReplyID(post.id));
                   } else {
-                    setPostID(post.id);
-                    setPostTitleInput(post.title);
+                    dispatch(setPostID(post.id));
+                    dispatch(setPostTitleInput(post.title));
                   }
-                  setActionType(isReply ? "reply" : "post");
-                  setPostContentInput(post.content);
+                  dispatch(setAction(isReply ? "reply" : "post"));
+                  dispatch(setPostContentInput(post.content));
                   dispatch(setIsEditModalOpen(true));
                 }}
               />
@@ -365,11 +373,11 @@ function Forum() {
             icon={MdReply}
             onClick={() => {
               if (isReply) {
-                setPostID(postID);
-                setReplyID(post.id);
+                dispatch(setPostID(postID));
+                dispatch(setReplyID(post.id));
               } else {
-                setPostID(post.id);
-                setReplyID(null);
+                dispatch(setPostID(post.id));
+                dispatch(setReplyID(null));
               }
               dispatch(setIsReplyModalOpen(true));
             }}
@@ -474,7 +482,7 @@ function Forum() {
                     value={postTitleInput}
                     autoFocus
                     onChange={(e) => {
-                      setPostTitleInput(e.target.value);
+                      dispatch(setPostTitleInput(e.target.value));
                     }}
                   />
                 </label>
@@ -483,7 +491,7 @@ function Forum() {
                   <textarea
                     value={postContentInput}
                     onChange={(e) => {
-                      setPostContentInput(e.target.value);
+                      dispatch(setPostContentInput(e.target.value));
                     }}
                   />
                 </label>
@@ -507,9 +515,9 @@ function Forum() {
           status={isEditModalOpen}
           handleClose={() => {
             dispatch(setIsEditModalOpen(false));
-            setPostID(0);
-            setPostTitleInput("");
-            setPostContentInput("");
+            dispatch(setPostID(0));
+            dispatch(setPostTitleInput(""));
+            dispatch(setPostContentInput(""));
           }}
           title={`Edit ${actionType === "post" ? "Post" : "Reply"}`}
           width={"30%"}>
@@ -523,7 +531,7 @@ function Forum() {
                       type="text"
                       value={postTitleInput}
                       onChange={(e) => {
-                        setPostTitleInput(e.target.value);
+                        dispatch(setPostTitleInput(e.target.value));
                       }}
                     />
                   </label>
@@ -533,7 +541,7 @@ function Forum() {
                   <textarea
                     value={postContentInput}
                     onChange={(e) => {
-                      setPostContentInput(e.target.value);
+                      dispatch(setPostContentInput(e.target.value));
                     }}
                   />
                 </label>
@@ -606,7 +614,7 @@ function Forum() {
                     value={postContentInput}
                     autoFocus
                     onChange={(e) => {
-                      setPostContentInput(e.target.value);
+                      dispatch(setPostContentInput(e.target.value));
                     }}
                   />
                 </label>
