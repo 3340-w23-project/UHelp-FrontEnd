@@ -78,8 +78,6 @@ function Forum() {
   const channelFetcher = async (url: string) => {
     if (!channelID) return;
 
-    //wait 5 seconds before fetching
-    await new Promise((resolve) => setTimeout(resolve, 3000));
     const res = await fetch(url, { method: "GET", headers: authHeader });
     const data = await res.json();
 
