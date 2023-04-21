@@ -9,8 +9,19 @@
   background-color: var(--tertiary-color);
   z-index: 100;
 
+  .channelInfo {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    .channelDescription {
+      color: #373737;
+    }
+  }
+
   .headerButtons {
-    @include flex($gap: 1rem);
+    @include flex($gap: 1rem, $align: center, $wrap: wrap, $justify: flex-end);
   }
 }
 

@@ -4,15 +4,24 @@ import Link from "next/link";
 import Image from "next/image";
 import CategoryComponent from "./Category";
 import useSWR from "swr";
+import Cookies from "universal-cookie";
 import { AppConfig } from "@/utils/AppConfig";
 import { useRouter } from "next/router";
 import { Category } from "@/utils/Types";
 
 function Sidebar() {
+  const cookies = new Cookies();
   const router = useRouter();
   const { channelID } = router.query;
+  const authHeader = {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + cookies.get("access_token"),
+  };
   const categoriesFetcher = async (url: string): Promise<Category[]> =>
-    fetch(url)
+    fetch(url, {
+      method: "GET",
+      headers: authHeader,
+    })
       .then((res) => res.json())
       .then((data) => {
         return data.categories;

@@ -3,12 +3,12 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 
 interface UserState {
   channelName: string | null;
-  posts: any[];
+  channelDescription: string | null;
 }
 
 const initialState: UserState = {
   channelName: null,
-  posts: [],
+  channelDescription: null,
 };
 
 export const channelSlice = createSlice({
@@ -18,12 +18,12 @@ export const channelSlice = createSlice({
     setChannelName: (state, action: PayloadAction<string>) => {
       state.channelName = action.payload;
     },
-    setPosts: (state, action: PayloadAction<any[]>) => {
-      state.posts = action.payload;
+    setChannelDescription: (state, action: PayloadAction<string>) => {
+      state.channelDescription = action.payload;
     },
   },
 });
 
-export const { setChannelName, setPosts } = channelSlice.actions;
+export const { setChannelName, setChannelDescription } = channelSlice.actions;
 
 export default channelSlice.reducer;

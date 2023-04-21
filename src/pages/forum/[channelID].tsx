@@ -5,6 +5,7 @@ import Modal from "@/components/Forum/Modal/Modal";
 import Cookies from "universal-cookie";
 import Button from "@/components/Button";
 import useSWR from "swr";
+import useSWRImmutable from "swr/immutable";
 import { IoTrash } from "react-icons/io5";
 import { AiFillLike } from "react-icons/ai";
 import { MdReply, MdModeEdit } from "react-icons/md";
@@ -12,7 +13,10 @@ import { FaUserAlt } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { useAppSelector, useAppDispatch } from "@/redux/store";
-import { setChannelName } from "@/redux/slices/channelSlice";
+import {
+  setChannelName,
+  setChannelDescription,
+} from "@/redux/slices/channelSlice";
 import { Post, Reply } from "@/utils/Types";
 import { postAnimation } from "@/utils/Animations";
 import {
@@ -38,6 +42,9 @@ function Forum() {
   const isAuth = useAppSelector((state) => state.user.isAuth);
   const username = useAppSelector((state) => state.user.username);
   const channelName = useAppSelector((state) => state.channel.channelName);
+  const channelDescription = useAppSelector(
+    (state) => state.channel.channelDescription
+  );
 
   // Modal states
   const isPostModalOpen = useAppSelector(
@@ -68,6 +75,22 @@ function Forum() {
   };
   const postsApiUrl = `/api/channel/${channelID}/posts`;
 
+  const channelFetcher = async (url: string) => {
+    if (!channelID) return;
+
+    const res = await fetch(url, { method: "GET", headers: authHeader });
+    const data = await res.json();
+
+    if (channelName !== data.name) dispatch(setChannelName(data.name));
+    if (channelDescription !== data.description)
+      dispatch(setChannelDescription(data.description));
+  };
+
+  const { mutate: fetchChannel } = useSWRImmutable(
+    `/api/channel/${channelID}`,
+    channelFetcher
+  );
+
   const postsFetcher = async (url: string): Promise<Post[]> => {
     if (!channelID) return [];
 
@@ -79,9 +102,7 @@ function Forum() {
       return [];
     }
 
-    if (channelName !== data.channel_name)
-      dispatch(setChannelName(data.channel_name));
-    return data.posts;
+    return data;
   };
 
   const {
@@ -89,7 +110,7 @@ function Forum() {
     mutate: fetchPosts,
     isLoading,
   } = useSWR<Post[]>(postsApiUrl, postsFetcher, {
-    refreshInterval: 10000,
+    refreshInterval: 20000,
     refreshWhenHidden: false,
     refreshWhenOffline: false,
   });
@@ -266,7 +287,7 @@ function Forum() {
         headers: authHeader,
       });
       const data = await res.json();
-      return data.posts;
+      return data;
     };
 
     fetchPosts(updatedPostsFetcher(), {

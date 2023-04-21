@@ -17,6 +17,9 @@ type Props = {
 const SidebarLayout = ({ children }: Props) => {
   const dispatch = useAppDispatch();
   const channelName = useAppSelector((state) => state.channel.channelName);
+  const channelDescription = useAppSelector(
+    (state) => state.channel.channelDescription
+  );
   const isMobile = useAppSelector((state) => state.app.isMobile);
   return (
     <>
@@ -36,7 +39,12 @@ const SidebarLayout = ({ children }: Props) => {
             className={`${styles.header} ${zeroRightClassName}`}
             style={{ width: isMobile ? "100%" : "calc(100% - 300px)" }}>
             {channelName ? (
-              <h2>{channelName}</h2>
+              <div className={styles.channelInfo}>
+                <h2>{channelName}</h2>
+                <span className={styles.channelDescription}>
+                  {channelDescription}
+                </span>
+              </div>
             ) : (
               <Skeleton width={"8rem"} height={"1.5rem"} />
             )}
