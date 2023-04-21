@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import Link from "next/link";
 import styles from "@/styles/Forum.module.scss";
 import { AnimatePresence, motion } from "framer-motion";
-import { setChannelName } from "@/redux/slices/channelSlice";
 import { useAppDispatch } from "@/redux/store";
 import { FaChevronDown } from "react-icons/fa";
 import { Category } from "@/utils/Types";
 import { categoryAnimation } from "@/utils/Animations";
+import {
+  setChannelName,
+  setChannelDescription,
+} from "@/redux/slices/channelSlice";
 
 type Props = {
   category: Category;
@@ -40,6 +43,7 @@ function Category({ category, channelID }: Props) {
                 href={`/forum/${channel.id}`}
                 onClick={() => {
                   dispatch(setChannelName(channel.name));
+                  dispatch(setChannelDescription(null));
                 }}>
                 <li
                   className={

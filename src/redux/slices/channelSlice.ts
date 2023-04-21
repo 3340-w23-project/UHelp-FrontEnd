@@ -18,7 +18,7 @@ export const channelSlice = createSlice({
     setChannelName: (state, action: PayloadAction<string>) => {
       state.channelName = action.payload;
     },
-    setChannelDescription: (state, action: PayloadAction<string>) => {
+    setChannelDescription: (state, action: PayloadAction<string | null>) => {
       state.channelDescription = action.payload;
     },
   },
