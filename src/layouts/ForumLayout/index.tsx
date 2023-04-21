@@ -39,17 +39,20 @@ const SidebarLayout = ({ children }: Props) => {
             className={`${styles.header} ${zeroRightClassName}`}
             style={{ width: isMobile ? "100%" : "calc(100% - 300px)" }}>
             <div className={styles.channelInfo}>
-              {channelName && channelDescription ? (
-                <>
-                  <h2>{channelName}</h2>
-                  <span className={styles.channelDescription}>
-                    {channelDescription}
-                  </span>
-                </>
+              {channelName ? (
+                <h2>{channelName}</h2>
+              ) : (
+                <Skeleton width={"8rem"} height={"1.5rem"} />
+              )}
+              {!channelDescription && !channelName && (
+                <div style={{ height: "0.5rem" }} />
+              )}
+              {channelDescription ? (
+                <span className={styles.channelDescription}>
+                  {channelDescription}
+                </span>
               ) : (
                 <>
-                  <Skeleton width={"8rem"} height={"1.5rem"} />
-                  <div style={{ height: "0.5rem" }} />
                   <Skeleton width={"16rem"} height={"1.3rem"} />
                 </>
               )}
