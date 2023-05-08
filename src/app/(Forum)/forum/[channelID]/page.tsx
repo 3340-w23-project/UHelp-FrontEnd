@@ -1,8 +1,7 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import styles from "@/app/styles/Forum.module.scss";
 import Modal from "@/app/components/Forum/Modal/Modal";
-import Cookies from "universal-cookie";
 import Button from "@/app/components/Button";
 import useSWR from "swr";
 import useSWRImmutable from "swr/immutable";
@@ -31,16 +30,21 @@ import {
   setPostContentInput,
   setError,
 } from "@/redux/slices/forumSlice";
+import { zeroRightClassName } from "react-remove-scroll-bar";
+import { MdPostAdd } from "react-icons/md";
+import Account from "@/app/components/Navbar/Account";
+import Skeleton from "@/app/components/Forum/Skeleton";
+import { useSession } from "next-auth/react";
+import Sidebar from "@/app/components/Forum/Sidebar/Sidebar";
 
 function Forum() {
-  const cookies = new Cookies();
+  const { data: session, status } = useSession();
   const router = useRouter();
-  const channelID = usePathname().split("/")[2];
+  const channelID = usePathname()?.split("/")[2];
 
   const dispatch = useAppDispatch();
   const isMobile = useAppSelector((state) => state.app.isMobile);
-  const isAuth = useAppSelector((state) => state.user.isAuth);
-  const username = useAppSelector((state) => state.user.username);
+  const username = session?.user?.username;
   const channelName = useAppSelector((state) => state.channel.channelName);
   const channelDescription = useAppSelector(
     (state) => state.channel.channelDescription
@@ -71,12 +75,12 @@ function Forum() {
 
   const authHeader = {
     "Content-Type": "application/json",
-    Authorization: "Bearer " + cookies.get("access_token"),
+    Authorization: "Bearer " + session?.user.access_token,
   };
-  const postsApiUrl = `/api/channel/${channelID}/posts`;
+  const postsApiUrl = `/uapi/channel/${channelID}/posts`;
 
   const channelFetcher = async (url: string) => {
-    if (!channelID) return;
+    if (!channelID || !session) return;
 
     const res = await fetch(url, { method: "GET", headers: authHeader });
     const data = await res.json();
@@ -86,13 +90,18 @@ function Forum() {
       dispatch(setChannelDescription(data.description));
   };
 
+  React.useEffect(() => {
+    fetchChannel();
+    fetchPosts();
+  }, [status]);
+
   const { mutate: fetchChannel } = useSWRImmutable(
-    `/api/channel/${channelID}`,
+    `/uapi/channel/${channelID}`,
     channelFetcher
   );
 
   const postsFetcher = async (url: string): Promise<Post[]> => {
-    if (!channelID) return [];
+    if (!channelID || !session) return [];
 
     const res = await fetch(url, { method: "GET", headers: authHeader });
     const data = await res.json();
@@ -115,12 +124,6 @@ function Forum() {
     refreshWhenOffline: false,
   });
 
-  useEffect(() => {
-    if (!isAuth) {
-      router.push("/signin");
-    }
-  }, [router, isAuth]);
-
   const handleResponse = (data: any, setError: Function, mutate: Function) =>
     data.error ? setError(data.error) : mutate();
 
@@ -138,7 +141,7 @@ function Forum() {
       return;
     }
 
-    fetch("/api/post/new", {
+    fetch("/uapi/post/new", {
       method: "POST",
       headers: authHeader,
       body: JSON.stringify({
@@ -163,7 +166,7 @@ function Forum() {
       return;
     }
 
-    fetch(`/api/post/${id}/reply`, {
+    fetch(`/uapi/post/${id}/reply`, {
       method: "POST",
       headers: authHeader,
       body: JSON.stringify({
@@ -182,7 +185,7 @@ function Forum() {
   };
 
   const deletePost = (id: number) => {
-    fetch(`/api/post/${id}/delete`, {
+    fetch(`/uapi/post/${id}/delete`, {
       method: "POST",
       headers: authHeader,
     })
@@ -194,7 +197,7 @@ function Forum() {
   };
 
   const deleteReply = (id: number | null) => {
-    fetch(`/api/reply/${id}/delete`, {
+    fetch(`/uapi/reply/${id}/delete`, {
       method: "POST",
       headers: authHeader,
     })
@@ -212,7 +215,7 @@ function Forum() {
       return;
     }
 
-    fetch(`/api/post/${id}/update`, {
+    fetch(`/uapi/post/${id}/update`, {
       method: "POST",
       headers: authHeader,
       body: JSON.stringify({
@@ -237,7 +240,7 @@ function Forum() {
       return;
     }
 
-    fetch(`/api/reply/${id}/update`, {
+    fetch(`/uapi/reply/${id}/update`, {
       method: "POST",
       headers: authHeader,
       body: JSON.stringify({
@@ -280,10 +283,13 @@ function Forum() {
       : updateLikes(posts, 0);
 
     const updatedPostsFetcher = async (): Promise<Post[]> => {
-      const res = await fetch(`/api/${isReply ? "reply" : "post"}/${id}/like`, {
-        method: "GET",
-        headers: authHeader,
-      });
+      const res = await fetch(
+        `/uapi/${isReply ? "reply" : "post"}/${id}/like`,
+        {
+          method: "GET",
+          headers: authHeader,
+        }
+      );
       const data = await res.json();
       return data;
     };
@@ -433,217 +439,256 @@ function Forum() {
     ));
 
   return (
-    isAuth && (
+    session && (
       <>
-        <div className={styles.contentWrapper}>
-          <div className={styles.postsWrapper}>
-            <AnimatePresence mode="popLayout">
-              {isLoading && (
-                <div className={styles.noPosts}>
-                  <div className={styles.loadingIndicator}>
-                    {Array.from({ length: 12 }, (_, i) => (
-                      <div key={i} />
-                    ))}
-                  </div>
-                </div>
-              )}
-              {posts && posts.length === 0 ? (
-                <motion.div
-                  className={styles.noPosts}
-                  variants={postAnimation}
-                  initial="initial"
-                  animate="visible"
-                  exit="exit">
-                  <h3>No posts yet</h3>
-                  <p>Be the first to post!</p>
-                </motion.div>
+        <Sidebar />
+        <div
+          style={{
+            width: isMobile ? "100%" : "calc(100% - 300px)",
+            marginLeft: isMobile ? "0" : "300px",
+          }}>
+          <div
+            className={`${styles.header} ${zeroRightClassName}`}
+            style={{ width: isMobile ? "100%" : "calc(100% - 300px)" }}>
+            <div className={styles.channelInfo}>
+              {channelName ? (
+                <h2>{channelName}</h2>
               ) : (
-                posts &&
-                posts.map((post) => (
+                <Skeleton width={"8rem"} height={"1.5rem"} />
+              )}
+              {!channelDescription && !channelName && (
+                <div style={{ height: "0.5rem" }} />
+              )}
+              {channelDescription ? (
+                <span className={styles.channelDescription}>
+                  {channelDescription}
+                </span>
+              ) : (
+                <>
+                  <Skeleton width={"16rem"} height={"1.3rem"} />
+                </>
+              )}
+            </div>
+            <div className={styles.headerButtons}>
+              <Button
+                sm
+                tertiary
+                icon={MdPostAdd}
+                label="New Post"
+                onClick={() => dispatch(setIsPostModalOpen(true))}
+              />
+              <Account />
+            </div>
+          </div>
+          <div className={styles.contentWrapper}>
+            <div className={styles.postsWrapper}>
+              <AnimatePresence mode="popLayout">
+                {(isLoading || status.toString() === "loading") && (
+                  <div className={styles.noPosts}>
+                    <div className={styles.loadingIndicator}>
+                      {Array.from({ length: 12 }, (_, i) => (
+                        <div key={i} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {posts?.length === 0 ? (
                   <motion.div
-                    key={post.id}
-                    className={styles.postWrapper}
+                    className={styles.noPosts}
                     variants={postAnimation}
                     initial="initial"
                     animate="visible"
                     exit="exit">
-                    {renderPost(false, post, post.id)}
-                    <AnimatePresence>
-                      {post.replies && renderReplies(post.replies, post.id)}
-                    </AnimatePresence>
+                    <h3>No posts yet</h3>
+                    <p>Be the first to post!</p>
                   </motion.div>
-                ))
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-
-        {/* New Post Modal */}
-        <Modal
-          status={isPostModalOpen}
-          handleClose={() => dispatch(setIsPostModalOpen(false))}
-          title={"New Post"}
-          width={"30%"}>
-          <div className={styles.modalBodyWrapper}>
-            <div className={styles.modalBody}>
-              <div className={styles.modalForm}>
-                <label className={styles.modalLabel}>
-                  Post Title
-                  <input
-                    type="text"
-                    value={postTitleInput}
-                    autoFocus
-                    onChange={(e) => {
-                      dispatch(setPostTitleInput(e.target.value));
-                    }}
-                  />
-                </label>
-                <label className={styles.modalLabel}>
-                  Post Content
-                  <textarea
-                    value={postContentInput}
-                    onChange={(e) => {
-                      dispatch(setPostContentInput(e.target.value));
-                    }}
-                  />
-                </label>
-              </div>
-              <div className="centerRow">
-                {error && <p className={styles.error}>{error}</p>}
-              </div>
-            </div>
-            <div className={styles.modalFooter}>
-              <Button
-                secondary
-                sm
-                onClick={() => addPost()}
-                label={"Add Post"}></Button>
+                ) : (
+                  posts?.map((post) => (
+                    <motion.div
+                      key={post.id}
+                      className={styles.postWrapper}
+                      variants={postAnimation}
+                      initial="initial"
+                      animate="visible"
+                      exit="exit">
+                      {renderPost(false, post, post.id)}
+                      <AnimatePresence>
+                        {post.replies && renderReplies(post.replies, post.id)}
+                      </AnimatePresence>
+                    </motion.div>
+                  ))
+                )}
+              </AnimatePresence>
             </div>
           </div>
-        </Modal>
 
-        {/* Edit Post Modal */}
-        <Modal
-          status={isEditModalOpen}
-          handleClose={() => {
-            dispatch(setIsEditModalOpen(false));
-            dispatch(setPostID(0));
-            dispatch(setPostTitleInput(""));
-            dispatch(setPostContentInput(""));
-          }}
-          title={`Edit ${actionType === "post" ? "Post" : "Reply"}`}
-          width={"30%"}>
-          <div className={styles.modalBodyWrapper}>
-            <div className={styles.modalBody}>
-              <div className={styles.modalForm}>
-                {actionType === "post" && (
+          {/* New Post Modal */}
+          <Modal
+            status={isPostModalOpen}
+            handleClose={() => dispatch(setIsPostModalOpen(false))}
+            title={"New Post"}
+            width={"30%"}>
+            <div className={styles.modalBodyWrapper}>
+              <div className={styles.modalBody}>
+                <div className={styles.modalForm}>
                   <label className={styles.modalLabel}>
                     Post Title
                     <input
                       type="text"
                       value={postTitleInput}
+                      autoFocus
                       onChange={(e) => {
                         dispatch(setPostTitleInput(e.target.value));
                       }}
                     />
                   </label>
-                )}
-                <label className={styles.modalLabel}>
-                  {actionType === "post" ? "Post Content" : "Reply Content"}
-                  <textarea
-                    value={postContentInput}
-                    onChange={(e) => {
-                      dispatch(setPostContentInput(e.target.value));
-                    }}
-                  />
-                </label>
+                  <label className={styles.modalLabel}>
+                    Post Content
+                    <textarea
+                      value={postContentInput}
+                      onChange={(e) => {
+                        dispatch(setPostContentInput(e.target.value));
+                      }}
+                    />
+                  </label>
+                </div>
+                <div className="centerRow">
+                  {error && <p className={styles.error}>{error}</p>}
+                </div>
               </div>
-              <div className="centerRow">
-                {error && <p className={styles.error}>{error}</p>}
+              <div className={styles.modalFooter}>
+                <Button
+                  secondary
+                  sm
+                  onClick={() => addPost()}
+                  label={"Add Post"}></Button>
               </div>
             </div>
-            <div className={styles.modalFooter}>
-              <Button
-                secondary
-                sm
-                onClick={() => {
-                  if (actionType === "post") {
-                    updatePost(postID);
-                  } else if (actionType === "reply") {
-                    updateReply(replyID);
-                  }
-                }}
-                label={`Update ${actionType === "post" ? "Post" : "Reply"}`}
-              />
-            </div>
-          </div>
-        </Modal>
+          </Modal>
 
-        {/* Delete Post Modal */}
-        <Modal
-          status={isDeleteModalOpen}
-          handleClose={() => dispatch(setIsDeleteModalOpen(false))}
-          title={`Delete ${actionType === "post" ? "Post" : "Reply"}`}>
-          <div className={styles.modalBodyWrapper}>
-            <div className={styles.modalBody}>
-              <div className="centerRow">
-                <p>{`Are you sure you want to permanently delete this ${
-                  actionType === "post" ? "post" : "reply"
-                }?`}</p>
+          {/* Edit Post Modal */}
+          <Modal
+            status={isEditModalOpen}
+            handleClose={() => {
+              dispatch(setIsEditModalOpen(false));
+              dispatch(setPostID(0));
+              dispatch(setPostTitleInput(""));
+              dispatch(setPostContentInput(""));
+            }}
+            title={`Edit ${actionType === "post" ? "Post" : "Reply"}`}
+            width={"30%"}>
+            <div className={styles.modalBodyWrapper}>
+              <div className={styles.modalBody}>
+                <div className={styles.modalForm}>
+                  {actionType === "post" && (
+                    <label className={styles.modalLabel}>
+                      Post Title
+                      <input
+                        type="text"
+                        value={postTitleInput}
+                        onChange={(e) => {
+                          dispatch(setPostTitleInput(e.target.value));
+                        }}
+                      />
+                    </label>
+                  )}
+                  <label className={styles.modalLabel}>
+                    {actionType === "post" ? "Post Content" : "Reply Content"}
+                    <textarea
+                      value={postContentInput}
+                      onChange={(e) => {
+                        dispatch(setPostContentInput(e.target.value));
+                      }}
+                    />
+                  </label>
+                </div>
+                <div className="centerRow">
+                  {error && <p className={styles.error}>{error}</p>}
+                </div>
+              </div>
+              <div className={styles.modalFooter}>
+                <Button
+                  secondary
+                  sm
+                  onClick={() => {
+                    if (actionType === "post") {
+                      updatePost(postID);
+                    } else if (actionType === "reply") {
+                      updateReply(replyID);
+                    }
+                  }}
+                  label={`Update ${actionType === "post" ? "Post" : "Reply"}`}
+                />
               </div>
             </div>
-            <div className={styles.modalFooter}>
-              <Button
-                secondary
-                sm
-                onClick={() => {
-                  if (actionType === "post") {
-                    deletePost(postID);
-                  } else if (actionType === "reply") {
-                    deleteReply(replyID);
-                  }
-                }}
-                label={`Delete ${actionType === "post" ? "Post" : "Reply"}`}
-              />
-            </div>
-          </div>
-        </Modal>
+          </Modal>
 
-        {/* Reply Modal */}
-        <Modal
-          status={isReplyModalOpen}
-          handleClose={() => {
-            dispatch(setIsReplyModalOpen(false));
-          }}
-          title={"Reply"}
-          width={"30%"}>
-          <div className={styles.modalBodyWrapper}>
-            <div className={styles.modalBody}>
-              <div className={styles.modalForm}>
-                <label className={styles.modalLabel}>
-                  Reply Content
-                  <textarea
-                    value={postContentInput}
-                    autoFocus
-                    onChange={(e) => {
-                      dispatch(setPostContentInput(e.target.value));
-                    }}
-                  />
-                </label>
+          {/* Delete Post Modal */}
+          <Modal
+            status={isDeleteModalOpen}
+            handleClose={() => dispatch(setIsDeleteModalOpen(false))}
+            title={`Delete ${actionType === "post" ? "Post" : "Reply"}`}>
+            <div className={styles.modalBodyWrapper}>
+              <div className={styles.modalBody}>
+                <div className="centerRow">
+                  <p>{`Are you sure you want to permanently delete this ${
+                    actionType === "post" ? "post" : "reply"
+                  }?`}</p>
+                </div>
               </div>
-              <div className="centerRow">
-                {error && <p className={styles.error}>{error}</p>}
+              <div className={styles.modalFooter}>
+                <Button
+                  secondary
+                  sm
+                  onClick={() => {
+                    if (actionType === "post") {
+                      deletePost(postID);
+                    } else if (actionType === "reply") {
+                      deleteReply(replyID);
+                    }
+                  }}
+                  label={`Delete ${actionType === "post" ? "Post" : "Reply"}`}
+                />
               </div>
             </div>
-            <div className={styles.modalFooter}>
-              <Button
-                secondary
-                sm
-                onClick={() => addReply(postID, replyID)}
-                label={"Add Reply"}></Button>
+          </Modal>
+
+          {/* Reply Modal */}
+          <Modal
+            status={isReplyModalOpen}
+            handleClose={() => {
+              dispatch(setIsReplyModalOpen(false));
+            }}
+            title={"Reply"}
+            width={"30%"}>
+            <div className={styles.modalBodyWrapper}>
+              <div className={styles.modalBody}>
+                <div className={styles.modalForm}>
+                  <label className={styles.modalLabel}>
+                    Reply Content
+                    <textarea
+                      value={postContentInput}
+                      autoFocus
+                      onChange={(e) => {
+                        dispatch(setPostContentInput(e.target.value));
+                      }}
+                    />
+                  </label>
+                </div>
+                <div className="centerRow">
+                  {error && <p className={styles.error}>{error}</p>}
+                </div>
+              </div>
+              <div className={styles.modalFooter}>
+                <Button
+                  secondary
+                  sm
+                  onClick={() => addReply(postID, replyID)}
+                  label={"Add Reply"}></Button>
+              </div>
             </div>
-          </div>
-        </Modal>
+          </Modal>
+        </div>
       </>
     )
   );

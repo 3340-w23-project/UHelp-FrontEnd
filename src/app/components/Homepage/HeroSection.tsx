@@ -4,7 +4,7 @@ import Button from "../Button";
 import BackgroundPage from "./HeroBackground";
 import { AppConfig } from "@/utils/AppConfig";
 import { MdOutlineLogin } from "react-icons/md";
-import { useAppSelector } from "@/redux/store";
+import { useSession } from "next-auth/react";
 
 type HeroSectionProps = {
   description: string;
@@ -17,7 +17,7 @@ const HeroSection = ({
   actionLabel,
   actionHref,
 }: HeroSectionProps) => {
-  const isAuth = useAppSelector((state) => state.user.isAuth);
+  const { data: session } = useSession();
   return (
     <>
       <BackgroundPage />
@@ -39,8 +39,8 @@ const HeroSection = ({
         <Button
           xl
           icon={MdOutlineLogin}
-          href={isAuth ? "/forum/1" : actionHref}
-          label={isAuth ? "Go to Forum" : actionLabel}
+          href={session ? "/forum/1" : actionHref}
+          label={session ? "Go to Forum" : actionLabel}
         />
       </div>
     </>

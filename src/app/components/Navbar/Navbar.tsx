@@ -10,9 +10,10 @@ import { useState } from "react";
 import { MenuItem } from "./MenuItem";
 import { AppConfig } from "@/utils/AppConfig";
 import { useAppSelector } from "@/redux/store";
+import { useSession } from "next-auth/react";
 
 function Navbar() {
-  const isAuth = useAppSelector((state) => state.user.isAuth);
+  const { data: session } = useSession();
   const isMobile = useAppSelector((state) => state.app.isMobile);
   const isScrolled = useAppSelector((state) => state.app.isScrolled);
 
@@ -40,7 +41,7 @@ function Navbar() {
         <nav className={styles.menu}>
           <ul>
             <MenuItem label="Home" href="/" />
-            {isAuth ? (
+            {session ? (
               <>
                 <MenuItem href="/forum/1" label="Forum" />
                 <Account />

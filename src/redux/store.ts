@@ -1,7 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { appSlice } from "./slices/appSlice";
 import { forumSlice } from "./slices/forumSlice";
-import { userSlice } from "./slices/userSlice";
 import { channelSlice } from "./slices/channelSlice";
 import { useDispatch, useSelector } from "react-redux";
 import type { TypedUseSelectorHook } from "react-redux";
@@ -10,7 +9,6 @@ export const store = configureStore({
   reducer: {
     app: appSlice.reducer,
     forum: forumSlice.reducer,
-    user: userSlice.reducer,
     channel: channelSlice.reducer,
   },
 });

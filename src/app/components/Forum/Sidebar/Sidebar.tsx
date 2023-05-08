@@ -1,20 +1,23 @@
+"use client";
 import React from "react";
 import styles from "@/app/styles/Forum.module.scss";
 import Link from "next/link";
 import Image from "next/image";
 import CategoryComponent from "./Category";
 import useSWR from "swr";
-import Cookies from "universal-cookie";
 import { AppConfig } from "@/utils/AppConfig";
 import { usePathname } from "next/navigation";
 import { Category } from "@/utils/Types";
+import { useAppSelector } from "@/redux/store";
+import { useSession } from "next-auth/react";
 
 function Sidebar() {
-  const cookies = new Cookies();
-  const channelID = usePathname().split("/")[2];
+  const { data: session } = useSession();
+  const channelID = usePathname()?.split("/")[2];
+  const isMobile = useAppSelector((state) => state.app.isMobile);
   const authHeader = {
     "Content-Type": "application/json",
-    Authorization: "Bearer " + cookies.get("access_token"),
+    Authorization: "Bearer " + session?.user?.access_token,
   };
   const categoriesFetcher = async (url: string): Promise<Category[]> =>
     fetch(url, {
@@ -27,7 +30,7 @@ function Sidebar() {
       });
 
   const { data: categories } = useSWR<Category[]>(
-    "/api/categories",
+    "/uapi/categories",
     categoriesFetcher,
     {
       revalidateOnFocus: false,
@@ -35,7 +38,7 @@ function Sidebar() {
     }
   );
 
-  return (
+  return isMobile ? null : (
     <div className={styles.sidebarWrapper}>
       <div className={styles.sidebarHeader}>
         <Link href="/">
@@ -58,7 +61,7 @@ function Sidebar() {
             <CategoryComponent
               key={category.id}
               category={category}
-              channelID={parseInt(channelID.toString())}
+              channelID={parseInt(channelID!.toString())}
             />
           ))}
       </div>
