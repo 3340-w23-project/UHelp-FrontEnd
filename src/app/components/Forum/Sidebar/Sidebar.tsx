@@ -6,12 +6,12 @@ import CategoryComponent from "./Category";
 import useSWR from "swr";
 import Cookies from "universal-cookie";
 import { AppConfig } from "@/utils/AppConfig";
-import { useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { Category } from "@/utils/Types";
 
 function Sidebar() {
   const cookies = new Cookies();
-  const channelID = useSearchParams();
+  const channelID = usePathname().split("/")[2];
   const authHeader = {
     "Content-Type": "application/json",
     Authorization: "Bearer " + cookies.get("access_token"),
