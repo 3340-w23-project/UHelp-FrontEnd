@@ -12,17 +12,6 @@ function Form({ signInMode }: { signInMode: boolean }) {
   const [passwordInput, setPasswordInput] = useState("");
   const [error, setError] = useState("");
 
-  const signUpValidate = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (usernameInput.length < 3 || usernameInput.length > 20) {
-      setError("Username must be between 3 and 20 characters");
-    } else if (passwordInput.length < 4) {
-      setError("Password must be at least 4 characters");
-    } else {
-      signUp();
-    }
-  };
-
   const signInValidate = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (usernameInput === "") {
@@ -43,8 +32,19 @@ function Form({ signInMode }: { signInMode: boolean }) {
     });
   };
 
+  const signUpValidate = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (usernameInput.length < 3 || usernameInput.length > 20) {
+      setError("Username must be between 3 and 20 characters");
+    } else if (passwordInput.length < 4) {
+      setError("Password must be at least 4 characters");
+    } else {
+      signUp();
+    }
+  };
+
   const signUp = async () => {
-    const res = await fetch("/api/signup", {
+    const res = await fetch("/uhelp-api/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -55,6 +55,7 @@ function Form({ signInMode }: { signInMode: boolean }) {
       }),
     });
     if (res.status === 201) {
+      console.log("message: User created");
       signInCredentials();
     } else if (res.status === 409) {
       setError("Username already exists");

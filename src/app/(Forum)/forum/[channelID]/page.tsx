@@ -77,7 +77,7 @@ function Forum() {
     "Content-Type": "application/json",
     Authorization: "Bearer " + session?.user.access_token,
   };
-  const postsApiUrl = `/uapi/channel/${channelID}/posts`;
+  const postsApiUrl = `/uhelp-api/channel/${channelID}/posts`;
 
   const channelFetcher = async (url: string) => {
     if (!channelID || !session) return;
@@ -96,7 +96,7 @@ function Forum() {
   }, [status]);
 
   const { mutate: fetchChannel } = useSWRImmutable(
-    `/uapi/channel/${channelID}`,
+    `/uhelp-api/channel/${channelID}`,
     channelFetcher
   );
 
@@ -141,7 +141,7 @@ function Forum() {
       return;
     }
 
-    fetch("/uapi/post/new", {
+    fetch("/uhelp-api/post/new", {
       method: "POST",
       headers: authHeader,
       body: JSON.stringify({
@@ -166,7 +166,7 @@ function Forum() {
       return;
     }
 
-    fetch(`/uapi/post/${id}/reply`, {
+    fetch(`/uhelp-api/post/${id}/reply`, {
       method: "POST",
       headers: authHeader,
       body: JSON.stringify({
@@ -185,7 +185,7 @@ function Forum() {
   };
 
   const deletePost = (id: number) => {
-    fetch(`/uapi/post/${id}/delete`, {
+    fetch(`/uhelp-api/post/${id}/delete`, {
       method: "POST",
       headers: authHeader,
     })
@@ -197,7 +197,7 @@ function Forum() {
   };
 
   const deleteReply = (id: number | null) => {
-    fetch(`/uapi/reply/${id}/delete`, {
+    fetch(`/uhelp-api/reply/${id}/delete`, {
       method: "POST",
       headers: authHeader,
     })
@@ -215,7 +215,7 @@ function Forum() {
       return;
     }
 
-    fetch(`/uapi/post/${id}/update`, {
+    fetch(`/uhelp-api/post/${id}/update`, {
       method: "POST",
       headers: authHeader,
       body: JSON.stringify({
@@ -240,7 +240,7 @@ function Forum() {
       return;
     }
 
-    fetch(`/uapi/reply/${id}/update`, {
+    fetch(`/uhelp-api/reply/${id}/update`, {
       method: "POST",
       headers: authHeader,
       body: JSON.stringify({
@@ -284,7 +284,7 @@ function Forum() {
 
     const updatedPostsFetcher = async (): Promise<Post[]> => {
       const res = await fetch(
-        `/uapi/${isReply ? "reply" : "post"}/${id}/like`,
+        `/uhelp-api/${isReply ? "reply" : "post"}/${id}/like`,
         {
           method: "GET",
           headers: authHeader,

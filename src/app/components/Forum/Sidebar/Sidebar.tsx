@@ -30,7 +30,7 @@ function Sidebar() {
       });
 
   const { data: categories } = useSWR<Category[]>(
-    "/uapi/categories",
+    "/uhelp-api/categories",
     categoriesFetcher,
     {
       revalidateOnFocus: false,
