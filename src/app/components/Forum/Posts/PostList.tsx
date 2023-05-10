@@ -9,6 +9,7 @@ import ForumModals from "@/app/components/Forum/Modal/ForumModals";
 import LoadingIndicator from "@/app/components/Forum/Posts/LoadingIndicator";
 import { like } from "../../../(Forum)/forum/[channelID]/helper";
 import { motion, AnimatePresence } from "framer-motion";
+import { MdOutlineSpeakerNotesOff } from "react-icons/md";
 interface Props {
   session: any;
   channelID: number;
@@ -79,6 +80,7 @@ function ForumPosts({ session, channelID }: Props) {
             initial="initial"
             animate="visible"
             exit="exit">
+            <MdOutlineSpeakerNotesOff />
             <h3>No posts yet</h3>
             <p>Be the first to post!</p>
           </motion.div>

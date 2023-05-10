@@ -36,12 +36,25 @@ const Button = ({
   });
 
   return (
-    <div className={btnClass} onClick={onClick}>
-      <>
-        {Icon && <Icon />}
-        {href ? <Link href={href}>{label}</Link> : <span>{label}</span>}
-      </>
-    </div>
+    <>
+      {href ? (
+        <Link href={href}>
+          <div className={btnClass} onClick={onClick}>
+            <>
+              {Icon && <Icon />}
+              {label}
+            </>
+          </div>
+        </Link>
+      ) : (
+        <div className={btnClass} onClick={onClick}>
+          <>
+            {Icon && <Icon />}
+            {label}
+          </>
+        </div>
+      )}
+    </>
   );
 };
 

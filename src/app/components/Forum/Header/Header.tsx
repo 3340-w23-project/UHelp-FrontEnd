@@ -45,19 +45,17 @@ function ForumHeader({ channelID }: Props) {
         {channelName ? (
           <h2>{channelName}</h2>
         ) : (
-          <Skeleton width={"8rem"} height={"1.5rem"} />
+          <Skeleton width={"8rem"} height={"1.8rem"} />
         )}
         {!channelDescription && !channelName && (
-          <div style={{ height: "0.5rem" }} />
+          <div style={{ height: "0.05rem" }} />
         )}
         {channelDescription ? (
           <span className={styles.channelDescription}>
             {channelDescription}
           </span>
         ) : (
-          <>
-            <Skeleton width={"16rem"} height={"1.3rem"} />
-          </>
+          <Skeleton width={"16rem"} height={"1.3rem"} />
         )}
       </div>
       <div className={styles.headerButtons}>
