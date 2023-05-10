@@ -4,10 +4,8 @@ import styles from "@/app/styles/Auth.module.scss";
 import Field from "@/app/components/Auth/Field";
 import { useState, FormEvent } from "react";
 import { signIn } from "next-auth/react";
-import { useSession } from "next-auth/react";
 
 function Form({ signInMode }: { signInMode: boolean }) {
-  const { data: session } = useSession();
   const [usernameInput, setUsernameInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [error, setError] = useState("");
@@ -65,7 +63,7 @@ function Form({ signInMode }: { signInMode: boolean }) {
     }
   };
 
-  return session ? null : (
+  return (
     <form
       className={styles.container}
       onSubmit={signInMode ? signInValidate : signUpValidate}>

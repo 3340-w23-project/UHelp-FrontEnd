@@ -11,28 +11,31 @@ import {
   setChannelName,
   setChannelDescription,
 } from "@/redux/slices/channelSlice";
+import { setActiveCategory } from "@/redux/slices/forumSlice";
 
 type Props = {
   category: Category;
   channelID: number;
+  openCategory: number;
 };
 
-function Category({ category, channelID }: Props) {
+function Category({ category, channelID, openCategory }: Props) {
   const dispatch = useAppDispatch();
-  const [showChannels, setShowChannels] = useState(true);
 
   return (
     <div className={styles.sidebarCategory}>
       <span
         className={styles.category}
-        onClick={() => setShowChannels(!showChannels)}>
+        onClick={() => dispatch(setActiveCategory(category.id))}>
         {category.name}
         <FaChevronDown
-          className={`${styles.arrow} ${showChannels ? styles.openArrow : ""}`}
+          className={`${styles.arrow} ${
+            category.id === openCategory ? styles.openArrow : ""
+          }`}
         />
       </span>
       <AnimatePresence mode="wait" initial={false}>
-        {showChannels && (
+        {category.id === openCategory && (
           <motion.ul
             variants={categoryAnimation}
             initial="initial"

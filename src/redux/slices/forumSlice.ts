@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 interface ForumState {
+  activeCategory: number;
   isPostModalOpen: boolean;
   isDeleteModalOpen: boolean;
   isEditModalOpen: boolean;
@@ -15,6 +16,7 @@ interface ForumState {
 }
 
 const initialState: ForumState = {
+  activeCategory: 1,
   isPostModalOpen: false,
   isDeleteModalOpen: false,
   isEditModalOpen: false,
@@ -31,6 +33,9 @@ export const forumSlice = createSlice({
   name: "forum",
   initialState,
   reducers: {
+    setActiveCategory: (state, action: PayloadAction<number>) => {
+      state.activeCategory = action.payload;
+    },
     setIsPostModalOpen: (state, action: PayloadAction<boolean>) => {
       state.isPostModalOpen = action.payload;
     },
@@ -65,6 +70,7 @@ export const forumSlice = createSlice({
 });
 
 export const {
+  setActiveCategory,
   setIsPostModalOpen,
   setIsDeleteModalOpen,
   setIsEditModalOpen,

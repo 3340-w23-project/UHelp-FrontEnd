@@ -1,60 +1,37 @@
 "use client";
 import React from "react";
 import styles from "@/app/styles/Forum.module.scss";
-import Link from "next/link";
-import Image from "next/image";
 import CategoryComponent from "./Category";
-import useSWR from "swr";
-import { AppConfig } from "@/utils/AppConfig";
-import { usePathname } from "next/navigation";
+import useSWRImmutable from "swr/immutable";
 import { Category } from "@/utils/Types";
 import { useAppSelector } from "@/redux/store";
-import { useSession } from "next-auth/react";
+import { categoriesFetcher } from "@/app/(Forum)/forum/[channelID]/helper";
+import Logo from "./Logo";
+import { useParams } from "next/navigation";
 
 function Sidebar() {
-  const { data: session } = useSession();
-  const channelID = usePathname()?.split("/")[2];
+  const params = useParams();
+  const channelID = params?.channelID;
   const isMobile = useAppSelector((state) => state.app.isMobile);
-  const authHeader = {
-    "Content-Type": "application/json",
-    Authorization: "Bearer " + session?.user?.access_token,
-  };
-  const categoriesFetcher = async (url: string): Promise<Category[]> =>
-    fetch(url, {
-      method: "GET",
-      headers: authHeader,
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        return data.categories;
-      });
-
-  const { data: categories } = useSWR<Category[]>(
+  const { data: categories } = useSWRImmutable<Category[]>(
     "/uhelp-api/categories",
-    categoriesFetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateIfStale: false,
-    }
+    categoriesFetcher
   );
+
+  const activeCategory = useAppSelector(
+    (state) => state.forum.activeCategory
+  ) as number;
+
+  const [openCategory, setOpenCategory] =
+    React.useState<number>(activeCategory);
+
+  React.useEffect(() => {
+    setOpenCategory(activeCategory);
+  }, [activeCategory]);
 
   return isMobile ? null : (
     <div className={styles.sidebarWrapper}>
-      <div className={styles.sidebarHeader}>
-        <Link href="/">
-          <div className={styles.logo}>
-            <Image
-              priority
-              src={AppConfig.siteLogo}
-              alt={AppConfig.siteName + " Logo"}
-              quality={100}
-              width={50}
-              height={50}
-            />
-            <h2>{AppConfig.siteName}</h2>
-          </div>
-        </Link>
-      </div>
+      <Logo />
       <div className={styles.sidebarContent}>
         {categories &&
           categories.map((category) => (
@@ -62,6 +39,7 @@ function Sidebar() {
               key={category.id}
               category={category}
               channelID={parseInt(channelID!.toString())}
+              openCategory={openCategory}
             />
           ))}
       </div>
@@ -69,4 +47,4 @@ function Sidebar() {
   );
 }
 
-export default React.memo(Sidebar);
+export default Sidebar;

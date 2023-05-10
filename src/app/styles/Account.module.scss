@@ -45,7 +45,7 @@
 
   .dropDownContainer {
     position: absolute;
-    max-width: 100%;
+    width: 100%;
     top: calc(100% - 2px);
     left: 0;
     background-color: #f2ebda;
@@ -61,7 +61,7 @@
       width: 100%;
       border-top: 1px solid #b8b2a3;
       cursor: pointer;
-      padding: 0.5rem 1rem;
+      padding: 0.7rem 1rem;
       transition: background-color 0.2s ease;
 
       &:hover {

@@ -7,14 +7,14 @@ import { IoMdExit } from "react-icons/io";
 import { FaHome } from "react-icons/fa";
 import { menuAnimation } from "@/utils/Animations";
 import Link from "next/link";
-import { useSession, signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
-let Account = () => {
+const Account = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { data: session } = useSession();
   const displayName = session?.user?.display_name;
 
-  return (
+  return displayName ? (
     <div className={styles.container}>
       <div
         className={`${styles.account} ${isOpen ? styles.open : ""}`}
@@ -34,10 +34,10 @@ let Account = () => {
             exit={"exit"}
             variants={menuAnimation}
             onMouseLeave={() => setIsOpen(false)}>
-            <Link className={styles.item} href="/">
+            {/* <Link className={styles.item} href="/">
               <FaHome />
               {"Home"}
-            </Link>
+            </Link> */}
             <div
               className={`${styles.item} ${styles.logout}`}
               onClick={() => signOut({ callbackUrl: "/signin" })}>
@@ -48,7 +48,7 @@ let Account = () => {
         )}
       </AnimatePresence>
     </div>
-  );
+  ) : null;
 };
 
 export default React.memo(Account);
