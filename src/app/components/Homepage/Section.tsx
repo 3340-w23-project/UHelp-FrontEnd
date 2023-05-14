@@ -1,8 +1,10 @@
+"use client";
 import styles from "@/app/styles/Home.module.scss";
 import className from "classnames";
 import Image from "next/image";
 import Button from "../Button";
 import { useAppSelector } from "@/redux/store";
+import { useSession } from "next-auth/react";
 
 type SectionProps = {
   heading?: string;
@@ -15,6 +17,7 @@ type SectionProps = {
 };
 
 const Section = (props: SectionProps) => {
+  const session = useSession();
   const isMobile = useAppSelector((state) => state.app.isMobile);
   return (
     <div className={styles.sectionWrapper}>
@@ -45,7 +48,7 @@ const Section = (props: SectionProps) => {
                 <div className={styles.description}>{props.description}</div>
               )}
             </div>
-            {props.buttonLabel && (
+            {props.buttonLabel && !session?.data?.user && (
               <Button xl href={props.buttonHref} label={props.buttonLabel} />
             )}
           </div>
