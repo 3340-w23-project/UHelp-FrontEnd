@@ -5,6 +5,7 @@ import styles from "@/app/styles/Navbar.module.scss";
 import { AnimatePresence, motion, useCycle } from "framer-motion";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { MdOutlineClose } from "react-icons/md";
+import MobileMenuBackdrop from "./MobileMenuBackdrop";
 
 type Props = {
   active: boolean;
@@ -21,29 +22,31 @@ const links = [
 function MobileMenu({ active, setActive }: Props) {
   const [open, cycleOpen] = useCycle(false, true);
   return (
-    <main>
+    <>
       <AnimatePresence>
         {open && (
-          <motion.aside
-            className={styles.mobileMenuWrapper}
-            initial={{ x: -300 }}
-            animate={{
-              x: 0,
-              transition: { duration: 0.3 },
-            }}
-            exit={{
-              x: -300,
-              transition: { duration: 0.3 },
-            }}
-            onAnimationStart={() => setActive(true)}>
-            <motion.div className={styles.mobileMenuContainer}>
-              {links.map(({ name, to, id }) => (
-                <Link key={id} href={to} className={styles.mobileMenuItem}>
-                  {name}
-                </Link>
-              ))}
-            </motion.div>
-          </motion.aside>
+          <MobileMenuBackdrop onClick={() => cycleOpen()}>
+            <motion.aside
+              className={styles.mobileMenuWrapper}
+              initial={{ x: -300 }}
+              animate={{
+                x: 0,
+                transition: { duration: 0.3 },
+              }}
+              exit={{
+                x: -300,
+                transition: { duration: 0.3 },
+              }}
+              onAnimationStart={() => setActive(true)}>
+              <motion.div className={styles.mobileMenuContainer}>
+                {links.map(({ name, to, id }) => (
+                  <Link key={id} href={to} className={styles.mobileMenuItem}>
+                    {name}
+                  </Link>
+                ))}
+              </motion.div>
+            </motion.aside>
+          </MobileMenuBackdrop>
         )}
       </AnimatePresence>
       <div className={styles.menu}>
@@ -59,7 +62,7 @@ function MobileMenu({ active, setActive }: Props) {
           />
         )}
       </div>
-    </main>
+    </>
   );
 }
 

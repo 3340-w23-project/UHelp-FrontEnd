@@ -1,15 +1,14 @@
 "use client";
-import styles from "@/app/styles/Forum.module.scss";
 import { motion } from "framer-motion";
-import { RemoveScrollBar } from "react-remove-scroll-bar";
 import { backdropTransition } from "@/utils/Animations";
+import styles from "@/app/styles/Navbar.module.scss";
 
 type Props = {
   children: React.ReactNode;
   onClick: () => void;
 };
 
-const ModalBackdrop = ({ children, onClick }: Props) => {
+const MobileMenuBackdrop = ({ children, onClick }: Props) => {
   return (
     <motion.div
       onClick={onClick}
@@ -18,10 +17,9 @@ const ModalBackdrop = ({ children, onClick }: Props) => {
       initial="hidden"
       animate="visible"
       exit="exit">
-      <RemoveScrollBar />
       {children}
     </motion.div>
   );
 };
 
-export default ModalBackdrop;
+export default MobileMenuBackdrop;

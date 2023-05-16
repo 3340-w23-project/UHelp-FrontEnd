@@ -4,11 +4,20 @@ import styles from "@/app/styles/Auth.module.scss";
 import Field from "@/app/components/Auth/Field";
 import { useState, FormEvent } from "react";
 import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 
 function Form({ signInMode }: { signInMode: boolean }) {
   const [usernameInput, setUsernameInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [error, setError] = useState("");
+  const urlParams = useSearchParams();
+  const errorParam = urlParams?.get("error");
+
+  React.useEffect(() => {
+    if (errorParam) {
+      setError(errorParam);
+    }
+  }, [errorParam]);
 
   const signInValidate = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -22,6 +31,8 @@ function Form({ signInMode }: { signInMode: boolean }) {
   };
 
   const signInCredentials = async () => {
+    setUsernameInput("");
+    setPasswordInput("");
     await signIn("credentials", {
       username: usernameInput,
       password: passwordInput,
