@@ -3,14 +3,12 @@ import styles from "@/app/styles/Navbar.module.scss";
 import Link from "next/link";
 import className from "classnames";
 import Image from "next/image";
-import Account from "./Account";
-import Button from "../Button";
 import MobileMenu from "./MobileMenu";
 import { useState } from "react";
-import { MenuItem } from "./MenuItem";
 import { AppConfig } from "@/utils/AppConfig";
 import { useAppSelector } from "@/redux/store";
 import { useSession } from "next-auth/react";
+import DesktopMenu from "./DesktopMenu";
 
 function Navbar() {
   const { data: session } = useSession();
@@ -38,24 +36,7 @@ function Navbar() {
       </div>
 
       {!isMobile ? (
-        <nav className={styles.menu}>
-          <ul>
-            <MenuItem label="Home" href="/" />
-            {session ? (
-              <>
-                <MenuItem href="/forum/1" label="Forum" />
-                <Account />
-              </>
-            ) : (
-              <>
-                <MenuItem label="Sign In" href="/signin" />
-                <li>
-                  <Button sm secondary href="/signup" label="Sign Up" />
-                </li>
-              </>
-            )}
-          </ul>
-        </nav>
+        <DesktopMenu session={session} />
       ) : (
         <MobileMenu active={active} setActive={setActive} />
       )}
