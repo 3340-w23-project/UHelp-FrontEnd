@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import styles from "@/app/styles/Forum.module.scss";
-import { formatTime, like } from "../../../(Forum)/forum/[channelID]/helper";
+import { formatTime } from "../../../(Forum)/forum/[channelID]/helper";
 import {
   setIsReplyModalOpen,
   setIsEditModalOpen,
@@ -33,6 +33,8 @@ function Post({ isReply, post, postID, like }: Props) {
   const { data: session } = useSession();
   const username = session?.user?.username;
   const dispatch = useDispatch();
+  const [isLikeTapped, setIsLikeTapped] = useState<boolean>(false);
+  const [isLikeAnimating, setIsLikeAnimating] = useState<boolean>(false);
 
   return (
     <div
@@ -115,13 +117,28 @@ function Post({ isReply, post, postID, like }: Props) {
             scale: [null, 1.1],
             y: [null, -2],
           }}
+          onTapStart={() => {
+            setIsLikeTapped(true);
+            setIsLikeAnimating(true);
+          }}
+          onTap={() => setIsLikeTapped(false)}
           className={`${styles.postLikes}${
             post.liked ? " " + styles.liked : ""
           }`}
-          onClick={() => {
+          onClick={(e) => {
             like(isReply ? post.id : postID, isReply, isReply ? post.depth : 0);
           }}>
-          {post.likes} <AiFillLike className={styles.likeIcon} />
+          {post.likes}{" "}
+          <motion.span
+            animate={{
+              scale: isLikeAnimating || isLikeTapped ? 1.1 : 1,
+              y: isLikeAnimating || isLikeTapped ? -2 : 0,
+              rotate: isLikeAnimating || isLikeTapped ? -15 : 0,
+            }}
+            transition={{ duration: 0.15 }}
+            onAnimationComplete={() => setIsLikeAnimating(false)}>
+            <AiFillLike className={styles.likeIcon} />
+          </motion.span>
         </motion.span>
       </div>
     </div>
