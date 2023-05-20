@@ -9,7 +9,7 @@ import {
   setPostID,
   setPostTitleInput,
 } from "@/redux/slices/forumSlice";
-import { Category, Channel, Post } from "@/utils/Types";
+import { Category, Post } from "@/utils/Types";
 
 const apiURL = process.env.NEXT_PUBLIC_API_URL;
 const dispatch = store.dispatch;
@@ -49,8 +49,7 @@ export const formatTime = (date: string) => {
     ? diffInMinutes + "m ago"
     : diffInHours < 24
     ? diffInHours + "h ago"
-    : "on " +
-      localTime.toLocaleString("en-US", {
+    : localTime.toLocaleString("en-US", {
         year: "numeric",
         month: "short",
         day: "numeric",

@@ -17,8 +17,14 @@
   background-color: var(--tertiary-color);
   z-index: 100;
 
+  // Mobile
   @media (max-width: 768px) {
     width: 100%;
+    padding: 0.75rem 1.2rem;
+
+    .headerButtons {
+      display: none !important;
+    }
   }
 
   .channelInfo {
@@ -47,6 +53,11 @@
   @include size($minHeight: 100vh);
   padding: 7rem 4rem 4rem 4rem;
   background-color: var(--tertiary-color);
+
+  // Mobile
+  @media (max-width: 768px) {
+    padding: 4rem 1.2rem;
+  }
 
   .postsWrapper {
     @include flex($direction: column);

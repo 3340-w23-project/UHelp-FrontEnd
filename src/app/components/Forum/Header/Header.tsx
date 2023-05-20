@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import styles from "@/app/styles/Forum.module.scss";
 import { zeroRightClassName } from "react-remove-scroll-bar";
 import { useDispatch } from "react-redux";
@@ -15,6 +15,7 @@ import {
   setChannelName,
 } from "@/redux/slices/channelSlice";
 import { channelFetcher } from "@/app/(Forum)/forum/[channelID]/helper";
+import MobileMenu from "../../Navbar/MobileMenu";
 
 interface Props {
   session: any;
@@ -30,6 +31,8 @@ function ForumHeader({ channelID }: Props) {
   const channelDescription = useAppSelector(
     (state) => state.channel.channelDescription
   );
+  const isMobile = useAppSelector((state) => state.app.isMobile);
+  const [active, setActive] = useState<boolean>(false);
 
   React.useEffect(() => {
     if (data) {
@@ -47,27 +50,32 @@ function ForumHeader({ channelID }: Props) {
         ) : (
           <Skeleton width={"8rem"} height={"1.8rem"} />
         )}
-        {!channelDescription && !channelName && (
+        {!channelDescription && !isMobile && !channelName && (
           <div style={{ height: "0.05rem" }} />
         )}
-        {channelDescription ? (
+        {channelDescription && !isMobile ? (
           <span className={styles.channelDescription}>
             {channelDescription}
           </span>
         ) : (
-          <Skeleton width={"16rem"} height={"1.3rem"} />
+          !isMobile && <Skeleton width={"16rem"} height={"1.3rem"} />
         )}
       </div>
-      <div className={styles.headerButtons}>
-        <Button
-          sm
-          tertiary
-          icon={MdPostAdd}
-          label="New Post"
-          onClick={() => dispatch(setIsPostModalOpen(true))}
-        />
-        <Account />
-      </div>
+
+      {!isMobile ? (
+        <div className={styles.headerButtons}>
+          <Button
+            sm
+            tertiary
+            icon={MdPostAdd}
+            label="New Post"
+            onClick={() => dispatch(setIsPostModalOpen(true))}
+          />
+          <Account />
+        </div>
+      ) : (
+        <MobileMenu active={active} setActive={setActive} />
+      )}
     </div>
   );
 }

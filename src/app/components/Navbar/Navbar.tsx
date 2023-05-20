@@ -14,8 +14,8 @@ function Navbar() {
   const { data: session } = useSession();
   const isMobile = useAppSelector((state) => state.app.isMobile);
   const isScrolled = useAppSelector((state) => state.app.isScrolled);
-
   const [active, setActive] = useState<boolean>(false);
+  
   return (
     <div
       className={className(styles.navbar, {
