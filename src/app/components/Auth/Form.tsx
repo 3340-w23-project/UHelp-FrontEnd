@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "@/app/styles/Auth.module.scss";
 import Field from "@/app/components/Auth/Field";
 import { useState, FormEvent } from "react";
@@ -13,7 +13,7 @@ function Form({ signInMode }: { signInMode: boolean }) {
   const urlParams = useSearchParams();
   const errorParam = urlParams?.get("error");
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (errorParam) {
       setError(errorParam);
     }
@@ -31,8 +31,6 @@ function Form({ signInMode }: { signInMode: boolean }) {
   };
 
   const signInCredentials = async () => {
-    setUsernameInput("");
-    setPasswordInput("");
     await signIn("credentials", {
       username: usernameInput,
       password: passwordInput,
@@ -64,7 +62,6 @@ function Form({ signInMode }: { signInMode: boolean }) {
       }),
     });
     if (res.status === 201) {
-      console.log("message: User created");
       signInCredentials();
     } else if (res.status === 409) {
       setError("Username already exists");
