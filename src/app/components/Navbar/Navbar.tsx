@@ -1,7 +1,7 @@
 "use client";
 import styles from "@/app/styles/Navbar.module.scss";
 import Link from "next/link";
-import className from "classnames";
+import clsx from "clsx";
 import Image from "next/image";
 import MobileMenu from "./MobileMenu";
 import { useState } from "react";
@@ -15,10 +15,10 @@ function Navbar() {
   const isMobile = useAppSelector((state) => state.app.isMobile);
   const isScrolled = useAppSelector((state) => state.app.isScrolled);
   const [active, setActive] = useState<boolean>(false);
-  
+
   return (
     <div
-      className={className(styles.navbar, {
+      className={clsx(styles.navbar, {
         [styles.scrolled]: isScrolled || active,
       })}>
       <div className={styles.logo}>

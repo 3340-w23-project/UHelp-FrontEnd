@@ -1,10 +1,11 @@
 "use client";
-import className from "classnames";
+import clsx from "clsx";
 import Link from "next/link";
 
 type ButtonProps = {
   xl?: boolean;
   sm?: boolean;
+  full?: boolean;
   secondary?: boolean;
   tertiary?: boolean;
   label?: string;
@@ -17,14 +18,16 @@ const Button = ({
   icon: Icon,
   label,
   href,
+  full,
   xl,
   sm,
   secondary,
   tertiary,
   onClick,
 }: ButtonProps) => {
-  const btnClass = className({
+  const btnClass = clsx({
     btn: true,
+    "btn-full": full,
     "btn-xl": xl,
     "btn-sm": sm,
     "btn-primary": !secondary && !tertiary,

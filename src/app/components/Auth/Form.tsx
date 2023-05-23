@@ -1,23 +1,16 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import styles from "@/app/styles/Auth.module.scss";
 import Field from "@/app/components/Auth/Field";
+import clsx from "clsx";
 import { useState, FormEvent } from "react";
 import { signIn } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
 
 function Form({ signInMode }: { signInMode: boolean }) {
   const [usernameInput, setUsernameInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [error, setError] = useState("");
-  const urlParams = useSearchParams();
-  const errorParam = urlParams?.get("error");
-
-  useEffect(() => {
-    if (errorParam) {
-      setError(errorParam);
-    }
-  }, [errorParam]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const signInValidate = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,11 +24,18 @@ function Form({ signInMode }: { signInMode: boolean }) {
   };
 
   const signInCredentials = async () => {
+    setIsLoading(true);
     await signIn("credentials", {
       username: usernameInput,
       password: passwordInput,
-      redirect: true,
-      callbackUrl: "/forum",
+      redirect: false,
+    }).then((res) => {
+      if (res?.error) {
+        setError(res.error);
+      } else {
+        window.location.replace("/forum");
+      }
+      setIsLoading(false);
     });
   };
 
@@ -51,7 +51,8 @@ function Form({ signInMode }: { signInMode: boolean }) {
   };
 
   const signUp = async () => {
-    const res = await fetch("/uhelp-api/signup", {
+    setIsLoading(true);
+    await fetch("/uhelp-api/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -60,15 +61,17 @@ function Form({ signInMode }: { signInMode: boolean }) {
         username: usernameInput,
         password: passwordInput,
       }),
+    }).then((res: any) => {
+      if (res.status === 201) {
+        signInCredentials();
+      } else if (res.status === 409) {
+        setError("Username already exists");
+      } else {
+        const data = res.json();
+        setError(data?.msg);
+      }
+      setIsLoading(false);
     });
-    if (res.status === 201) {
-      signInCredentials();
-    } else if (res.status === 409) {
-      setError("Username already exists");
-    } else {
-      const data = await res.json();
-      setError(data.msg);
-    }
   };
 
   return (
@@ -80,7 +83,9 @@ function Form({ signInMode }: { signInMode: boolean }) {
         label="Username"
         type="text"
         id="username"
-        placeholder="Username"
+        placeholder="User"
+        required
+        disabled={isLoading}
         value={usernameInput}
         onChange={(e) => setUsernameInput(e.target.value)}
       />
@@ -89,6 +94,8 @@ function Form({ signInMode }: { signInMode: boolean }) {
         type="password"
         id="password"
         placeholder="Password"
+        required
+        disabled={isLoading}
         value={passwordInput}
         onChange={(e) => setPasswordInput(e.target.value)}
       />
@@ -96,9 +103,17 @@ function Form({ signInMode }: { signInMode: boolean }) {
       <div className={styles.submit}>
         <input
           type="submit"
-          value={signInMode ? "Sign In" : "Sign Up"}
-          className="btn btn-sm btn-secondary"
+          value={isLoading ? "" : signInMode ? "Sign In" : "Sign Up"}
+          disabled={isLoading}
+          className={clsx([
+            "btn",
+            "btn-sm",
+            "btn-full",
+            "btn-secondary",
+            isLoading && styles.loading,
+          ])}
         />
+        {isLoading && <div className={styles.spinner} />}
       </div>
     </form>
   );

@@ -1,6 +1,6 @@
 "use client";
 import styles from "@/app/styles/Home.module.scss";
-import className from "classnames";
+import clsx from "clsx";
 import Image from "next/image";
 import Button from "../Button";
 import { useAppSelector } from "@/redux/store";
@@ -22,7 +22,7 @@ const Section = (props: SectionProps) => {
   return (
     <div className={styles.sectionWrapper}>
       <div
-        className={className({
+        className={clsx({
           [styles.section]: true,
           [styles.reverse]: props.reverse && !isMobile,
         })}>
