@@ -24,6 +24,7 @@ function Form({ signInMode }: { signInMode: boolean }) {
   };
 
   const signInCredentials = async () => {
+    setError("");
     setIsLoading(true);
     await signIn("credentials", {
       username: usernameInput,
@@ -51,6 +52,7 @@ function Form({ signInMode }: { signInMode: boolean }) {
   };
 
   const signUp = async () => {
+    setError("");
     setIsLoading(true);
     await fetch("/uhelp-api/signup", {
       method: "POST",
