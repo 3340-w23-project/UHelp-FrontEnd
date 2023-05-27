@@ -1,3 +1,5 @@
+@import "./variables.scss";
+
 :root {
   --max-width: 1024px;
   --primary-color: #ffc414;
@@ -28,27 +30,12 @@ li {
   list-style: none;
 }
 
+::selection {
+  background: #cdc8ba;
+}
+
 .btn {
-  display: inline-flex;
-  justify-content: center;
-  border-radius: 0.25rem;
-  text-align: center;
-  font-size: 1.25rem;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 4px;
-  transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
-
-  &:hover {
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 4px;
-  }
+  @include button;
 }
 
 .btn-xl {

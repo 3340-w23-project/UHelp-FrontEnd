@@ -1,7 +1,23 @@
 "use client";
+import "katex/dist/katex.min.css";
 import React, { useState } from "react";
 import styles from "@/app/styles/Forum.module.scss";
+import Button from "@/app/components/Button";
+import CodeCopy from "./CodeCopy";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import remarkBreaks from "remark-breaks";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 import { formatTime } from "../../../(Forum)/forum/[channelID]/helper";
+import { IoTrash } from "react-icons/io5";
+import { AiFillLike } from "react-icons/ai";
+import { MdReply, MdModeEdit } from "react-icons/md";
+import { FaUserAlt } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { motion } from "framer-motion";
+import { useSession } from "next-auth/react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import {
   setIsReplyModalOpen,
   setIsEditModalOpen,
@@ -12,15 +28,6 @@ import {
   setPostTitleInput,
   setPostContentInput,
 } from "@/redux/slices/forumSlice";
-
-import { IoTrash } from "react-icons/io5";
-import { AiFillLike } from "react-icons/ai";
-import { MdReply, MdModeEdit } from "react-icons/md";
-import { FaUserAlt } from "react-icons/fa";
-import { useDispatch } from "react-redux";
-import Button from "@/app/components/Button";
-import { motion } from "framer-motion";
-import { useSession } from "next-auth/react";
 
 interface Props {
   isReply: boolean;
@@ -35,7 +42,6 @@ function Post({ isReply, post, postID, like }: Props) {
   const dispatch = useDispatch();
   const [isLikeTapped, setIsLikeTapped] = useState<boolean>(false);
   const [isLikeAnimating, setIsLikeAnimating] = useState<boolean>(false);
-
   return (
     <div
       key={post.id}
@@ -110,7 +116,47 @@ function Post({ isReply, post, postID, like }: Props) {
           />
         </div>
       </div>
-      <div className={styles.postContent}>{post.content}</div>
+      <ReactMarkdown
+        remarkPlugins={[
+          [remarkGfm, { singleTilde: false }],
+          remarkBreaks,
+          remarkMath,
+        ]}
+        rehypePlugins={[rehypeKatex]}
+        linkTarget="_blank noopener noreferrer"
+        skipHtml
+        disallowedElements={["img"]}
+        className={styles.postContent}
+        components={{
+          code({ node, inline, className, children, ...props }) {
+            const match = /language-(\w+)/.exec(className || "");
+            return !inline && match ? (
+              <SyntaxHighlighter
+                customStyle={{
+                  background: "none",
+                  padding: 0,
+                  textShadow: "none",
+                }}
+                codeTagProps={{
+                  style: {
+                    textShadow: "none",
+                  },
+                }}
+                showLineNumbers
+                language={match[1]}
+                PreTag="div">
+                {String(children).replace(/\n$/, "")}
+              </SyntaxHighlighter>
+            ) : (
+              <code {...props} className={className}>
+                {children}
+              </code>
+            );
+          },
+          pre: (pre: any) => <CodeCopy pre={pre} />,
+        }}>
+        {post.content}
+      </ReactMarkdown>
       <div className={styles.postFooter}>
         <motion.span
           whileTap={{

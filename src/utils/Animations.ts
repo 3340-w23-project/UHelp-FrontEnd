@@ -72,7 +72,7 @@ export const menuAnimation = {
   },
 };
 
-export const backdropTransition = {
+export const fadeTransition = {
   hidden: {
     opacity: 0,
   },

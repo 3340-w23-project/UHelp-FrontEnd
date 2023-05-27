@@ -208,6 +208,142 @@
         .postDetails,
         .postContent {
           color: #373737;
+
+          a {
+            text-decoration: underline;
+
+            &:hover {
+              color: #808080;
+            }
+          }
+
+          blockquote {
+            font-style: italic;
+            border-left: 0.25rem solid var(--secondary-color);
+            padding-left: 0.5rem;
+            margin: 1rem 0;
+            background-color: rgba(129, 125, 119, 0.1);
+          }
+
+          p {
+            code {
+              background-color: rgba(129, 125, 119, 0.2);
+              padding: 0.1rem 0.25rem;
+              border-radius: 0.25rem;
+            }
+          }
+
+          h1,
+          h2,
+          h3,
+          h4,
+          h5,
+          h6 {
+            margin-top: 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+          }
+
+          h1 {
+            font-size: 1.5rem;
+          }
+
+          h2 {
+            font-size: 1.4rem;
+          }
+
+          h3 {
+            font-size: 1.3rem;
+          }
+
+          h4 {
+            font-size: 1.2rem;
+          }
+
+          h5 {
+            font-size: 1.1rem;
+          }
+
+          h6 {
+            font-size: 1rem;
+          }
+
+          // Footnotes
+          section {
+            a {
+              text-decoration: none;
+            }
+            h2 {
+              margin-top: 1rem;
+            }
+          }
+
+          .copyCode {
+            position: relative;
+
+            button {
+              @include button;
+              z-index: 1;
+              position: absolute;
+              top: 0.5rem;
+              right: 0.5rem;
+              font-size: 1rem;
+            }
+
+            pre {
+              display: block;
+              background: var(--tertiary-color);
+              border: 1px solid rgba(0, 0, 0, 0.2);
+              border-left: 0.25rem solid var(--secondary-color);
+              color: #464646;
+              font-size: 15px;
+              page-break-inside: avoid;
+              font-family: monospace;
+              line-height: 1.6;
+              margin: 1rem 0;
+              max-width: 100%;
+              overflow: auto;
+              padding: 0.5rem;
+              word-wrap: break-word;
+            }
+          }
+
+          table {
+            max-width: 100%;
+            border-collapse: collapse;
+            border-radius: 0.25rem;
+            border: 1px solid var(--secondary-color);
+            text-align: center;
+            vertical-align: middle;
+
+            th,
+            td {
+              border: 1px solid var(--secondary-color);
+              padding: 0.5rem;
+            }
+          }
+
+          thead {
+            background-color: #373737;
+            color: var(--tertiary-color);
+
+            th {
+              width: 25%;
+            }
+          }
+
+          tbody {
+            tr:nth-child(odd) {
+              background-color: var(--tertiary-color);
+            }
+
+            tr:nth-child(even) {
+              background-color: #f2ebda;
+            }
+
+            th {
+              text-align: left;
+            }
+          }
         }
       }
     }
