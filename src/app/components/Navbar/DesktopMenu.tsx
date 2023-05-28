@@ -2,13 +2,12 @@ import React from "react";
 import styles from "@/app/styles/Navbar.module.scss";
 import { MenuItem } from "./MenuItem";
 import Account from "./Account";
-import Button from "../Button";
+import { Session } from "next-auth";
 
-function DesktopMenu({ session }: any) {
+function DesktopMenu({ session }: { session: Session | null }) {
   return (
     <nav className={styles.menu}>
       <ul>
-        <MenuItem label="Home" href="/" />
         {session ? (
           <>
             <MenuItem href="/forum/1" label="Forum" />
@@ -17,9 +16,11 @@ function DesktopMenu({ session }: any) {
         ) : (
           <>
             <MenuItem label="Sign In" href="/signin" />
-            <li>
-              <Button sm secondary href="/signup" label="Sign Up" />
-            </li>
+            <MenuItem
+              label="Sign Up"
+              href="/signup"
+              className="btn btn-sm btn-secondary"
+            />
           </>
         )}
       </ul>

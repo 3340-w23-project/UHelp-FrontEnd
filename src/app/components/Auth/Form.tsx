@@ -33,10 +33,10 @@ function Form({ signInMode }: { signInMode: boolean }) {
     }).then((res) => {
       if (res?.error) {
         setError(res.error);
+        setIsLoading(false);
       } else {
         window.location.replace("/forum");
       }
-      setIsLoading(false);
     });
   };
 

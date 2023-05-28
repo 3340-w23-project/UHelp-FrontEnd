@@ -2,25 +2,36 @@
 import React, { useState } from "react";
 import styles from "@/app/styles/Account.module.scss";
 import { AnimatePresence, motion } from "framer-motion";
-import { FaUserAlt, FaChevronDown } from "react-icons/fa";
+import { FaChevronDown } from "react-icons/fa";
 import { IoMdExit } from "react-icons/io";
-import { FaHome } from "react-icons/fa";
 import { menuAnimation } from "@/utils/Animations";
-import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
+import Avatar from "react-avatar";
+import Skeleton from "../Skeleton";
 
 const Account = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { data: session } = useSession();
   const displayName = session?.user?.display_name;
 
-  return displayName ? (
+  return (
     <div className={styles.container}>
       <div
         className={`${styles.account} ${isOpen ? styles.open : ""}`}
         onClick={() => setIsOpen(!isOpen)}>
-        <FaUserAlt className={styles.userIcon} />
-        <div>{displayName}</div>
+        <Avatar
+          name={displayName}
+          round
+          size={"25px"}
+          color={"#191715"}
+          style={{ border: "none" }}
+          className={styles.avatar}
+        />
+        {displayName ? (
+          <span>{displayName}</span>
+        ) : (
+          <Skeleton width={"5rem"} height={"1.2rem"} />
+        )}
         <FaChevronDown
           className={`${styles.arrow} ${isOpen ? styles.openArrow : ""}`}
         />
@@ -34,10 +45,6 @@ const Account = () => {
             exit={"exit"}
             variants={menuAnimation}
             onMouseLeave={() => setIsOpen(false)}>
-            {/* <Link className={styles.item} href="/">
-              <FaHome />
-              {"Home"}
-            </Link> */}
             <div
               className={`${styles.item} ${styles.logout}`}
               onClick={() => signOut({ callbackUrl: "/signin" })}>
@@ -48,7 +55,7 @@ const Account = () => {
         )}
       </AnimatePresence>
     </div>
-  ) : null;
+  );
 };
 
 export default React.memo(Account);

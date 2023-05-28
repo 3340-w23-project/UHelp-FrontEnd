@@ -5,14 +5,14 @@
   position: relative;
 
   .account {
-    @include flex($align: center, $gap: 1rem);
+    @include flex($align: center);
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;
     padding: 0.5rem 1rem;
     border-radius: 5px;
     border: 1px solid #b8b2a3;
-    background-color: #f2ebda;
+    background-color: #f8f1dd;
     box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 4px;
     transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     cursor: pointer;
@@ -25,16 +25,18 @@
     .arrow {
       transform: rotate(-90deg);
       margin-top: 0.2rem;
+      margin-left: 1.5rem;
       transition: transform 0.2s ease;
+    }
+
+    .avatar {
+      border: 1px solid #b8b2a3;
+      margin-right: 0.8rem;
     }
 
     .openArrow {
       transform: rotate(0deg);
       transition: transform 0.2s ease;
-    }
-
-    .userIcon {
-      font-size: 1rem;
     }
   }
 

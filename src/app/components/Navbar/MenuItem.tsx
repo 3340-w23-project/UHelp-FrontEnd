@@ -2,9 +2,17 @@
 import styles from "@/app/styles/Navbar.module.scss";
 import Link from "next/link";
 
-const MenuItem = ({ label, href }: { label: string; href: string }) => (
+interface MenuItemProps {
+  label: string;
+  href: string;
+  className?: string;
+}
+
+const MenuItem = ({ label, href, className }: MenuItemProps) => (
   <li className={styles.item}>
-    <Link href={href}>{label}</Link>
+    <Link href={href}>
+      <span className={className}>{label}</span>
+    </Link>
   </li>
 );
 
