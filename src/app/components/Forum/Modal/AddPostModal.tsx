@@ -9,6 +9,7 @@ import {
 } from "@/redux/slices/forumSlice";
 import Button from "../../Button";
 import { useAppSelector } from "@/redux/store";
+import { useEffect } from "react";
 
 type Props = {
   onSubmit: () => void;
@@ -24,6 +25,19 @@ const AddPostModal = ({ onSubmit }: Props) => {
     (state) => state.forum.postContentInput
   );
   const error = useAppSelector((state) => state.forum.error);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter" && e.ctrlKey) {
+        onSubmit();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onSubmit]);
+
   return (
     <Modal
       status={isPostModalOpen}
