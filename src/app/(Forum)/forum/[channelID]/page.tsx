@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import React from "react";
 import dynamic from "next/dynamic";
 import styles from "@/app/styles/Forum.module.scss";

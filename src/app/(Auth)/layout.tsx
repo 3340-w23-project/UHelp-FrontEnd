@@ -1,5 +1,10 @@
 import "@/app/styles/globals.scss";
+import styles from "@/app/styles/Auth.module.scss";
 import { AppConfig } from "@/utils/AppConfig";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import Navbar from "../components/Navbar/Navbar";
 
 export const metadata = {
   title: {
@@ -7,10 +12,21 @@ export const metadata = {
   },
 };
 
-export default function AuthLayout({
+export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  const session = await getServerSession(authOptions);
+
+  if (session) {
+    redirect("/");
+  }
+
+  return session ? null : (
+    <>
+      <Navbar />
+      <div className={styles.wrapper}>{children}</div>
+    </>
+  );
 }
