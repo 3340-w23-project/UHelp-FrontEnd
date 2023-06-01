@@ -3,10 +3,8 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 
 interface ForumState {
   activeCategory: number;
-  isPostModalOpen: boolean;
-  isDeleteModalOpen: boolean;
-  isEditModalOpen: boolean;
-  isReplyModalOpen: boolean;
+  modalType: string;
+  isOpen: boolean;
   postID: number;
   replyID: number | null;
   action: string;
@@ -17,10 +15,8 @@ interface ForumState {
 
 const initialState: ForumState = {
   activeCategory: 1,
-  isPostModalOpen: false,
-  isDeleteModalOpen: false,
-  isEditModalOpen: false,
-  isReplyModalOpen: false,
+  modalType: "addPost",
+  isOpen: false,
   postID: 0,
   replyID: null,
   action: "post",
@@ -36,17 +32,11 @@ export const forumSlice = createSlice({
     setActiveCategory: (state, action: PayloadAction<number>) => {
       state.activeCategory = action.payload;
     },
-    setIsPostModalOpen: (state, action: PayloadAction<boolean>) => {
-      state.isPostModalOpen = action.payload;
+    setModalType: (state, action: PayloadAction<string>) => {
+      state.modalType = action.payload;
     },
-    setIsDeleteModalOpen: (state, action: PayloadAction<boolean>) => {
-      state.isDeleteModalOpen = action.payload;
-    },
-    setIsEditModalOpen: (state, action: PayloadAction<boolean>) => {
-      state.isEditModalOpen = action.payload;
-    },
-    setIsReplyModalOpen: (state, action: PayloadAction<boolean>) => {
-      state.isReplyModalOpen = action.payload;
+    setIsOpen: (state, action: PayloadAction<boolean>) => {
+      state.isOpen = action.payload;
     },
     setPostID: (state, action: PayloadAction<number>) => {
       state.postID = action.payload;
@@ -71,10 +61,8 @@ export const forumSlice = createSlice({
 
 export const {
   setActiveCategory,
-  setIsPostModalOpen,
-  setIsDeleteModalOpen,
-  setIsEditModalOpen,
-  setIsReplyModalOpen,
+  setModalType,
+  setIsOpen,
   setPostID,
   setReplyID,
   setAction,

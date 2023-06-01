@@ -1,30 +1,54 @@
 import { store } from "@/redux/store";
 import {
   setError,
-  setIsDeleteModalOpen,
-  setIsEditModalOpen,
-  setIsPostModalOpen,
-  setIsReplyModalOpen,
+  setIsOpen,
   setPostContentInput,
   setPostID,
   setPostTitleInput,
 } from "@/redux/slices/forumSlice";
 import { Category, Post } from "@/utils/Types";
+import { mutate } from "swr";
+import { signOut } from "next-auth/react";
 
 const apiURL = process.env.NEXT_PUBLIC_API_URL;
 const dispatch = store.dispatch;
 
-const handleResponse = (data: any, setError: Function, refreshData: Function) =>
-  data.error ? setError(data.error) : refreshData();
+const getChannelID = () => store.getState().channel.channelID;
+const getPostsURL = () => `/uhelp-api/channel/${getChannelID()}/posts`;
+let access_token: any = null;
+const headers = () => {
+  return {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + access_token,
+  };
+};
 
 const getAuthHeader = async () => {
   const res = await fetch("/api/auth/session");
   const data = await res.json();
-  return {
-    "Content-Type": "application/json",
-    Authorization: "Bearer " + data.user.access_token,
-  };
+  access_token = data.user.access_token;
 };
+getAuthHeader();
+
+export const postsFetcher = async () => {
+  const res = await fetch(getPostsURL(), {
+    method: "GET",
+    headers: headers(),
+  });
+  const data = await res.json();
+
+  if (res.status === 401) {
+    signOut();
+    window.location.href = "/signin";
+    return [];
+  }
+  if (data.error) return [];
+
+  return data;
+};
+
+const handleResponse = (data: any, setError: Function) =>
+  data.error ? setError(data.error) : mutate(getPostsURL());
 
 const checkInput = (title: string, content: string) =>
   title === ""
@@ -58,7 +82,7 @@ export const formatTime = (date: string) => {
       });
 };
 
-export const addPost = async (channelID: string, refreshData: Function) => {
+export const addPost = async () => {
   const postTitleInput = store.getState().forum.postTitleInput;
   const postContentInput = store.getState().forum.postContentInput;
 
@@ -70,28 +94,24 @@ export const addPost = async (channelID: string, refreshData: Function) => {
 
   fetch(`${apiURL}/post/new`, {
     method: "POST",
-    headers: await getAuthHeader(),
+    headers: headers(),
     body: JSON.stringify({
       title: postTitleInput,
       content: postContentInput,
-      channel_id: channelID,
+      channel_id: getChannelID(),
     }),
   })
     .then((res) => res.json())
     .then(({ error }) => {
-      handleResponse({ error }, setError, refreshData);
-      dispatch(setIsPostModalOpen(false));
+      handleResponse({ error }, setError);
+      dispatch(setIsOpen(false));
       dispatch(setPostTitleInput(""));
       dispatch(setPostContentInput(""));
     })
     .catch(console.error);
 };
 
-export const addReply = async (
-  id: number,
-  parent_id: number | null,
-  refreshData: Function
-) => {
+export const addReply = async (id: number, parent_id: number | null) => {
   const postContentInput = store.getState().forum.postContentInput;
   if (postContentInput === "") {
     dispatch(setError("Reply cannot be empty"));
@@ -100,7 +120,7 @@ export const addReply = async (
 
   fetch(`/uhelp-api/post/${id}/reply`, {
     method: "POST",
-    headers: await getAuthHeader(),
+    headers: headers(),
     body: JSON.stringify({
       content: postContentInput,
       post_id: id,
@@ -109,14 +129,14 @@ export const addReply = async (
   })
     .then((res) => res.json())
     .then(({ error }) => {
-      handleResponse({ error }, setError, refreshData);
-      dispatch(setIsReplyModalOpen(false));
+      handleResponse({ error }, setError);
+      dispatch(setIsOpen(false));
       dispatch(setPostContentInput(""));
     })
     .catch(console.error);
 };
 
-export const editPost = async (id: number, refreshData: Function) => {
+export const editPost = async (id: number) => {
   const postTitleInput = store.getState().forum.postTitleInput;
   const postContentInput = store.getState().forum.postContentInput;
 
@@ -128,7 +148,7 @@ export const editPost = async (id: number, refreshData: Function) => {
 
   fetch(`/uhelp-api/post/${id}/update`, {
     method: "POST",
-    headers: await getAuthHeader(),
+    headers: headers(),
     body: JSON.stringify({
       title: postTitleInput,
       content: postContentInput,
@@ -136,8 +156,8 @@ export const editPost = async (id: number, refreshData: Function) => {
   })
     .then((res) => res.json())
     .then(({ error }) => {
-      handleResponse({ error }, setError, refreshData);
-      dispatch(setIsEditModalOpen(false));
+      handleResponse({ error }, setError);
+      dispatch(setIsOpen(false));
       dispatch(setPostID(0));
       dispatch(setPostTitleInput(""));
       dispatch(setPostContentInput(""));
@@ -145,7 +165,7 @@ export const editPost = async (id: number, refreshData: Function) => {
     .catch(console.error);
 };
 
-export const editReply = async (id: number | null, refreshData: Function) => {
+export const editReply = async (id: number | null) => {
   const postContentInput = store.getState().forum.postContentInput;
 
   if (postContentInput === "") {
@@ -155,40 +175,40 @@ export const editReply = async (id: number | null, refreshData: Function) => {
 
   fetch(`/uhelp-api/reply/${id}/update`, {
     method: "POST",
-    headers: await getAuthHeader(),
+    headers: headers(),
     body: JSON.stringify({
       content: postContentInput,
     }),
   })
     .then((res) => res.json())
     .then(({ error }) => {
-      handleResponse({ error }, setError, refreshData);
-      dispatch(setIsEditModalOpen(false));
+      handleResponse({ error }, setError);
+      dispatch(setIsOpen(false));
       dispatch(setPostContentInput(""));
     })
     .catch(console.error);
 };
 
-export const deletePost = async (id: number, refreshData: Function) => {
+export const deletePost = async (id: number) => {
   fetch(`/uhelp-api/post/${id}/delete`, {
     method: "POST",
-    headers: await getAuthHeader(),
+    headers: headers(),
   })
     .then(() => {
-      dispatch(setIsDeleteModalOpen(false));
-      refreshData();
+      dispatch(setIsOpen(false));
+      mutate(postsFetcher);
     })
     .catch(console.error);
 };
 
-export const deleteReply = async (id: number | null, refreshData: Function) => {
+export const deleteReply = async (id: number | null) => {
   fetch(`/uhelp-api/reply/${id}/delete`, {
     method: "POST",
-    headers: await getAuthHeader(),
+    headers: headers(),
   })
     .then(() => {
-      dispatch(setIsDeleteModalOpen(false));
-      refreshData();
+      dispatch(setIsOpen(false));
+      mutate(postsFetcher);
     })
     .catch(console.error);
 };
@@ -197,7 +217,6 @@ export const like = async (
   id: number,
   isReply: boolean,
   depth: number = 0,
-  fetchPosts: Function,
   posts: Post[] | undefined
 ) => {
   const updateLikes = (data: Post[] | undefined, depth: number): Post[] => {
@@ -230,14 +249,14 @@ export const like = async (
       `/uhelp-api/${isReply ? "reply" : "post"}/${id}/like`,
       {
         method: "GET",
-        headers: await getAuthHeader(),
+        headers: headers(),
       }
     );
     const data = await res.json();
     return data;
   };
 
-  fetchPosts(updatedPostsFetcher(), {
+  mutate(getPostsURL(), updatedPostsFetcher(), {
     optimisticData: updatedPosts,
     rollbackOnError: true,
     populateCache: true,
@@ -248,7 +267,7 @@ export const like = async (
 export const categoriesFetcher = async (url: string): Promise<Category[]> =>
   fetch(url, {
     method: "GET",
-    headers: await getAuthHeader(),
+    headers: headers(),
   })
     .then((res) => res.json())
     .then((data) => {
@@ -258,7 +277,7 @@ export const categoriesFetcher = async (url: string): Promise<Category[]> =>
 export const channelFetcher = async (url: string): Promise<any> =>
   fetch(url, {
     method: "GET",
-    headers: await getAuthHeader(),
+    headers: headers(),
   })
     .then((res) => res.json())
     .then((data) => {

@@ -19,9 +19,8 @@ import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import {
-  setIsReplyModalOpen,
-  setIsEditModalOpen,
-  setIsDeleteModalOpen,
+  setIsOpen,
+  setModalType,
   setPostID,
   setReplyID,
   setAction,
@@ -79,7 +78,8 @@ function Post({ isReply, post, postID, like }: Props) {
                   if (isReply) dispatch(setReplyID(post.id));
                   else dispatch(setPostID(post.id));
                   dispatch(setAction(isReply ? "reply" : "post"));
-                  dispatch(setIsDeleteModalOpen(true));
+                  dispatch(setModalType("Delete"));
+                  dispatch(setIsOpen(true));
                 }}
               />
               <Button
@@ -95,7 +95,8 @@ function Post({ isReply, post, postID, like }: Props) {
                   }
                   dispatch(setAction(isReply ? "reply" : "post"));
                   dispatch(setPostContentInput(post.content));
-                  dispatch(setIsEditModalOpen(true));
+                  dispatch(setModalType("Edit"));
+                  dispatch(setIsOpen(true));
                 }}
               />
             </>
@@ -111,7 +112,8 @@ function Post({ isReply, post, postID, like }: Props) {
                 dispatch(setPostID(post.id));
                 dispatch(setReplyID(null));
               }
-              dispatch(setIsReplyModalOpen(true));
+              dispatch(setModalType("Reply"));
+              dispatch(setIsOpen(true));
             }}
           />
         </div>

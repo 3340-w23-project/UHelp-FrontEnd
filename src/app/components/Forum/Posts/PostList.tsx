@@ -5,48 +5,30 @@ import React from "react";
 import { postAnimation } from "@/utils/Animations";
 import PostComponent from "@/app/components/Forum/Posts/Post";
 import useSWR from "swr";
-import ForumModals from "@/app/components/Forum/Modal/ForumModals";
+import ForumModal from "@/app/components/Forum/Modal/ForumModal";
 import LoadingIndicator from "@/app/components/Forum/Posts/LoadingIndicator";
-import { like } from "../../../(Forum)/forum/[channelID]/helper";
+import { like, postsFetcher } from "../../../(Forum)/forum/[channelID]/helper";
 import { motion, AnimatePresence } from "framer-motion";
 import { MdOutlineSpeakerNotesOff } from "react-icons/md";
-interface Props {
-  session: any;
-  channelID: number;
-}
+import { setChannelID } from "@/redux/slices/channelSlice";
+import { useDispatch } from "react-redux";
 
-function ForumPosts({ session, channelID }: Props) {
-  const apiURL = `/uhelp-api/channel/${channelID}/posts`;
-  const authHeader = {
-    "Content-Type": "application/json",
-    Authorization: "Bearer " + session?.user?.access_token,
-  };
+function ForumPosts({ channelID }: { channelID: number }) {
+  const dispatch = useDispatch();
+  dispatch(setChannelID(channelID));
 
-  const postsFetcher = async (): Promise<Post[]> => {
-    const res = await fetch(apiURL, {
-      method: "GET",
-      headers: authHeader,
-    });
-    const data = await res.json();
-
-    if (res.status === 401) return [];
-    if (data.error) return [];
-
-    return data;
-  };
-
-  const {
-    data: posts,
-    mutate: fetchPosts,
-    isLoading,
-  } = useSWR<Post[]>(apiURL, postsFetcher, {
-    refreshInterval: 20000,
-    refreshWhenHidden: false,
-    refreshWhenOffline: false,
-  });
+  const { data: posts, isLoading } = useSWR<Post[]>(
+    `/uhelp-api/channel/${channelID}/posts`,
+    postsFetcher,
+    {
+      refreshInterval: 20000,
+      refreshWhenHidden: false,
+      refreshWhenOffline: false,
+    }
+  );
 
   const likePost = async (id: number, isReply: boolean, depth: number = 0) =>
-    like(id, isReply, depth, fetchPosts, posts);
+    like(id, isReply, depth, posts);
 
   const renderReplies = (replies: Reply[], postID: number): JSX.Element[] =>
     replies.map((reply) => (
@@ -107,7 +89,7 @@ function ForumPosts({ session, channelID }: Props) {
           ))
         )}
       </AnimatePresence>
-      <ForumModals fetchPosts={fetchPosts} />
+      <ForumModal />
     </>
   );
 }
