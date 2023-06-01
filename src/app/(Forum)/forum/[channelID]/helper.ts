@@ -15,24 +15,24 @@ const dispatch = store.dispatch;
 
 const getChannelID = () => store.getState().channel.channelID;
 const getPostsURL = () => `/uhelp-api/channel/${getChannelID()}/posts`;
-let access_token: any = null;
-// const headers = () => {
-//   return {
-//     "Content-Type": "application/json",
-//     Authorization: "Bearer " + access_token,
-//   };
-// };
+let access_token: string;
+let tokenFetched = false;
 
 const getAuthHeader = async () => {
-  const res = await fetch("/api/auth/session");
-  const data = await res.json();
-  return {
-    "Content-Type": "application/json",
-    Authorization: "Bearer " + data.user.access_token,
-  };
-}
-// getAuthHeader();
+  if (!tokenFetched) {
+    const res = await fetch("/api/auth/session", { cache: "force-cache" });
+    const data = await res.json();
+    tokenFetched = true;
+    access_token = data.user.access_token;
+  }
 
+  if (access_token) {
+    return {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + access_token,
+    };
+  }
+};
 export const postsFetcher = async () => {
   const res = await fetch(getPostsURL(), {
     method: "GET",
