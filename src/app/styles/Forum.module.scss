@@ -1,7 +1,6 @@
 @import "./variables.scss";
 
 .wrapper {
-  margin-left: 300px;
   @media (max-width: 768px) {
     margin-left: 0;
   }
@@ -9,7 +8,8 @@
 
 .header {
   @include flex($align: center, $justify: space-between);
-  width: calc(100% - 300px);
+  right: 0;
+  left: 300px;
   position: fixed;
   margin-bottom: 2rem;
   padding: 1.2rem 4rem;
@@ -51,6 +51,7 @@
 .contentWrapper {
   @include flex($direction: column);
   @include size($minHeight: 100vh);
+  margin-left: 300px;
   padding: 7rem 4rem 4rem 4rem;
   background-color: var(--tertiary-color);
 
