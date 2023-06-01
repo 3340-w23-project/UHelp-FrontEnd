@@ -16,24 +16,27 @@ const dispatch = store.dispatch;
 const getChannelID = () => store.getState().channel.channelID;
 const getPostsURL = () => `/uhelp-api/channel/${getChannelID()}/posts`;
 let access_token: any = null;
-const headers = () => {
-  return {
-    "Content-Type": "application/json",
-    Authorization: "Bearer " + access_token,
-  };
-};
+// const headers = () => {
+//   return {
+//     "Content-Type": "application/json",
+//     Authorization: "Bearer " + access_token,
+//   };
+// };
 
 const getAuthHeader = async () => {
   const res = await fetch("/api/auth/session");
   const data = await res.json();
-  access_token = data.user.access_token;
-};
-getAuthHeader();
+  return {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + data.user.access_token,
+  };
+}
+// getAuthHeader();
 
 export const postsFetcher = async () => {
   const res = await fetch(getPostsURL(), {
     method: "GET",
-    headers: headers(),
+    headers: await getAuthHeader(),
   });
   const data = await res.json();
 
@@ -94,7 +97,7 @@ export const addPost = async () => {
 
   fetch(`${apiURL}/post/new`, {
     method: "POST",
-    headers: headers(),
+    headers: await getAuthHeader(),
     body: JSON.stringify({
       title: postTitleInput,
       content: postContentInput,
@@ -120,7 +123,7 @@ export const addReply = async (id: number, parent_id: number | null) => {
 
   fetch(`/uhelp-api/post/${id}/reply`, {
     method: "POST",
-    headers: headers(),
+    headers: await getAuthHeader(),
     body: JSON.stringify({
       content: postContentInput,
       post_id: id,
@@ -148,7 +151,7 @@ export const editPost = async (id: number) => {
 
   fetch(`/uhelp-api/post/${id}/update`, {
     method: "POST",
-    headers: headers(),
+    headers: await getAuthHeader(),
     body: JSON.stringify({
       title: postTitleInput,
       content: postContentInput,
@@ -175,7 +178,7 @@ export const editReply = async (id: number | null) => {
 
   fetch(`/uhelp-api/reply/${id}/update`, {
     method: "POST",
-    headers: headers(),
+    headers: await getAuthHeader(),
     body: JSON.stringify({
       content: postContentInput,
     }),
@@ -192,7 +195,7 @@ export const editReply = async (id: number | null) => {
 export const deletePost = async (id: number) => {
   fetch(`/uhelp-api/post/${id}/delete`, {
     method: "POST",
-    headers: headers(),
+    headers: await getAuthHeader(),
   })
     .then(() => {
       dispatch(setIsOpen(false));
@@ -204,7 +207,7 @@ export const deletePost = async (id: number) => {
 export const deleteReply = async (id: number | null) => {
   fetch(`/uhelp-api/reply/${id}/delete`, {
     method: "POST",
-    headers: headers(),
+    headers: await getAuthHeader(),
   })
     .then(() => {
       dispatch(setIsOpen(false));
@@ -249,7 +252,7 @@ export const like = async (
       `/uhelp-api/${isReply ? "reply" : "post"}/${id}/like`,
       {
         method: "GET",
-        headers: headers(),
+        headers: await getAuthHeader(),
       }
     );
     const data = await res.json();
@@ -267,7 +270,7 @@ export const like = async (
 export const categoriesFetcher = async (url: string): Promise<Category[]> =>
   fetch(url, {
     method: "GET",
-    headers: headers(),
+    headers: await getAuthHeader(),
   })
     .then((res) => res.json())
     .then((data) => {
@@ -277,7 +280,7 @@ export const categoriesFetcher = async (url: string): Promise<Category[]> =>
 export const channelFetcher = async (url: string): Promise<any> =>
   fetch(url, {
     method: "GET",
-    headers: headers(),
+    headers: await getAuthHeader(),
   })
     .then((res) => res.json())
     .then((data) => {
