@@ -469,9 +469,18 @@ $sidebarWidth: 300px;
 
   .modal {
     @include flex($direction: column);
-    @include size($maxWidth: 90%, $maxHeight: 70%);
+    @include size($width: 60%, $maxWidth: 800px, $maxHeight: 80%);
     border-radius: 5px;
     background-color: var(--tertiary-color);
+
+    &.small {
+      max-width: 500px;
+    }
+
+    // Mobile
+    @media (max-width: 768px) {
+      width: 90%;
+    }
 
     .modalHeader {
       @include flex($justify: space-between, $align: center);
@@ -501,6 +510,8 @@ $sidebarWidth: 300px;
       @include fillParent;
       @include flex($direction: column);
       overflow-y: auto;
+      padding: 1.5em;
+      width: 100%;
 
       .modalBody {
         @include fillParent;
@@ -510,7 +521,6 @@ $sidebarWidth: 300px;
           $align: center,
           $gap: 1em
         );
-        padding: 1.5em;
 
         .modalForm {
           @include fillParent;
@@ -524,7 +534,6 @@ $sidebarWidth: 300px;
             $weight: 500,
             $color: var(--secondary-color)
           );
-          width: 100%;
 
           input[type="text"] {
             width: 100%;
@@ -541,7 +550,7 @@ $sidebarWidth: 300px;
           }
 
           textarea {
-            @include size($width: 100%, $height: 200px);
+            @include size($width: 100%, $height: 400px, $minHeight: 300px);
             padding: 0.5em 1em;
             border-radius: 5px;
             border: 1px solid rgba(0, 0, 0, 0.1);

@@ -3,6 +3,7 @@ import ModalBackdrop from "@/app/components/Forum/Modal/ModalBackdrop";
 import styles from "@/app/styles/Forum.module.scss";
 import { AnimatePresence, motion } from "framer-motion";
 import { BsXLg } from "react-icons/bs";
+import clsx from "clsx";
 
 const modalTransition = {
   hidden: {
@@ -30,18 +31,17 @@ type Props = {
   handleClose: () => void;
   children?: React.ReactNode;
   title: string;
-  width?: string;
+  className?: string;
 };
 
-const Modal = ({ status, handleClose, children, title, width }: Props) => {
+const Modal = ({ status, handleClose, children, title, className }: Props) => {
   return (
     <AnimatePresence initial={false} mode="wait" onExitComplete={() => null}>
       {status && (
         <ModalBackdrop onClick={handleClose}>
           <motion.div
             onClick={(e) => e.stopPropagation()}
-            className={styles.modal}
-            style={{ width: width }}
+            className={clsx(styles.modal, className)}
             variants={modalTransition}
             initial="hidden"
             animate="visible"

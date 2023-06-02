@@ -89,7 +89,7 @@ const ForumModal = () => {
       status={isOpen}
       handleClose={() => dispatch(setIsOpen(false))}
       title={title()}
-      width={"30%"}>
+      className={modalType === "Delete" ? styles.small : ""}>
       <div className={styles.modalBodyWrapper}>
         <div className={styles.modalBody}>
           <div className={styles.modalForm}>
