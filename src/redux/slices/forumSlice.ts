@@ -15,7 +15,7 @@ interface ForumState {
 
 const initialState: ForumState = {
   activeCategory: 1,
-  modalType: "addPost",
+  modalType: "Post",
   isOpen: false,
   postID: 0,
   replyID: null,

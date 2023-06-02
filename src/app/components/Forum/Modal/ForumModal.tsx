@@ -18,6 +18,7 @@ import {
 } from "@/redux/slices/forumSlice";
 import { useDispatch } from "react-redux";
 import useSubmitShortcut from "@/hooks/useShortcuts";
+import { useEffect, useState } from "react";
 
 const ForumModal = () => {
   const dispatch = useDispatch();
@@ -31,6 +32,19 @@ const ForumModal = () => {
   const postContentInput = useAppSelector(
     (state) => state.forum.postContentInput
   );
+  const [lastOpenedModal, setLastOpenedModal] = useState(modalType);
+
+  useEffect(() => {
+    if (
+      lastOpenedModal !== modalType &&
+      modalType !== "Edit" &&
+      modalType !== "Delete"
+    ) {
+      dispatch(setPostTitleInput(""));
+      dispatch(setPostContentInput(""));
+    }
+    if (modalType !== "Delete") setLastOpenedModal(modalType);
+  }, [modalType]);
 
   const handleSubmit = () => {
     switch (modalType) {

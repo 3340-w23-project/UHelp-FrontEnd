@@ -12,7 +12,11 @@ type Props = {
 const ModalBackdrop = ({ children, onClick }: Props) => {
   return (
     <motion.div
-      onClick={onClick}
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) {
+          onClick();
+        }
+      }}
       className={styles.backdrop}
       variants={fadeTransition}
       initial="hidden"
