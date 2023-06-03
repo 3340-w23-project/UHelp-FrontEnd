@@ -14,6 +14,7 @@ $mobileWidth: 768px;
 @mixin button {
   display: inline-flex;
   justify-content: center;
+  align-items: center;
   border-radius: 0.25rem;
   text-align: center;
   font-size: 1.25rem;
