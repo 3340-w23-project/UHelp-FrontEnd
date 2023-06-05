@@ -13,7 +13,7 @@ import { formatTime } from "../../../(Forum)/forum/[channelID]/helper";
 import { IoTrash } from "react-icons/io5";
 import { AiFillLike } from "react-icons/ai";
 import { MdReply, MdModeEdit } from "react-icons/md";
-import { FaUserAlt } from "react-icons/fa";
+import Avatar from "react-avatar";
 import { useDispatch } from "react-redux";
 import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
@@ -58,7 +58,15 @@ function Post({ isReply, post, postID, like }: Props) {
           {!isReply && <span className={styles.postTitle}>{post.title}</span>}
           <div>
             <span className={styles.postAuthor}>
-              <FaUserAlt className={styles.userIcon} />
+              <Avatar
+                name={post.author.display_name}
+                round
+                textSizeRatio={2.2}
+                size={"25px"}
+                color={"#191715"}
+                style={{ border: "none" }}
+                className={styles.userIcon}
+              />
               {post.author.display_name}
             </span>
             <span className={styles.postDetails}>
