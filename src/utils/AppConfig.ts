@@ -6,7 +6,7 @@ export const AppConfig = {
 };
 
 export const avatarColors = [
-  "#191715",
+  "#353433",
   "#4C4637",
   "#5D5749",
   "#8C8676",

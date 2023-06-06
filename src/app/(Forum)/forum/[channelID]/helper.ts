@@ -60,29 +60,43 @@ const checkInput = (title: string, content: string) =>
     ? "Content cannot be empty"
     : null;
 
-export const formatTime = (date: string) => {
+export const formatTime = (date: string, full: boolean) => {
   const postedDate = new Date(date);
   const localOffset = new Date().getTimezoneOffset();
   const localTime = new Date(postedDate.getTime() - localOffset * 60 * 1000);
+
+  if (full)
+    return localTime.toLocaleString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    });
+
   const now = new Date();
   const diffInMs = Math.abs(now.getTime() - localTime.getTime());
   const diffInSeconds = Math.round(diffInMs / 1000);
-  const diffInMinutes = Math.round(diffInMs / (1000 * 60));
-  const diffInHours = Math.round(diffInMs / (1000 * 60 * 60));
+  const diffInMinutes = Math.round(diffInSeconds / 60);
+  const diffInHours = Math.round(diffInMinutes / 60);
+  const diffInDays = Math.round(diffInHours / 24);
+  const diffInMonths = Math.round(diffInDays / 30);
+  const diffInYears = Math.round(diffInMonths / 12);
 
-  return diffInSeconds < 60
-    ? diffInSeconds + "s ago"
-    : diffInMinutes < 60
-    ? diffInMinutes + "m ago"
-    : diffInHours < 24
-    ? diffInHours + "h ago"
-    : localTime.toLocaleString("en-US", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-      });
+  const timeFormat =
+    diffInSeconds < 60
+      ? diffInSeconds + "s"
+      : diffInMinutes < 60
+      ? diffInMinutes + "m"
+      : diffInHours < 24
+      ? diffInHours + "h"
+      : diffInDays < 30
+      ? diffInDays + "d"
+      : diffInMonths < 12
+      ? diffInMonths + "mo"
+      : diffInYears + "y";
+
+  return timeFormat + " ago";
 };
 
 export const addPost = async () => {

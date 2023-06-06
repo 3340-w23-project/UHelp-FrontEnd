@@ -31,6 +31,7 @@ import {
   setPostContentInput,
 } from "@/redux/slices/forumSlice";
 import { avatarColors } from "@/utils/AppConfig";
+import Tooltip from "../../Tooltip";
 
 interface Props {
   isReply: boolean;
@@ -103,7 +104,11 @@ function Post({ isReply, post, parentID, like }: Props) {
         className={styles.postAvatar}
       />
       <span className={styles.postAuthor}>{post.author.display_name}</span>
-      <span className={styles.postDetail}>{formatTime(post.date)}</span>
+      <span className={styles.postDetail}>
+        <Tooltip content={formatTime(post.date, true)}>
+          {formatTime(post.date, false)}
+        </Tooltip>
+      </span>
       {post.edited && <span className={styles.postDetail}>(edited)</span>}
     </div>
   );
