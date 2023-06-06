@@ -1,5 +1,5 @@
 "use client";
-import { Post, Reply } from "@/utils/Types";
+import { Post } from "@/utils/Types";
 import styles from "@/app/styles/Forum.module.scss";
 import React from "react";
 import { postAnimation } from "@/utils/Animations";
@@ -30,31 +30,10 @@ function ForumPosts({ channelID }: { channelID: number }) {
   const likePost = async (id: number, isReply: boolean, depth: number = 0) =>
     like(id, isReply, depth, posts);
 
-  const renderReplies = (replies: Reply[], postID: number): JSX.Element[] =>
-    replies.map((reply) => (
-      <motion.div
-        key={reply.id}
-        variants={postAnimation}
-        initial="initial"
-        animate="visible"
-        exit="exit">
-        <PostComponent
-          key={reply.id}
-          isReply={true}
-          post={reply}
-          postID={reply.id}
-          like={likePost}
-        />
-        <AnimatePresence>
-          {reply.replies && renderReplies(reply.replies, postID)}
-        </AnimatePresence>
-      </motion.div>
-    ));
-
   return (
     <>
       {isLoading && <LoadingIndicator />}
-      <AnimatePresence mode="popLayout">
+      <AnimatePresence>
         {posts?.length === 0 ? (
           <motion.div
             className={styles.noPosts}
@@ -68,24 +47,13 @@ function ForumPosts({ channelID }: { channelID: number }) {
           </motion.div>
         ) : (
           posts?.map((post) => (
-            <motion.div
+            <PostComponent
               key={post.id}
-              className={styles.postWrapper}
-              variants={postAnimation}
-              initial="initial"
-              animate="visible"
-              exit="exit">
-              <PostComponent
-                key={post.id}
-                isReply={false}
-                post={post}
-                postID={post.id}
-                like={likePost}
-              />
-              <AnimatePresence>
-                {post.replies && renderReplies(post.replies, post.id)}
-              </AnimatePresence>
-            </motion.div>
+              post={post}
+              parentID={post.id}
+              like={likePost}
+              isReply={false}
+            />
           ))
         )}
       </AnimatePresence>

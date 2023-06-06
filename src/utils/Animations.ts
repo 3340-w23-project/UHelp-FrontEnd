@@ -32,7 +32,7 @@ export const categoryAnimation = {
 
 export const postAnimation = {
   initial: {
-    y: -15,
+    y: -30,
     opacity: 0,
   },
   visible: {
@@ -40,15 +40,14 @@ export const postAnimation = {
     opacity: 1,
     transition: {
       duration: 0.3,
-      ease: "easeInOut",
+      ease: "easeIn",
     },
   },
   exit: {
-    y: 15,
     opacity: 0,
     transition: {
       duration: 0.3,
-      ease: "easeInOut",
+      ease: "easeOut",
     },
   },
 };

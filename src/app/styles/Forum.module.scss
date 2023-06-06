@@ -139,252 +139,269 @@ $sidebarWidth: 300px;
     .postWrapper {
       margin-bottom: 1rem;
 
-      &:not(:last-child)::after {
+      &:not(:last-child):after {
         @include size($width: 100%, $height: 1px);
         content: "";
         display: block;
         background-color: rgba(0, 0, 0, 0.1);
       }
+    }
 
-      .post {
-        @include flex($direction: column);
-        padding: 1rem;
-        margin-bottom: 1rem;
-        border-radius: 0 0.5rem 0.5rem 0;
-        background-color: #f2ebda;
-        border-left: 5px solid var(--secondary-color);
-        font-size: 1.2rem;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05),
-          rgba(0, 0, 0, 0.1) 0px 0px 0px 1px;
+    .replyWrapper {
+      $replyMargin: 1.5rem;
+      position: relative;
+      margin-left: $replyMargin;
 
-        .postHeader {
-          @include flex($justify: space-between, $align: center, $gap: 1rem);
-          margin-bottom: 1rem;
-          font-size: 1.1rem;
+      &:before {
+        @include size($width: 1px, $height: 100%);
+        content: "";
+        display: block;
+        position: absolute;
+        top: 0;
+        left: -$replyMargin;
+        background-color: rgba(0, 0, 0, 0.1);
+        transition: background-color 0.2s ease-in-out;
+      }
 
-          .postHeaderLeft {
-            @include flex($direction: column);
+      &:hover:before {
+        background-color: rgba(0, 0, 0, 0.3);
+      }
 
-            .postTitle {
-              @include font($size: 1.6rem, $weight: bold);
-              margin-bottom: 0.25rem;
-            }
+      //mobile
+      @media (max-width: 768px) {
+        $replyMargin: 1rem;
+        margin-left: $replyMargin;
 
-            .postDetailsContainer {
-              @include flex($align: center);
-              font-size: 1.1rem;
+        &:before {
+          left: -$replyMargin;
+        }
+      }
+    }
 
-              .postAvatar {
-                margin-right: 0.5rem;
-              }
+    .post,
+    .reply {
+      @include flex($direction: column);
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 0 0.25rem 0.25rem 0;
+      background-color: #f2ebda;
+      border-left: 5px solid var(--secondary-color);
+      font-size: 1.2rem;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05),
+        rgba(0, 0, 0, 0.1) 0px 0px 0px 1px;
 
-              .postAuthor {
-                font-weight: 500;
-              }
+      .postHeader {
+        @include flex($justify: space-between, $align: center);
+        font-size: 1.1rem;
 
-              .postDate {
-                color: #505050;
+        .postTitle {
+          @include font($size: 1.6rem, $weight: bold);
+          margin-bottom: 0.5rem;
+        }
 
-                &:before {
-                  content: "•";
-                  margin: 0 0.3rem;
-                }
-              }
+        .postActions {
+          @include flex($gap: 0.5rem);
+        }
+      }
 
-              .postEdited {
-                color: #505050;
-                font-style: italic;
-                font-size: 1rem;
+      .postDetailsContainer {
+        @include flex($align: center);
+        font-size: 1.1rem;
+        margin-bottom: 1.2rem;
 
-                &:before {
-                  content: "•";
-                  margin: 0 0.3rem;
-                }
-              }
-            }
+        .postAvatar {
+          margin-right: 0.5rem;
+        }
+
+        .postAuthor {
+          font-weight: 500;
+        }
+
+        .postDetail {
+          color: #505050;
+
+          &:before {
+            content: "•";
+            margin: 0 0.4rem;
+          }
+        }
+      }
+
+      .postFooter {
+        @include flex($justify: space-between, $align: center, $gap: 1rem);
+        margin-top: 1.2rem;
+
+        .postLikes {
+          @include inline-flex($align: center, $gap: 0.5rem);
+          @include font(
+            $size: 1rem,
+            $align: center,
+            $color: var(--secondary-color)
+          );
+          border-radius: 0.25rem;
+          padding: 0.2rem 0.4rem;
+          border: 1px solid #b8b2a3;
+          background-color: #f2ebda;
+          box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 4px;
+          user-select: none;
+          transition: background-color 0.2s ease;
+          cursor: pointer;
+
+          &:hover {
+            background-color: #e5ddc9;
           }
 
-          .postHeaderRight {
-            @include flex($gap: 0.5rem);
+          .likeIcon {
+            font-size: 1rem;
           }
         }
 
-        .postFooter {
-          @include flex($justify: space-between, $align: center, $gap: 1rem);
-          margin-top: 1rem;
+        .liked {
+          background-color: #f4dea8;
 
-          .postLikes {
-            @include inline-flex($align: center, $gap: 0.5rem);
-            @include font(
-              $size: 1rem,
-              $align: center,
-              $color: var(--secondary-color)
-            );
+          &:hover {
+            background-color: #e6d19e !important;
+          }
+        }
+      }
+
+      .postDetails,
+      .postContent {
+        color: #373737;
+
+        a {
+          text-decoration: underline;
+
+          &:hover {
+            color: #808080;
+          }
+        }
+
+        blockquote {
+          font-style: italic;
+          border-left: 0.25rem solid var(--secondary-color);
+          padding-left: 0.5rem;
+          margin: 1rem 0;
+          background-color: rgba(129, 125, 119, 0.1);
+        }
+
+        p {
+          code {
+            background-color: rgba(129, 125, 119, 0.2);
+            padding: 0.1rem 0.25rem;
             border-radius: 0.25rem;
-            padding: 0.2rem 0.4rem;
-            border: 1px solid #b8b2a3;
-            background-color: #f2ebda;
-            box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 4px;
-            user-select: none;
-            transition: background-color 0.2s ease;
-            cursor: pointer;
-
-            &:hover {
-              background-color: #e5ddc9;
-            }
-
-            .likeIcon {
-              font-size: 1rem;
-            }
-          }
-
-          .liked {
-            background-color: #f4dea8;
-
-            &:hover {
-              background-color: #e6d19e !important;
-            }
           }
         }
 
-        .postDetails,
-        .postContent {
-          color: #373737;
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+          margin-top: 1rem;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
 
+        h1 {
+          font-size: 1.5rem;
+        }
+
+        h2 {
+          font-size: 1.4rem;
+        }
+
+        h3 {
+          font-size: 1.3rem;
+        }
+
+        h4 {
+          font-size: 1.2rem;
+        }
+
+        h5 {
+          font-size: 1.1rem;
+        }
+
+        h6 {
+          font-size: 1rem;
+        }
+
+        // Footnotes
+        section {
           a {
-            text-decoration: underline;
-
-            &:hover {
-              color: #808080;
-            }
+            text-decoration: none;
           }
-
-          blockquote {
-            font-style: italic;
-            border-left: 0.25rem solid var(--secondary-color);
-            padding-left: 0.5rem;
-            margin: 1rem 0;
-            background-color: rgba(129, 125, 119, 0.1);
-          }
-
-          p {
-            code {
-              background-color: rgba(129, 125, 119, 0.2);
-              padding: 0.1rem 0.25rem;
-              border-radius: 0.25rem;
-            }
-          }
-
-          h1,
-          h2,
-          h3,
-          h4,
-          h5,
-          h6 {
-            margin-top: 1rem;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-          }
-
-          h1 {
-            font-size: 1.5rem;
-          }
-
           h2 {
-            font-size: 1.4rem;
+            margin-top: 1rem;
           }
+        }
 
-          h3 {
-            font-size: 1.3rem;
-          }
+        .copyCode {
+          position: relative;
 
-          h4 {
-            font-size: 1.2rem;
-          }
-
-          h5 {
-            font-size: 1.1rem;
-          }
-
-          h6 {
+          button {
+            @include button;
+            z-index: 1;
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
             font-size: 1rem;
           }
 
-          // Footnotes
-          section {
-            a {
-              text-decoration: none;
-            }
-            h2 {
-              margin-top: 1rem;
-            }
-          }
-
-          .copyCode {
-            position: relative;
-
-            button {
-              @include button;
-              z-index: 1;
-              position: absolute;
-              top: 0.5rem;
-              right: 0.5rem;
-              font-size: 1rem;
-            }
-
-            pre {
-              display: block;
-              background: var(--tertiary-color);
-              border: 1px solid rgba(0, 0, 0, 0.2);
-              border-left: 0.25rem solid var(--secondary-color);
-              color: #464646;
-              font-size: 15px;
-              page-break-inside: avoid;
-              font-family: monospace;
-              line-height: 1.6;
-              margin: 1rem 0;
-              max-width: 100%;
-              overflow: auto;
-              padding: 0.5rem;
-              word-wrap: break-word;
-            }
-          }
-
-          table {
+          pre {
+            display: block;
+            background: var(--tertiary-color);
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            border-left: 0.25rem solid var(--secondary-color);
+            color: #464646;
+            font-size: 15px;
+            page-break-inside: avoid;
+            font-family: monospace;
+            line-height: 1.6;
+            margin: 1rem 0;
             max-width: 100%;
-            border-collapse: collapse;
-            border-radius: 0.25rem;
+            overflow: auto;
+            padding: 0.5rem;
+            word-wrap: break-word;
+          }
+        }
+
+        table {
+          max-width: 100%;
+          border-collapse: collapse;
+          border-radius: 0.25rem;
+          border: 1px solid var(--secondary-color);
+          text-align: center;
+          vertical-align: middle;
+
+          th,
+          td {
             border: 1px solid var(--secondary-color);
-            text-align: center;
-            vertical-align: middle;
+            padding: 0.5rem;
+          }
+        }
 
-            th,
-            td {
-              border: 1px solid var(--secondary-color);
-              padding: 0.5rem;
-            }
+        thead {
+          background-color: #373737;
+          color: var(--tertiary-color);
+
+          th {
+            width: 25%;
+          }
+        }
+
+        tbody {
+          tr:nth-child(odd) {
+            background-color: var(--tertiary-color);
           }
 
-          thead {
-            background-color: #373737;
-            color: var(--tertiary-color);
-
-            th {
-              width: 25%;
-            }
+          tr:nth-child(even) {
+            background-color: #f2ebda;
           }
 
-          tbody {
-            tr:nth-child(odd) {
-              background-color: var(--tertiary-color);
-            }
-
-            tr:nth-child(even) {
-              background-color: #f2ebda;
-            }
-
-            th {
-              text-align: left;
-            }
+          th {
+            text-align: left;
           }
         }
       }
