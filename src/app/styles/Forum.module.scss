@@ -643,8 +643,8 @@ $sidebarWidth: 300px;
     cursor: default;
     position: absolute;
     visibility: hidden;
-    width: 150px;
-    background-color: rgba(0, 0, 0, 0.7);
+    white-space: nowrap;
+    background-color: rgba(0, 0, 0, 0.8);
     color: var(--tertiary-color);
     text-align: center;
     font-size: 0.9rem;
@@ -668,7 +668,7 @@ $sidebarWidth: 300px;
       margin-left: -5px;
       border-width: 5px;
       border-style: solid;
-      border-color: rgba(0, 0, 0, 0.7) transparent transparent transparent;
+      border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
     }
   }
 }
