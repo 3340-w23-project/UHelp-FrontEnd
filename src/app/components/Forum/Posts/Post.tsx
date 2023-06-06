@@ -88,9 +88,18 @@ function Post({ isReply, post, parentID, like }: Props) {
       <Avatar
         name={post.author.display_name}
         round={"0.25rem"}
-        textSizeRatio={2.2}
+        textSizeRatio={2}
         size={"32px"}
-        color={avatarColors[post.author.id % avatarColors.length]}
+        color={
+          avatarColors[
+            (post.author.display_name.charCodeAt(0) +
+              post.author.display_name.charCodeAt(
+                post.author.display_name - 1
+              )) %
+              avatarColors.length
+          ]
+        }
+        style={{ border: "none" }}
         className={styles.postAvatar}
       />
       <span className={styles.postAuthor}>{post.author.display_name}</span>

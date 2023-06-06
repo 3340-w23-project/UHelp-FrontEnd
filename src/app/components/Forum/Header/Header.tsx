@@ -60,7 +60,7 @@ function ForumHeader() {
       {!isMobile ? (
         <div className={styles.headerButtons}>
           <Button
-            sm
+            className={styles.headerBtn}
             tertiary
             icon={MdPostAdd}
             label="New Post"

@@ -9,11 +9,13 @@ import { AppConfig } from "@/utils/AppConfig";
 import { useAppSelector } from "@/redux/store";
 import { useSession } from "next-auth/react";
 import DesktopMenu from "./DesktopMenu";
+import { usePathname } from "next/navigation";
 
 function Navbar() {
   const { data: session } = useSession();
   const isMobile = useAppSelector((state) => state.app.isMobile);
   const isScrolled = useAppSelector((state) => state.app.isScrolled);
+  const pathname = usePathname();
   const [active, setActive] = useState<boolean>(false);
 
   return (
@@ -36,7 +38,7 @@ function Navbar() {
       </div>
 
       {!isMobile ? (
-        <DesktopMenu session={session} />
+        <DesktopMenu session={session} pathname={pathname} />
       ) : (
         <MobileMenu active={active} setActive={setActive} />
       )}

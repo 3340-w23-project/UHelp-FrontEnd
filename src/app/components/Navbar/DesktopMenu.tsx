@@ -4,11 +4,17 @@ import { MenuItem } from "./MenuItem";
 import Account from "./Account";
 import { Session } from "next-auth";
 
-function DesktopMenu({ session }: { session: Session | null }) {
+function DesktopMenu({
+  session,
+  pathname,
+}: {
+  session: Session | null;
+  pathname: string;
+}) {
   return (
     <nav className={styles.menu}>
       <ul>
-        {session ? (
+        {session && pathname === "/" ? (
           <>
             <MenuItem href="/forum/1" label="Forum" />
             <Account />

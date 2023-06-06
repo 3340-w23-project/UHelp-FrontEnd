@@ -11,6 +11,7 @@ type ButtonProps = {
   label?: string;
   href?: string;
   icon?: React.FunctionComponent<any>;
+  className?: string;
   onClick?: () => void;
 };
 
@@ -23,6 +24,7 @@ const Button = ({
   sm,
   secondary,
   tertiary,
+  className,
   onClick,
 }: ButtonProps) => {
   const btnClass = clsx({
@@ -36,6 +38,7 @@ const Button = ({
     "btn-base": !xl && !sm && !Icon,
     "btn-icon": Icon && !label,
     "btn-gap": Icon && label,
+    [className!]: className,
   });
 
   return (

@@ -8,6 +8,7 @@ import { menuAnimation } from "@/utils/Animations";
 import { signOut, useSession } from "next-auth/react";
 import Avatar from "react-avatar";
 import Skeleton from "../Skeleton";
+import { avatarColors } from "@/utils/AppConfig";
 
 const Account = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,9 +22,18 @@ const Account = () => {
         onClick={() => setIsOpen(!isOpen)}>
         <Avatar
           name={displayName}
-          round
-          size={"25px"}
-          color={"#191715"}
+          round={"0.25rem"}
+          textSizeRatio={2}
+          size={"32px"}
+          color={
+            avatarColors[
+              displayName
+                ? (displayName.charCodeAt(0) +
+                    displayName.charCodeAt(displayName.length - 1)) %
+                  avatarColors.length
+                : 0
+            ]
+          }
           style={{ border: "none" }}
           className={styles.avatar}
         />

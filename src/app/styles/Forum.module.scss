@@ -16,6 +16,11 @@ $sidebarWidth: 300px;
   background-color: var(--tertiary-color);
   z-index: 100;
 
+  .headerBtn {
+    padding: 0 1rem;
+    height: 3rem;
+  }
+
   // Tablet
   @media (max-width: 1024px) {
     padding: 0 2rem;
@@ -46,7 +51,7 @@ $sidebarWidth: 300px;
   }
 
   .headerButtons {
-    @include flex($gap: 1rem, $align: center, $wrap: wrap, $justify: flex-end);
+    @include flex($gap: 1rem, $align: center, $wrap: wrap);
   }
 }
 
@@ -210,6 +215,8 @@ $sidebarWidth: 300px;
         margin-bottom: 1.2rem;
 
         .postAvatar {
+          border: 1px solid rgba(0, 0, 0, 0.2);
+          font-weight: bold;
           margin-right: 0.5rem;
         }
 
