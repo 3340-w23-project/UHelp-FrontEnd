@@ -170,12 +170,36 @@ $sidebarWidth: 300px;
               margin-bottom: 0.25rem;
             }
 
-            .postAuthor {
-              font-weight: 500;
+            .postDetailsContainer {
+              @include flex($align: center);
+              font-size: 1.1rem;
 
-              .userIcon {
-                font-size: 0.8rem;
-                margin-right: 0.3rem;
+              .postAvatar {
+                margin-right: 0.5rem;
+              }
+
+              .postAuthor {
+                font-weight: 500;
+              }
+
+              .postDate {
+                color: #505050;
+
+                &:before {
+                  content: "•";
+                  margin: 0 0.3rem;
+                }
+              }
+
+              .postEdited {
+                color: #505050;
+                font-style: italic;
+                font-size: 1rem;
+
+                &:before {
+                  content: "•";
+                  margin: 0 0.3rem;
+                }
               }
             }
           }

@@ -56,24 +56,21 @@ function Post({ isReply, post, postID, like }: Props) {
       <div className={styles.postHeader}>
         <div className={styles.postHeaderLeft}>
           {!isReply && <span className={styles.postTitle}>{post.title}</span>}
-          <div>
+          <div className={styles.postDetailsContainer}>
+            <Avatar
+              name={post.author.display_name}
+              round
+              textSizeRatio={2.2}
+              size={"32px"}
+              color={"#191715"}
+              style={{ border: "none" }}
+              className={styles.postAvatar}
+            />
             <span className={styles.postAuthor}>
-              <Avatar
-                name={post.author.display_name}
-                round
-                textSizeRatio={2.2}
-                size={"25px"}
-                color={"#191715"}
-                style={{ border: "none" }}
-                className={styles.userIcon}
-              />
               {post.author.display_name}
             </span>
-            <span className={styles.postDetails}>
-              {` \u2022 ${formatTime(post.date)}${
-                post.edited ? " \u2022 (edited)" : ""
-              }`}
-            </span>
+            <span className={styles.postDate}>{formatTime(post.date)}</span>
+            {post.edited && <span className={styles.postEdited}>(edited)</span>}
           </div>
         </div>
         <div className={styles.postHeaderRight}>
