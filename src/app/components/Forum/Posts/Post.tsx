@@ -95,7 +95,7 @@ function Post({ isReply, post, parentID, like }: Props) {
           avatarColors[
             (post.author.display_name.charCodeAt(0) +
               post.author.display_name.charCodeAt(
-                post.author.display_name - 1
+                post.author.display_name.length - 1
               )) %
               avatarColors.length
           ]
