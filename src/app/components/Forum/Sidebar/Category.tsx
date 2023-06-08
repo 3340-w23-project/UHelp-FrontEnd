@@ -11,32 +11,31 @@ import {
   setChannelName,
   setChannelDescription,
 } from "@/redux/slices/channelSlice";
-import { setActiveCategory } from "@/redux/slices/forumSlice";
+import clsx from "clsx";
 
 type Props = {
   category: Category;
   channelID: number;
-  openCategory: number;
 };
 
-function Category({ category, channelID, openCategory }: Props) {
+function Category({ category, channelID }: Props) {
   const dispatch = useAppDispatch();
+  const [isOpen, setIsOpen] = useState(
+    category.channels.some((channel) => channel.id === channelID)
+  );
 
   return (
     <div className={styles.sidebarCategory}>
-      <span
-        className={styles.category}
-        onClick={() => dispatch(setActiveCategory(category.id))}>
+      <span className={styles.category} onClick={() => setIsOpen(!isOpen)}>
         {category.name}
         <FaChevronDown
-          className={`${styles.arrow} ${
-            category.id === openCategory ? styles.openArrow : ""
-          }`}
+          className={clsx(styles.arrow, isOpen && styles.openArrow)}
         />
       </span>
-      <AnimatePresence mode="wait" initial={false}>
-        {category.id === openCategory && (
+      <AnimatePresence initial={false}>
+        {isOpen && (
           <motion.ul
+            key={category.name}
             variants={categoryAnimation}
             initial="initial"
             animate="visible"
@@ -50,9 +49,9 @@ function Category({ category, channelID, openCategory }: Props) {
                   dispatch(setChannelDescription(null));
                 }}>
                 <li
-                  className={
-                    channelID === channel.id ? styles.selectedChannel : ""
-                  }>
+                  className={clsx(
+                    channelID === channel.id && styles.selectedChannel
+                  )}>
                   {channel.name}
                   {channelID === channel.id && (
                     <motion.div

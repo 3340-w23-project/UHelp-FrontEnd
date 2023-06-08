@@ -19,17 +19,6 @@ function Sidebar() {
     categoriesFetcher
   );
 
-  const activeCategory = useAppSelector(
-    (state) => state.forum.activeCategory
-  ) as number;
-
-  const [openCategory, setOpenCategory] =
-    React.useState<number>(activeCategory);
-
-  React.useEffect(() => {
-    setOpenCategory(activeCategory);
-  }, [activeCategory]);
-
   return isMobile ? null : (
     <div className={styles.sidebarWrapper}>
       <Logo />
@@ -48,7 +37,6 @@ function Sidebar() {
                 key={category.id}
                 category={category}
                 channelID={parseInt(channelID!.toString())}
-                openCategory={openCategory}
               />
             ))}
       </div>
