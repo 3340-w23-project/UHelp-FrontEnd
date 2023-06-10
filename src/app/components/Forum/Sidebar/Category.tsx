@@ -44,6 +44,7 @@ function Category({ category, channelID }: Props) {
               <Link
                 key={channel.id}
                 href={`/forum/${channel.id}`}
+                shallow
                 onClick={() => {
                   dispatch(setChannelName(channel.name));
                   dispatch(setChannelDescription(null));
