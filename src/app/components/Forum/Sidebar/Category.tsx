@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import Link from "next/link";
 import styles from "@/app/styles/Forum.module.scss";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAppDispatch } from "@/redux/store";
@@ -12,6 +11,7 @@ import {
   setChannelDescription,
 } from "@/redux/slices/channelSlice";
 import clsx from "clsx";
+import { useRouter } from "next/navigation";
 
 type Props = {
   category: Category;
@@ -23,6 +23,7 @@ function Category({ category, channelID }: Props) {
   const [isOpen, setIsOpen] = useState(
     category.channels.some((channel) => channel.id === channelID)
   );
+  const router = useRouter();
 
   return (
     <div className={styles.sidebarCategory}>
@@ -41,27 +42,22 @@ function Category({ category, channelID }: Props) {
             animate="visible"
             exit="exit">
             {category.channels.map((channel) => (
-              <Link
-                key={channel.id}
-                href={`/forum/${channel.id}`}
-                shallow
+              <li
+                key={channel.name}
+                className={clsx(
+                  channelID === channel.id && styles.selectedChannel
+                )}
                 onClick={() => {
                   dispatch(setChannelName(channel.name));
                   dispatch(setChannelDescription(null));
+                  router.replace(`/forum/${channel.id}`);
+                  window.scrollTo(0, 0);
                 }}>
-                <li
-                  className={clsx(
-                    channelID === channel.id && styles.selectedChannel
-                  )}>
-                  {channel.name}
-                  {channelID === channel.id && (
-                    <motion.div
-                      className={styles.selected}
-                      layoutId="selected"
-                    />
-                  )}
-                </li>
-              </Link>
+                {channel.name}
+                {channelID === channel.id && (
+                  <motion.div className={styles.selected} layoutId="selected" />
+                )}
+              </li>
             ))}
           </motion.ul>
         )}

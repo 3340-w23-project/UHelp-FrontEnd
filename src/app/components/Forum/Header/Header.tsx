@@ -16,12 +16,15 @@ import {
 } from "@/redux/slices/channelSlice";
 import { channelFetcher } from "@/app/(Forum)/forum/[channelID]/helper";
 import MobileMenu from "../../Navbar/MobileMenu";
+import clsx from "clsx";
+import { motion } from "framer-motion";
 
 function ForumHeader() {
   const dispatch = useDispatch();
   const channelID = useAppSelector((state) => state.channel.channelID);
   const apiURL = `/uhelp-api/channel/${channelID}`;
   const { data } = useSWRImmutable(apiURL, () => channelFetcher(apiURL));
+  const isMenuOpen = useAppSelector((state) => state.forum.isMenuOpen);
   const channelName = useAppSelector((state) => state.channel.channelName);
   const channelDescription = useAppSelector(
     (state) => state.channel.channelDescription
@@ -38,7 +41,13 @@ function ForumHeader() {
   }, [data]);
 
   return (
-    <div className={`${styles.header} ${zeroRightClassName}`}>
+    <motion.div
+      layout="position"
+      className={clsx(
+        styles.header,
+        zeroRightClassName,
+        !isMenuOpen && styles.expandedHeader
+      )}>
       <div className={styles.channelInfo}>
         {channelName ? (
           <h2>{channelName}</h2>
@@ -74,7 +83,7 @@ function ForumHeader() {
       ) : (
         <MobileMenu active={active} setActive={setActive} />
       )}
-    </div>
+    </motion.div>
   );
 }
 
