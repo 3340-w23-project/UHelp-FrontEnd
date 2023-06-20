@@ -25,6 +25,7 @@ export type Reply = {
   likes: number;
   liked: boolean;
   edited?: boolean;
+  edited_date?: string;
   replies?: Reply[];
 };
 
@@ -35,6 +36,7 @@ export type Post = {
   author: Author;
   date: string;
   edited?: boolean;
+  edited_date?: string;
   likes: number;
   liked: boolean;
   replies?: Reply[];

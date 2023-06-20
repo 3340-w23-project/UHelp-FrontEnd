@@ -109,7 +109,13 @@ function Post({ isReply, post, parentID, like }: Props) {
           {formatTime(post.date, false)}
         </Tooltip>
       </span>
-      {post.edited && <span className={styles.postDetail}>(edited)</span>}
+      {post.edited && (
+        <span className={styles.postDetail}>
+          <Tooltip content={formatTime(post.edited_date, true)}>
+            {"(edited)"}
+          </Tooltip>
+        </span>
+      )}
     </div>
   );
 
