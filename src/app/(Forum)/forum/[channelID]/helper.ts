@@ -135,7 +135,7 @@ export const addReply = async (id: number, parent_id: number | null) => {
     return;
   }
 
-  fetch(`/uhelp-api/post/${id}/reply`, {
+  fetch(`/uhelp-api/reply/${id}`, {
     method: "POST",
     headers: await getAuthHeader(),
     body: JSON.stringify({
@@ -163,7 +163,7 @@ export const editPost = async (id: number) => {
     return;
   }
 
-  fetch(`/uhelp-api/post/${id}/update`, {
+  fetch(`/uhelp-api/edit/post/${id}`, {
     method: "POST",
     headers: await getAuthHeader(),
     body: JSON.stringify({
@@ -190,7 +190,7 @@ export const editReply = async (id: number | null) => {
     return;
   }
 
-  fetch(`/uhelp-api/reply/${id}/update`, {
+  fetch(`/uhelp-api/edit/reply/${id}`, {
     method: "POST",
     headers: await getAuthHeader(),
     body: JSON.stringify({
@@ -207,7 +207,7 @@ export const editReply = async (id: number | null) => {
 };
 
 export const deletePost = async (id: number) => {
-  fetch(`/uhelp-api/post/${id}/delete`, {
+  fetch(`/uhelp-api/delete/post/${id}`, {
     method: "POST",
     headers: await getAuthHeader(),
   })
@@ -219,7 +219,7 @@ export const deletePost = async (id: number) => {
 };
 
 export const deleteReply = async (id: number | null) => {
-  fetch(`/uhelp-api/reply/${id}/delete`, {
+  fetch(`/uhelp-api/delete/reply/${id}`, {
     method: "POST",
     headers: await getAuthHeader(),
   })
@@ -263,7 +263,7 @@ export const like = async (
 
   const updatedPostsFetcher = async (): Promise<Post[]> => {
     const res = await fetch(
-      `/uhelp-api/${isReply ? "reply" : "post"}/${id}/like`,
+      `/uhelp-api/like/${isReply ? "reply" : "post"}/${id}`,
       {
         method: "GET",
         headers: await getAuthHeader(),
