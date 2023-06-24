@@ -10,7 +10,6 @@ export default function ForumLayout({
   return (
     <>
       <Sidebar />
-      <ForumHeader />
       {children}
     </>
   );

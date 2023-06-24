@@ -9,37 +9,21 @@ import { categoriesFetcher } from "@/app/(Forum)/forum/[channelID]/helper";
 import Logo from "./Logo";
 import { useParams } from "next/navigation";
 import Skeleton from "../../Skeleton";
-import { GiHamburgerMenu } from "react-icons/gi";
-import { AnimatePresence, motion, useCycle } from "framer-motion";
-import { setIsMenuOpen } from "@/redux/slices/forumSlice";
-import { useDispatch } from "react-redux";
-import clsx from "clsx";
+import SidebarButton from "./SidebarButton";
 
 function Sidebar() {
-  const dispatch = useDispatch();
   const params = useParams();
   const channelID = params?.channelID;
   const isMobile = useAppSelector((state) => state.app.isMobile);
+  const isSidebarOpen = useAppSelector((state) => state.forum.isMenuOpen);
   const { data: categories, isLoading } = useSWRImmutable<Category[]>(
     "/uhelp-api/categories",
     categoriesFetcher
   );
-  const isOpen = useAppSelector((state) => state.forum.isMenuOpen);
-
-  const SidebarButton: React.FC = () => {
-    return (
-      <GiHamburgerMenu
-        className={clsx(styles.menuIcon, !isOpen && styles.menuIconClosed)}
-        onClick={() => {
-          dispatch(setIsMenuOpen(!isOpen));
-        }}
-      />
-    );
-  };
 
   return (
     <>
-      {isOpen ? (
+      {isSidebarOpen && (
         <aside className={styles.sidebarWrapper}>
           <div className={styles.sidebarHeader}>
             <SidebarButton />
@@ -64,8 +48,6 @@ function Sidebar() {
                 ))}
           </div>
         </aside>
-      ) : (
-        <SidebarButton />
       )}
     </>
   );

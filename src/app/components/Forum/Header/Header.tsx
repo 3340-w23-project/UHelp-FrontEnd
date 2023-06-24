@@ -18,6 +18,7 @@ import { channelFetcher } from "@/app/(Forum)/forum/[channelID]/helper";
 import MobileMenu from "../../Navbar/MobileMenu";
 import clsx from "clsx";
 import { motion } from "framer-motion";
+import SidebarButton from "../Sidebar/SidebarButton";
 
 function ForumHeader() {
   const dispatch = useDispatch();
@@ -30,7 +31,7 @@ function ForumHeader() {
     (state) => state.channel.channelDescription
   );
   const isMobile = useAppSelector((state) => state.app.isMobile);
-  const [active, setActive] = useState<boolean>(false);
+  const isSidebarOpen = useAppSelector((state) => state.forum.isMenuOpen);
 
   useEffect(() => {
     if (data) {
@@ -41,32 +42,39 @@ function ForumHeader() {
   }, [data]);
 
   return (
-    <motion.div
-      layout="position"
+    <div
       className={clsx(
         styles.header,
         zeroRightClassName,
-        !isMenuOpen && styles.expandedHeader
+        !isSidebarOpen && styles.expandedHeader
       )}>
+      {!isSidebarOpen && <SidebarButton />}
       <div className={styles.channelInfo}>
         {channelName ? (
           <h2>{channelName}</h2>
         ) : (
           <Skeleton width={"8rem"} height={"1.8rem"} />
         )}
-        {!channelDescription && !isMobile && !channelName && (
-          <div style={{ height: "0.05rem" }} />
-        )}
-        {channelDescription && !isMobile ? (
-          <span className={styles.channelDescription}>
-            {channelDescription}
-          </span>
-        ) : (
-          !isMobile && <Skeleton width={"16rem"} height={"1.3rem"} />
+
+        {!isMobile && (
+          <>
+            {!channelDescription && !channelName && (
+              <div style={{ height: "0.05rem" }} />
+            )}
+
+            {channelDescription ? (
+              <span className={styles.channelDescription}>
+                {channelDescription}
+              </span>
+            ) : (
+              !isMobile && <Skeleton width={"16rem"} height={"1.3rem"} />
+            )}
+          </>
         )}
       </div>
 
-      {!isMobile ? (
+      {/* Header Buttons */}
+      {!isMobile && (
         <div className={styles.headerButtons}>
           <Button
             className={styles.headerBtn}
@@ -80,10 +88,8 @@ function ForumHeader() {
           />
           <Account />
         </div>
-      ) : (
-        <MobileMenu active={active} setActive={setActive} />
       )}
-    </motion.div>
+    </div>
   );
 }
 

@@ -15,6 +15,7 @@ import { MdOutlineSpeakerNotesOff } from "react-icons/md";
 import { setChannelID } from "@/redux/slices/channelSlice";
 import { useDispatch } from "react-redux";
 import { useParams } from "next/navigation";
+import ForumHeader from "@/app/components/Forum/Header/Header";
 
 function Forum() {
   const dispatch = useDispatch();
@@ -42,14 +43,18 @@ function Forum() {
         html,
         body {
           background-color: #fdfaef;
+          display: flex;
+          width: 100%;
         }
       `}</style>
       <motion.div
-        layout
+        layout="position"
         className={clsx(
           styles.contentWrapper,
           !isMenuOpen && styles.expandedContentWrapper
         )}>
+        <ForumHeader />
+
         <div className={styles.postsWrapper}>
           {isLoading && <LoadingIndicator />}
           <AnimatePresence>
