@@ -10,15 +10,13 @@ function SidebarButton() {
   const dispatch = useDispatch();
   const isOpen = useAppSelector((state) => state.forum.isMenuOpen);
   return (
-    <motion.span
-      layout="position"
-      layoutId="sidebarButton"
+    <span
       className={styles.sidebarButton}
       onClick={() => {
         dispatch(setIsMenuOpen(!isOpen));
       }}>
       <GiHamburgerMenu />
-    </motion.span>
+    </span>
   );
 }
 

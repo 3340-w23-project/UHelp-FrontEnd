@@ -47,8 +47,7 @@ function Forum() {
           width: 100%;
         }
       `}</style>
-      <motion.div
-        layout="position"
+      <div
         className={clsx(
           styles.contentWrapper,
           !isMenuOpen && styles.expandedContentWrapper
@@ -83,7 +82,7 @@ function Forum() {
           </AnimatePresence>
           <ForumModal />
         </div>
-      </motion.div>
+      </div>
     </>
   );
 }
