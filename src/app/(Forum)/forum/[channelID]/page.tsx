@@ -2,20 +2,20 @@
 import React from "react";
 import styles from "@/app/styles/Forum.module.scss";
 import LoadingIndicator from "@/app/components/Forum/Posts/LoadingIndicator";
-import { useAppSelector } from "@/redux/store";
 import clsx from "clsx";
+import useSWR from "swr";
+import PostComponent from "@/app/components/Forum/Posts/Post";
+import ForumModal from "@/app/components/Forum/Modal/ForumModal";
+import ForumHeader from "@/app/components/Forum/Header/Header";
+import { useAppSelector } from "@/redux/store";
 import { Post } from "@/utils/Types";
 import { postAnimation } from "@/utils/Animations";
-import PostComponent from "@/app/components/Forum/Posts/Post";
-import useSWR from "swr";
-import ForumModal from "@/app/components/Forum/Modal/ForumModal";
-import { like, postsFetcher } from "../../../(Forum)/forum/[channelID]/helper";
+import { rate, postsFetcher } from "../../../(Forum)/forum/[channelID]/helper";
 import { motion, AnimatePresence } from "framer-motion";
 import { MdOutlineSpeakerNotesOff } from "react-icons/md";
 import { setChannelID } from "@/redux/slices/channelSlice";
 import { useDispatch } from "react-redux";
 import { useParams } from "next/navigation";
-import ForumHeader from "@/app/components/Forum/Header/Header";
 
 function Forum() {
   const dispatch = useDispatch();
@@ -34,8 +34,12 @@ function Forum() {
     }
   );
 
-  const likePost = async (id: number, isReply: boolean, depth: number = 0) =>
-    like(id, isReply, depth, posts);
+  const ratePost = async (
+    id: number,
+    isLike: boolean,
+    isReply: boolean,
+    depth: number = 0
+  ) => rate(id, isLike, isReply, depth, posts);
 
   return (
     <>
@@ -53,7 +57,6 @@ function Forum() {
           !isMenuOpen && styles.expandedContentWrapper
         )}>
         <ForumHeader />
-
         <div className={styles.postsWrapper}>
           {isLoading && <LoadingIndicator />}
           <AnimatePresence>
@@ -74,7 +77,7 @@ function Forum() {
                   key={post.id}
                   post={post}
                   parentID={post.id}
-                  like={likePost}
+                  rate={ratePost}
                   isReply={false}
                 />
               ))

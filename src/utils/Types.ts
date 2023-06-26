@@ -24,6 +24,8 @@ export type Reply = {
   parent_reply_id: number | null;
   likes: number;
   liked: boolean;
+  dislikes: number;
+  disliked: boolean;
   edited?: boolean;
   edited_date?: string;
   replies?: Reply[];
@@ -39,5 +41,7 @@ export type Post = {
   edited_date?: string;
   likes: number;
   liked: boolean;
+  dislikes: number;
+  disliked: boolean;
   replies?: Reply[];
 };

@@ -14,6 +14,7 @@ import clsx from "clsx";
 import { formatTime } from "../../../(Forum)/forum/[channelID]/helper";
 import { IoTrash } from "react-icons/io5";
 import { AiFillLike } from "react-icons/ai";
+import { AiFillDislike } from "react-icons/ai";
 import { MdReply, MdModeEdit } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import { motion } from "framer-motion";
@@ -37,17 +38,23 @@ interface Props {
   isReply: boolean;
   post: any;
   parentID: number;
-  like: (id: number, isReply: boolean, depth: number) => void;
+  rate: (id: number, isLike: boolean, isReply: boolean, depth: number) => void;
 }
 
-function Post({ isReply, post, parentID, like }: Props) {
+function Post({ isReply, post, parentID, rate }: Props) {
   const { data: session } = useSession();
   const username = session?.user?.username;
   const dispatch = useDispatch();
   const [isLikeAnimating, setIsLikeAnimating] = useState<boolean>(false);
+  const [isDislikeAnimating, setIsDislikeAnimating] = useState<boolean>(false);
 
-  const handleLike = () => {
-    like(isReply ? post.id : parentID, isReply, isReply ? post.depth : 0);
+  const handleRating = (isLike: boolean) => {
+    rate(
+      isReply ? post.id : parentID,
+      isLike,
+      isReply,
+      isReply ? post.depth : 0
+    );
   };
 
   const handleReply = () => {
@@ -195,7 +202,7 @@ function Post({ isReply, post, parentID, like }: Props) {
             }}
             className={clsx(styles.postLikes, post.liked && styles.liked)}
             onTapStart={() => setIsLikeAnimating(true)}
-            onClick={handleLike}>
+            onClick={() => handleRating(true)}>
             {post.likes}{" "}
             <motion.span
               animate={{
@@ -208,6 +215,26 @@ function Post({ isReply, post, parentID, like }: Props) {
               <AiFillLike className={styles.likeIcon} />
             </motion.span>
           </motion.span>
+          <motion.span
+            whileTap={{
+              scale: 1.1,
+              y: -2,
+            }}
+            className={clsx(styles.postLikes, post.disliked && styles.liked)}
+            onTapStart={() => setIsDislikeAnimating(true)}
+            onClick={() => handleRating(false)}>
+            {post.dislikes}{" "}
+            <motion.span
+              animate={{
+                scale: isDislikeAnimating ? 1.1 : 1,
+                y: isDislikeAnimating ? -2 : 0,
+                rotate: isDislikeAnimating ? -8 : 0,
+              }}
+              transition={{ duration: 0.15, delay: 0.05, ease: "easeIn" }}
+              onAnimationComplete={() => setIsDislikeAnimating(false)}>
+              <AiFillDislike className={styles.likeIcon} />
+            </motion.span>
+          </motion.span>
         </div>
       </div>
       {post.replies?.length > 0 && (
@@ -217,7 +244,7 @@ function Post({ isReply, post, parentID, like }: Props) {
               key={reply.id}
               post={reply}
               parentID={parentID}
-              like={like}
+              rate={rate}
               isReply
             />
           ))}

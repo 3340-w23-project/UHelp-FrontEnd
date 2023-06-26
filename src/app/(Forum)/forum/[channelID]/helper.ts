@@ -230,40 +230,53 @@ export const deleteReply = async (id: number | null) => {
     .catch(console.error);
 };
 
-export const like = async (
+export const rate = async (
   id: number,
+  isLike: boolean,
   isReply: boolean,
   depth: number = 0,
   posts: Post[] | undefined
 ) => {
-  const updateLikes = (data: Post[] | undefined, depth: number): Post[] => {
+  const updateRating = (data: Post[] | undefined, depth: number): Post[] => {
     if (data && depth === 0) {
-      return data.map((post: Post) =>
-        post.id === id
-          ? {
-              ...post,
-              liked: !post.liked,
-              likes: post.liked ? post.likes - 1 : post.likes + 1,
-            }
-          : post
-      );
+      return data.map((post: Post) => {
+        if (post.id === id)
+          return {
+            ...post,
+            liked: isLike ? !post.liked : false,
+            likes: isLike
+              ? post.liked
+                ? post.likes - 1
+                : post.likes + 1
+              : post.likes,
+            disliked: !isLike ? !post.disliked : false,
+            dislikes: !isLike
+              ? post.disliked
+                ? post.dislikes - 1
+                : post.dislikes + 1
+              : post.dislikes,
+          };
+        else return post;
+      });
     } else {
       if (!data) return [];
       return data.map((post: any) =>
         post.replies
-          ? { ...post, replies: updateLikes(post.replies, depth - 1) }
+          ? { ...post, replies: updateRating(post.replies, depth - 1) }
           : post
       );
     }
   };
 
   const updatedPosts = isReply
-    ? updateLikes(posts, depth + 1)
-    : updateLikes(posts, 0);
+    ? updateRating(posts, depth + 1)
+    : updateRating(posts, 0);
 
   const updatedPostsFetcher = async (): Promise<Post[]> => {
     const res = await fetch(
-      `/uhelp-api/like/${isReply ? "reply" : "post"}/${id}`,
+      `/uhelp-api/${isLike ? "like" : "dislike"}/${
+        isReply ? "reply" : "post"
+      }/${id}`,
       {
         method: "GET",
         headers: await getAuthHeader(),
