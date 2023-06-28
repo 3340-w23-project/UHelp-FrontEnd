@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import styles from "@/app/styles/Forum.module.scss";
 import { AnimatePresence, motion } from "framer-motion";
-import { useAppDispatch, useAppSelector } from "@/redux/store";
+import { useAppDispatch } from "@/redux/store";
 import { FaChevronDown } from "react-icons/fa";
 import { Category } from "@/utils/Types";
 import { categoryAnimation } from "@/utils/Animations";
@@ -12,7 +12,6 @@ import {
 } from "@/redux/slices/channelSlice";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
-import { setIsMenuOpen } from "@/redux/slices/forumSlice";
 
 type Props = {
   category: Category;
@@ -21,7 +20,6 @@ type Props = {
 
 function Category({ category, channelID }: Props) {
   const dispatch = useAppDispatch();
-  const isMobile = useAppSelector((state) => state.app.isMobile);
   const [isOpen, setIsOpen] = useState(
     category.channels.some((channel) => channel.id === channelID)
   );

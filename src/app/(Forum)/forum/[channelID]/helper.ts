@@ -240,23 +240,38 @@ export const rate = async (
   const updateRating = (data: Post[] | undefined, depth: number): Post[] => {
     if (data && depth === 0) {
       return data.map((post: Post) => {
-        if (post.id === id)
+        if (post.id === id) {
+          const isDisliked = post.disliked;
+          const isLiked = post.liked;
+          let likes = post.likes;
+          let dislikes = post.dislikes;
+
+          if (isLike) {
+            if (!isLiked && !isDisliked) likes++;
+            else if (isLiked) likes--;
+            else {
+              likes++;
+              dislikes--;
+            }
+          } else {
+            if (!isLiked && !isDisliked) dislikes++;
+            else if (isDisliked) dislikes--;
+            else {
+              dislikes++;
+              likes--;
+            }
+          }
+
           return {
             ...post,
-            liked: isLike ? !post.liked : false,
-            likes: isLike
-              ? post.liked
-                ? post.likes - 1
-                : post.likes + 1
-              : post.likes,
-            disliked: !isLike ? !post.disliked : false,
-            dislikes: !isLike
-              ? post.disliked
-                ? post.dislikes - 1
-                : post.dislikes + 1
-              : post.dislikes,
+            liked: isLike ? !isLiked : false,
+            disliked: !isLike ? !isDisliked : false,
+            likes,
+            dislikes,
           };
-        else return post;
+        } else {
+          return post;
+        }
       });
     } else {
       if (!data) return [];
