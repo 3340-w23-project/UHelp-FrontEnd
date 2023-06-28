@@ -14,7 +14,7 @@ interface ForumState {
 }
 
 const initialState: ForumState = {
-  isMenuOpen: true,
+  isMenuOpen: false,
   modalType: "Post",
   isOpen: false,
   postID: 0,

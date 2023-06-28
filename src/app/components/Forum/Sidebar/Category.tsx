@@ -54,9 +54,6 @@ function Category({ category, channelID }: Props) {
                   dispatch(setChannelDescription(null));
                   router.replace(`/forum/${channel.id}`);
                   window.scrollTo(0, 0);
-                  if (isMobile) {
-                    dispatch(setIsMenuOpen(false));
-                  }
                 }}>
                 {channel.name}
                 {channelID === channel.id && (

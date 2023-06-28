@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import styles from "@/app/styles/Forum.module.scss";
 import CategoryComponent from "./Category";
 import useSWRImmutable from "swr/immutable";
@@ -10,8 +10,11 @@ import Logo from "./Logo";
 import { useParams } from "next/navigation";
 import Skeleton from "../../Skeleton";
 import SidebarButton from "./SidebarButton";
+import { setIsMenuOpen } from "@/redux/slices/forumSlice";
+import { useDispatch } from "react-redux";
 
 function Sidebar() {
+  const dispatch = useDispatch();
   const params = useParams();
   const channelID = params?.channelID;
   const isMobile = useAppSelector((state) => state.app.isMobile);
@@ -20,6 +23,11 @@ function Sidebar() {
     "/uhelp-api/categories",
     categoriesFetcher
   );
+
+  useLayoutEffect(() => {
+    if (!isMobile) dispatch(setIsMenuOpen(true));
+    else dispatch(setIsMenuOpen(false));
+  }, [isMobile]);
 
   return (
     <>
