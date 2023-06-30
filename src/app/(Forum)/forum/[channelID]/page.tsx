@@ -2,7 +2,7 @@
 import "./page.css";
 import React, { useEffect } from "react";
 import styles from "@/app/styles/Forum.module.scss";
-import LoadingIndicator from "@/app/components/Forum/Posts/LoadingIndicator";
+import LoadingIndicator from "@/app/components/Forum/Posts/loadingSpinner";
 import clsx from "clsx";
 import useSWR from "swr";
 import PostComponent from "@/app/components/Forum/Posts/Post";
