@@ -1,3 +1,4 @@
+import { Post } from "@/utils/Types";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
@@ -11,6 +12,7 @@ interface ForumState {
   postTitleInput: string;
   postContentInput: string;
   error: string;
+  posts: Post[];
 }
 
 const initialState: ForumState = {
@@ -23,6 +25,7 @@ const initialState: ForumState = {
   postTitleInput: "",
   postContentInput: "",
   error: "",
+  posts: [],
 };
 
 export const forumSlice = createSlice({
@@ -56,6 +59,9 @@ export const forumSlice = createSlice({
     setError: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
     },
+    setPosts: (state, action: PayloadAction<Post[]>) => {
+      state.posts = action.payload;
+    },
   },
 });
 
@@ -69,6 +75,7 @@ export const {
   setPostTitleInput,
   setPostContentInput,
   setError,
+  setPosts,
 } = forumSlice.actions;
 
 export default forumSlice.reducer;

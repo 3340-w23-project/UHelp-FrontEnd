@@ -6,10 +6,8 @@ import { useAppSelector } from "@/redux/store";
 import {
   addPost,
   addReply,
-  deletePost,
-  deleteReply,
-  editPost,
-  editReply,
+  deleteItem,
+  editItem,
 } from "@/app/(Forum)/forum/[channelID]/helper";
 import {
   setIsOpen,
@@ -47,6 +45,7 @@ const ForumModal = () => {
   }, [modalType]);
 
   const handleSubmit = () => {
+    const isReply = actionType === "reply";
     switch (modalType) {
       case "Post":
         addPost();
@@ -55,12 +54,10 @@ const ForumModal = () => {
         addReply(postID, replyID);
         break;
       case "Edit":
-        if (actionType === "post") editPost(postID);
-        if (actionType === "reply") editReply(replyID);
+        editItem(isReply ? replyID : postID, isReply);
         break;
       case "Delete":
-        if (actionType === "post") deletePost(postID);
-        else if (actionType === "reply") deleteReply(replyID);
+        deleteItem(isReply ? replyID : postID, isReply);
         break;
       default:
         break;

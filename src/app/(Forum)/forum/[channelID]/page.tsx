@@ -1,5 +1,6 @@
 "use client";
-import React from "react";
+import "./page.css";
+import React, { useEffect } from "react";
 import styles from "@/app/styles/Forum.module.scss";
 import LoadingIndicator from "@/app/components/Forum/Posts/LoadingIndicator";
 import clsx from "clsx";
@@ -10,12 +11,13 @@ import ForumHeader from "@/app/components/Forum/Header/Header";
 import { useAppSelector } from "@/redux/store";
 import { Post } from "@/utils/Types";
 import { postAnimation } from "@/utils/Animations";
-import { rate, postsFetcher } from "../../../(Forum)/forum/[channelID]/helper";
+import { postsFetcher } from "../../../(Forum)/forum/[channelID]/helper";
 import { motion, AnimatePresence } from "framer-motion";
 import { MdOutlineSpeakerNotesOff } from "react-icons/md";
 import { setChannelID } from "@/redux/slices/channelSlice";
 import { useDispatch } from "react-redux";
 import { useParams } from "next/navigation";
+import { setPosts } from "@/redux/slices/forumSlice";
 
 function Forum() {
   const dispatch = useDispatch();
@@ -34,23 +36,14 @@ function Forum() {
     }
   );
 
-  const ratePost = async (
-    id: number,
-    isLike: boolean,
-    isReply: boolean,
-    depth: number = 0
-  ) => rate(id, isLike, isReply, depth, posts);
+  useEffect(() => {
+    if (posts) {
+      dispatch(setPosts(posts));
+    }
+  }, [posts]);
 
   return (
     <>
-      <style global jsx>{`
-        html,
-        body {
-          background-color: #fdfaef;
-          display: flex;
-          width: 100%;
-        }
-      `}</style>
       <div
         className={clsx(
           styles.contentWrapper,
@@ -77,7 +70,6 @@ function Forum() {
                   key={post.id}
                   post={post}
                   parentID={post.id}
-                  rate={ratePost}
                   isReply={false}
                 />
               ))

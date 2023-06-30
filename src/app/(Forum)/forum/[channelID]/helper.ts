@@ -53,12 +53,14 @@ export const postsFetcher = async () => {
 const handleResponse = (data: any, setError: Function) =>
   data.error ? setError(data.error) : mutate(getPostsURL());
 
-const checkInput = (title: string, content: string) =>
-  title === ""
-    ? "Title cannot be empty"
-    : content === ""
-    ? "Content cannot be empty"
-    : null;
+const validateInput = (isReply: boolean) => {
+  const postContentInput = store.getState().forum.postContentInput;
+  if (!postContentInput) return "Content cannot be empty";
+  if (!isReply) {
+    const postTitleInput = store.getState().forum.postTitleInput;
+    if (!postTitleInput) return "Title cannot be empty";
+  }
+};
 
 export const formatTime = (date: string, full: boolean) => {
   const postedDate = new Date(date);
@@ -103,7 +105,7 @@ export const addPost = async () => {
   const postTitleInput = store.getState().forum.postTitleInput;
   const postContentInput = store.getState().forum.postContentInput;
 
-  const error = checkInput(postTitleInput, postContentInput);
+  const error = validateInput(false);
   if (error) {
     dispatch(setError(error));
     return;
@@ -153,23 +155,24 @@ export const addReply = async (id: number, parent_id: number | null) => {
     .catch(console.error);
 };
 
-export const editPost = async (id: number) => {
+export const editItem = async (id: number | null, isReply: boolean) => {
   const postTitleInput = store.getState().forum.postTitleInput;
   const postContentInput = store.getState().forum.postContentInput;
 
-  const error = checkInput(postTitleInput, postContentInput);
+  const error = validateInput(isReply);
   if (error) {
     dispatch(setError(error));
     return;
   }
 
-  fetch(`/uhelp-api/edit/post/${id}`, {
+  const requestBody = isReply
+    ? { content: postContentInput }
+    : { title: postTitleInput, content: postContentInput };
+
+  fetch(`/uhelp-api/edit/${isReply ? "reply" : "post"}/${id}`, {
     method: "POST",
     headers: await getAuthHeader(),
-    body: JSON.stringify({
-      title: postTitleInput,
-      content: postContentInput,
-    }),
+    body: JSON.stringify(requestBody),
   })
     .then((res) => res.json())
     .then(({ error }) => {
@@ -178,48 +181,15 @@ export const editPost = async (id: number) => {
       dispatch(setPostID(0));
       dispatch(setPostTitleInput(""));
       dispatch(setPostContentInput(""));
+      if (isReply) {
+        dispatch(setPostContentInput(""));
+      }
     })
     .catch(console.error);
 };
 
-export const editReply = async (id: number | null) => {
-  const postContentInput = store.getState().forum.postContentInput;
-
-  if (postContentInput === "") {
-    setError("Reply cannot be empty");
-    return;
-  }
-
-  fetch(`/uhelp-api/edit/reply/${id}`, {
-    method: "POST",
-    headers: await getAuthHeader(),
-    body: JSON.stringify({
-      content: postContentInput,
-    }),
-  })
-    .then((res) => res.json())
-    .then(({ error }) => {
-      handleResponse({ error }, setError);
-      dispatch(setIsOpen(false));
-      dispatch(setPostContentInput(""));
-    })
-    .catch(console.error);
-};
-
-export const deletePost = async (id: number) => {
-  fetch(`/uhelp-api/delete/post/${id}`, {
-    method: "POST",
-    headers: await getAuthHeader(),
-  })
-    .then(() => {
-      dispatch(setIsOpen(false));
-      mutate(postsFetcher);
-    })
-    .catch(console.error);
-};
-
-export const deleteReply = async (id: number | null) => {
-  fetch(`/uhelp-api/delete/reply/${id}`, {
+export const deleteItem = async (id: number | null, isReply: boolean) => {
+  fetch(`/uhelp-api/delete/${isReply ? "reply" : "post"}/${id}`, {
     method: "POST",
     headers: await getAuthHeader(),
   })
@@ -234,9 +204,9 @@ export const rate = async (
   id: number,
   isLike: boolean,
   isReply: boolean,
-  depth: number = 0,
-  posts: Post[] | undefined
+  depth: number = 0
 ) => {
+  const posts = store.getState().forum.posts;
   const updateRating = (data: Post[] | undefined, depth: number): Post[] => {
     if (data && depth === 0) {
       return data.map((post: Post) => {

@@ -11,7 +11,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import Avatar from "react-avatar";
 import clsx from "clsx";
-import { formatTime } from "../../../(Forum)/forum/[channelID]/helper";
+import { formatTime, rate } from "../../../(Forum)/forum/[channelID]/helper";
 import { IoTrash } from "react-icons/io5";
 import { AiFillLike } from "react-icons/ai";
 import { AiFillDislike } from "react-icons/ai";
@@ -38,10 +38,9 @@ interface Props {
   isReply: boolean;
   post: any;
   parentID: number;
-  rate: (id: number, isLike: boolean, isReply: boolean, depth: number) => void;
 }
 
-function Post({ isReply, post, parentID, rate }: Props) {
+function Post({ isReply, post, parentID }: Props) {
   const { data: session } = useSession();
   const username = session?.user?.username;
   const dispatch = useDispatch();
@@ -240,13 +239,7 @@ function Post({ isReply, post, parentID, rate }: Props) {
       {post.replies?.length > 0 && (
         <div className={styles.replyWrapper}>
           {post.replies.map((reply: Reply) => (
-            <Post
-              key={reply.id}
-              post={reply}
-              parentID={parentID}
-              rate={rate}
-              isReply
-            />
+            <Post key={reply.id} post={reply} parentID={parentID} isReply />
           ))}
         </div>
       )}
