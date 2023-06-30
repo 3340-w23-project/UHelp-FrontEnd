@@ -242,6 +242,8 @@ $sidebarWidth: 300px;
         @include flex($align: center);
         font-size: 1.1rem;
         margin-bottom: 1.2rem;
+        overflow: hidden;
+        white-space: nowrap;
 
         .postAvatar {
           user-select: none;

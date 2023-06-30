@@ -216,7 +216,7 @@ function Post({ isReply, post, parentID }: Props) {
           <motion.span
             whileTap={{
               scale: 1.1,
-              y: -2,
+              y: 2,
             }}
             className={clsx(styles.postLikes, post.disliked && styles.liked)}
             onTapStart={() => setIsDislikeAnimating(true)}
