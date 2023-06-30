@@ -205,11 +205,10 @@ function Post({ isReply, post, parentID }: Props) {
             {post.likes}{" "}
             <motion.span
               animate={{
-                scale: isLikeAnimating ? 1.1 : 1,
                 y: isLikeAnimating ? -2 : 0,
-                rotate: isLikeAnimating ? -8 : 0,
+                rotate: isLikeAnimating ? -5 : 0,
               }}
-              transition={{ duration: 0.15, delay: 0.05, ease: "easeIn" }}
+              transition={{ duration: 0.15, delay: 0.05, ease: "easeInOut" }}
               onAnimationComplete={() => setIsLikeAnimating(false)}>
               <AiFillLike className={styles.likeIcon} />
             </motion.span>
@@ -225,11 +224,10 @@ function Post({ isReply, post, parentID }: Props) {
             {post.dislikes}{" "}
             <motion.span
               animate={{
-                scale: isDislikeAnimating ? 1.1 : 1,
-                y: isDislikeAnimating ? -2 : 0,
-                rotate: isDislikeAnimating ? -8 : 0,
+                y: isDislikeAnimating ? 2 : 0,
+                rotate: isDislikeAnimating ? 5 : 0,
               }}
-              transition={{ duration: 0.15, delay: 0.05, ease: "easeIn" }}
+              transition={{ duration: 0.15, delay: 0.05, ease: "easeInOut" }}
               onAnimationComplete={() => setIsDislikeAnimating(false)}>
               <AiFillDislike className={styles.likeIcon} />
             </motion.span>
