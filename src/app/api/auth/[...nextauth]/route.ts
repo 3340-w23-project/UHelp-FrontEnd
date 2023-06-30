@@ -19,27 +19,31 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         username: { label: "Username", type: "text" },
         password: { label: "Password", type: "password" },
+        signIn: { type: "hidden", value: "boolean" },
       },
-      async authorize(credentials, req) {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/signin`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username: credentials?.username,
-            password: credentials?.password,
-          }),
-        });
+      async authorize(credentials) {
+        const signIn = credentials?.signIn === "true";
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/${signIn ? "signin" : "signup"}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username: credentials?.username,
+              password: credentials?.password,
+            }),
+          }
+        );
         const user = await res.json();
-        if (res.status === 200 && user) {
+        if ((res.status === 200 || res.status === 201) && user) {
           return user;
         } else if (user?.msg) {
-          return Promise.reject(new Error(user.msg));
+          return Promise.reject(new Error("error:" + user.msg));
         }
-        return Promise.reject(
-          new Error("Something went wrong, please try again later.")
-        );
+        console.log(res);
+        return Promise.reject();
       },
     }),
   ],

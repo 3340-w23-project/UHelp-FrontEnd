@@ -12,74 +12,36 @@ function Form({ signInMode }: { signInMode: boolean }) {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const signInValidate = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (usernameInput === "") {
-      setError("Username cannot be empty");
-    } else if (passwordInput === "") {
-      setError("Password cannot be empty");
-    } else {
-      signInCredentials();
-    }
-  };
-
-  const signInCredentials = async () => {
-    setError("");
-    setIsLoading(true);
-    await signIn("credentials", {
-      username: usernameInput,
-      password: passwordInput,
-      redirect: false,
-    }).then((res) => {
-      if (res?.error) {
-        setError(res.error);
-        setIsLoading(false);
-      } else {
-        window.location.replace("/forum");
-      }
-    });
-  };
-
-  const signUpValidate = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (usernameInput.length < 3 || usernameInput.length > 20) {
       setError("Username must be between 3 and 20 characters");
     } else if (passwordInput.length < 4) {
-      setError("Password must be at least 4 characters");
+      if (signInMode) setError("Password must be at least 4 characters");
+      else setError("Password cannot be empty");
     } else {
-      signUp();
+      setError("");
+      setIsLoading(true);
+      await signIn("credentials", {
+        username: usernameInput,
+        password: passwordInput,
+        signIn: signInMode,
+        redirect: false,
+      }).then((res) => {
+        if (res?.error) {
+          if (res.error.startsWith("error:")) {
+            setError(res.error.slice(6));
+          } else setError("Something went wrong.");
+          setIsLoading(false);
+        } else {
+          window.location.replace("/forum");
+        }
+      });
     }
   };
 
-  const signUp = async () => {
-    setError("");
-    setIsLoading(true);
-    await fetch("/uhelp-api/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: usernameInput,
-        password: passwordInput,
-      }),
-    }).then((res: any) => {
-      if (res.status === 201) {
-        signInCredentials();
-      } else if (res.status === 409) {
-        setError("Username already exists");
-      } else {
-        const data = res.json();
-        setError(data?.msg);
-      }
-      setIsLoading(false);
-    });
-  };
-
   return (
-    <form
-      className={styles.container}
-      onSubmit={signInMode ? signInValidate : signUpValidate}>
+    <form className={styles.container} onSubmit={handleSubmit}>
       <h1 className={styles.header}>{signInMode ? "Sign In" : "Sign Up"}</h1>
       <Field
         label="Username"
