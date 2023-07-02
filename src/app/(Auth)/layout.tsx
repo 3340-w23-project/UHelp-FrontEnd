@@ -23,10 +23,12 @@ export default async function AuthLayout({
     redirect("/");
   }
 
-  return session ? null : (
-    <>
-      <Navbar />
-      <div className={styles.wrapper}>{children}</div>
-    </>
+  return (
+    !session && (
+      <>
+        <Navbar session={null} />
+        <div className={styles.wrapper}>{children}</div>
+      </>
+    )
   );
 }

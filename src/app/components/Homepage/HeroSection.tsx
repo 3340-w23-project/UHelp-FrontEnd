@@ -5,20 +5,21 @@ import Button from "../Button";
 import BackgroundPage from "./HeroBackground";
 import { AppConfig } from "@/utils/AppConfig";
 import { MdOutlineLogin } from "react-icons/md";
-import { useSession } from "next-auth/react";
+import { Session } from "next-auth";
 
 type HeroSectionProps = {
+  session: Session | null;
   description: string;
   actionLabel: string;
   actionHref: string;
 };
 
 const HeroSection = ({
+  session,
   description,
   actionLabel,
   actionHref,
 }: HeroSectionProps) => {
-  const { data: session } = useSession();
   return (
     <>
       <BackgroundPage />

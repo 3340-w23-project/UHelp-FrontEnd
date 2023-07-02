@@ -17,9 +17,11 @@ import {
 import { channelFetcher } from "@/app/(Forum)/forum/[channelID]/helper";
 import SidebarButton from "../Sidebar/SidebarButton";
 import clsx from "clsx";
+import { useSession } from "next-auth/react";
 
 function ForumHeader() {
   const dispatch = useDispatch();
+  const { data: session } = useSession();
   const channelID = useAppSelector((state) => state.channel.channelID);
   const apiURL = `/uhelp-api/channel/${channelID}`;
   const { data } = useSWRImmutable(apiURL, () => channelFetcher(apiURL));
@@ -83,7 +85,7 @@ function ForumHeader() {
               dispatch(setIsOpen(true));
             }}
           />
-          <Account />
+          <Account session={session} />
         </div>
       )}
     </div>

@@ -17,7 +17,7 @@ function DesktopMenu({
         {session && pathname === "/" ? (
           <>
             <MenuItem href="/forum/1" label="Forum" />
-            <Account />
+            <Account session={session} />
           </>
         ) : (
           <>

@@ -1,5 +1,4 @@
 "use client";
-import "./page.css";
 import React, { useEffect } from "react";
 import styles from "@/app/styles/Forum.module.scss";
 import LoadingIndicator from "@/app/components/Forum/Posts/loadingSpinner";

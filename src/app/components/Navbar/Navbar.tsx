@@ -7,12 +7,11 @@ import MobileMenu from "./MobileMenu";
 import { useState } from "react";
 import { AppConfig } from "@/utils/AppConfig";
 import { useAppSelector } from "@/redux/store";
-import { useSession } from "next-auth/react";
 import DesktopMenu from "./DesktopMenu";
 import { usePathname } from "next/navigation";
+import { Session } from "next-auth";
 
-function Navbar() {
-  const { data: session } = useSession();
+function Navbar({ session }: { session: Session | null }) {
   const isMobile = useAppSelector((state) => state.app.isMobile);
   const isScrolled = useAppSelector((state) => state.app.isScrolled);
   const pathname = usePathname();

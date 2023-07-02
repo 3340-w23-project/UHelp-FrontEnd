@@ -9,10 +9,11 @@ import { signOut, useSession } from "next-auth/react";
 import Avatar from "react-avatar";
 import Skeleton from "../Skeleton";
 import { avatarColors } from "@/utils/AppConfig";
+import { Session } from "next-auth";
 
-const Account = () => {
+const Account = ({ session }: { session: Session | null }) => {
+  // const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
-  const { data: session } = useSession();
   const displayName = session?.user?.display_name;
 
   return (

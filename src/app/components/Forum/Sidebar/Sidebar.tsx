@@ -12,6 +12,7 @@ import Skeleton from "../../Skeleton";
 import SidebarButton from "./SidebarButton";
 import { setIsMenuOpen } from "@/redux/slices/forumSlice";
 import { useDispatch } from "react-redux";
+import { AnimatePresence, motion } from "framer-motion";
 
 function Sidebar() {
   const dispatch = useDispatch();

@@ -3,12 +3,17 @@ import Footer from "@/app/components/Footer";
 import Navbar from "@/app/components/Navbar/Navbar";
 import Section from "@/app/components/Homepage/Section";
 import { sections } from "@/utils/HomeData";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 
-export default function Home() {
+export default async function Home() {
+  const session = await getServerSession(authOptions);
+
   return (
     <main>
-      <Navbar />
+      <Navbar session={session} />
       <HeroSection
+        session={session}
         description="Get _Help_ and _Connect_ with Peers."
         actionLabel="Join Now"
         actionHref="/signup"
