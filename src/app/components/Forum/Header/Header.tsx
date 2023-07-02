@@ -88,6 +88,17 @@ function ForumHeader() {
           <Account session={session} />
         </div>
       )}
+      {isMobile && !isSidebarOpen && (
+        <Button
+          className={styles.headerBtn}
+          tertiary
+          icon={MdPostAdd}
+          onClick={() => {
+            dispatch(setModalType("Post"));
+            dispatch(setIsOpen(true));
+          }}
+        />
+      )}
     </div>
   );
 }

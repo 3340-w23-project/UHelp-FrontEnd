@@ -6,6 +6,16 @@ $sidebarWidth: 300px;
 
 .expandedHeader {
   padding: 0 5rem 0 2rem !important;
+
+  // Tablet
+  @media (max-width: 1024px) {
+    padding: 0 2rem 0 1rem !important;
+  }
+
+  // Mobile
+  @media (max-width: 768px) {
+    padding: 0 1.2rem 0 1rem !important;
+  }
 }
 
 .header {
@@ -65,7 +75,7 @@ $sidebarWidth: 300px;
   @include flex($align: center, $justify: center);
   z-index: 100;
   border-radius: 0.25rem;
-  padding: 0.35em;
+  padding: 0.25em;
   margin-right: 0.5rem;
   transition: background-color 0.25s ease;
   cursor: pointer;
@@ -484,6 +494,7 @@ $sidebarWidth: 300px;
 
     @media (max-width: 768px) {
       min-height: $mobileHeaderHeight;
+      padding: 0 1rem;
     }
   }
 
@@ -491,6 +502,11 @@ $sidebarWidth: 300px;
     @include fillParent;
     @include flex($direction: column);
     padding: 0 2rem;
+
+    // Tablet
+    @media (max-width: 768px) {
+      padding: 0 1rem;
+    }
 
     .sidebarCategory {
       @include flex($direction: column);
