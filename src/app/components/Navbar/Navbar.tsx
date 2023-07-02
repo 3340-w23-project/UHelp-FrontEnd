@@ -23,6 +23,7 @@ function Navbar() {
       className={clsx(styles.navbar, {
         [styles.scrolled]: isScrolled || active,
       })}>
+      {isMobile && <MobileMenu active={active} setActive={setActive} />}
       <div className={styles.logo}>
         <Link href="/">
           <Image
@@ -36,12 +37,7 @@ function Navbar() {
           {AppConfig.siteName}
         </Link>
       </div>
-
-      {!isMobile ? (
-        <DesktopMenu session={session} pathname={pathname} />
-      ) : (
-        <MobileMenu active={active} setActive={setActive} />
-      )}
+      {!isMobile && <DesktopMenu session={session} pathname={pathname} />}
     </div>
   );
 }

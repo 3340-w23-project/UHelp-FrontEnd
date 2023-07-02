@@ -71,8 +71,7 @@ $sidebarWidth: 300px;
   cursor: pointer;
 
   svg {
-    width: 1.5rem;
-    height: 1.5rem;
+    @include size($width: 30px, $height: 30px);
   }
 
   &:hover {

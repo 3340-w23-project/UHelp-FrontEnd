@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import styles from "@/app/styles/Forum.module.scss";
 import { zeroRightClassName } from "react-remove-scroll-bar";
 import { useDispatch } from "react-redux";
@@ -15,17 +15,14 @@ import {
   setChannelName,
 } from "@/redux/slices/channelSlice";
 import { channelFetcher } from "@/app/(Forum)/forum/[channelID]/helper";
-import MobileMenu from "../../Navbar/MobileMenu";
-import clsx from "clsx";
-import { motion } from "framer-motion";
 import SidebarButton from "../Sidebar/SidebarButton";
+import clsx from "clsx";
 
 function ForumHeader() {
   const dispatch = useDispatch();
   const channelID = useAppSelector((state) => state.channel.channelID);
   const apiURL = `/uhelp-api/channel/${channelID}`;
   const { data } = useSWRImmutable(apiURL, () => channelFetcher(apiURL));
-  const isMenuOpen = useAppSelector((state) => state.forum.isMenuOpen);
   const channelName = useAppSelector((state) => state.channel.channelName);
   const channelDescription = useAppSelector(
     (state) => state.channel.channelDescription
