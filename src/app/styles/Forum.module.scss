@@ -36,6 +36,12 @@ $sidebarWidth: 300px;
       width: 1.5rem;
       height: 1.5rem;
     }
+
+    //mobile
+    @media (max-width: 768px) {
+      height: auto;
+      padding: 0.5rem;
+    }
   }
 
   // Tablet
