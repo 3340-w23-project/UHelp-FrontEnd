@@ -4,19 +4,21 @@ import styles from "@/app/styles/Forum.module.scss";
 import Button from "../../Button";
 import { useAppSelector } from "@/redux/store";
 import {
-  addPost,
-  addReply,
-  deleteItem,
-  editItem,
-} from "@/app/(Forum)/forum/[channelID]/helper";
-import {
   setIsOpen,
   setPostContentInput,
+  setPostID,
   setPostTitleInput,
 } from "@/redux/slices/forumSlice";
 import { useDispatch } from "react-redux";
 import useSubmitShortcut from "@/hooks/useShortcuts";
 import { useEffect, useState } from "react";
+import {
+  useAddPostMutation,
+  useAddReplyMutation,
+  useDeleteItemMutation,
+  useEditItemMutation,
+} from "@/app/api/postsApi";
+import { validateInput } from "@/app/(Forum)/forum/[channelID]/helper";
 
 const ForumModal = () => {
   const dispatch = useDispatch();
@@ -31,6 +33,11 @@ const ForumModal = () => {
     (state) => state.forum.postContentInput
   );
   const [lastOpenedModal, setLastOpenedModal] = useState(modalType);
+  const [addPost] = useAddPostMutation();
+  const [addReply] = useAddReplyMutation();
+  const [editItem] = useEditItemMutation();
+  const [deleteItem] = useDeleteItemMutation();
+  const channelID = String(useAppSelector((state) => state.channel.channelID));
 
   useEffect(() => {
     if (
@@ -48,16 +55,50 @@ const ForumModal = () => {
     const isReply = actionType === "reply";
     switch (modalType) {
       case "Post":
-        addPost();
+        if (validateInput(false))
+          addPost({
+            channelID: channelID,
+            title: postTitleInput,
+            content: postContentInput,
+          });
+        dispatch(setIsOpen(false));
+        dispatch(setPostTitleInput(""));
+        dispatch(setPostContentInput(""));
         break;
       case "Reply":
-        addReply(postID, replyID);
+        if (validateInput(true))
+          addReply({
+            postID: postID,
+            parentID: replyID,
+            content: postContentInput,
+          });
+        dispatch(setIsOpen(false));
+        dispatch(setPostContentInput(""));
         break;
       case "Edit":
-        editItem(isReply ? replyID : postID, isReply);
+        if (validateInput(isReply)) {
+          editItem({
+            id: isReply ? replyID! : postID,
+            isReply: isReply,
+            title: postTitleInput,
+            content: postContentInput,
+          });
+        }
+        dispatch(setIsOpen(false));
+        dispatch(setPostID(0));
+        dispatch(setPostTitleInput(""));
+        dispatch(setPostContentInput(""));
+        if (isReply) {
+          dispatch(setPostContentInput(""));
+        }
         break;
       case "Delete":
-        deleteItem(isReply ? replyID : postID, isReply);
+        deleteItem({
+          id: isReply ? replyID! : postID,
+          parentID: isReply ? postID : undefined,
+          isReply: isReply,
+        });
+        dispatch(setIsOpen(false));
         break;
       default:
         break;

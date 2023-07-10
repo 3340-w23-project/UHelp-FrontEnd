@@ -2,7 +2,7 @@
 import "katex/dist/katex.min.css";
 import React, { useState } from "react";
 import styles from "@/app/styles/Forum.module.scss";
-import Button from "@/app/components/Button";
+import Button from "@/components/Button";
 import CodeCopy from "./CodeCopy";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -11,7 +11,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import Avatar from "react-avatar";
 import clsx from "clsx";
-import { formatTime, rate } from "../../../(Forum)/forum/[channelID]/helper";
+import { formatTime } from "../../../app/(Forum)/forum/[channelID]/helper";
 import { IoTrash } from "react-icons/io5";
 import { AiFillLike } from "react-icons/ai";
 import { AiFillDislike } from "react-icons/ai";
@@ -30,9 +30,11 @@ import {
   setAction,
   setPostTitleInput,
   setPostContentInput,
+  setReplyDepth,
 } from "@/redux/slices/forumSlice";
 import { avatarColors } from "@/utils/AppConfig";
 import Tooltip from "../../Tooltip";
+import { useRateItemMutation } from "@/app/api/postsApi";
 
 interface Props {
   isReply: boolean;
@@ -46,14 +48,14 @@ function Post({ isReply, post, parentID }: Props) {
   const dispatch = useDispatch();
   const [isLikeAnimating, setIsLikeAnimating] = useState<boolean>(false);
   const [isDislikeAnimating, setIsDislikeAnimating] = useState<boolean>(false);
+  const [rateItem] = useRateItemMutation();
 
   const handleRating = (isLike: boolean) => {
-    rate(
-      isReply ? post.id : parentID,
-      isLike,
-      isReply,
-      isReply ? post.depth : 0
-    );
+    rateItem({
+      id: isReply ? post.id : parentID,
+      isLike: isLike,
+      isReply: isReply,
+    });
   };
 
   const handleReply = () => {
@@ -83,8 +85,11 @@ function Post({ isReply, post, parentID }: Props) {
   };
 
   const handleDelete = () => {
-    if (isReply) dispatch(setReplyID(post.id));
-    else dispatch(setPostID(post.id));
+    if (isReply) {
+      dispatch(setPostID(parentID));
+      dispatch(setReplyID(post.id));
+      dispatch(setReplyDepth(post.depth));
+    } else dispatch(setPostID(post.id));
     dispatch(setAction(isReply ? "reply" : "post"));
     dispatch(setModalType("Delete"));
     dispatch(setIsOpen(true));

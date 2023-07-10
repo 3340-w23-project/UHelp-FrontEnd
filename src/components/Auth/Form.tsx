@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import styles from "@/app/styles/Auth.module.scss";
-import Field from "@/app/components/Auth/Field";
+import Field from "@/components/Auth/Field";
 import clsx from "clsx";
 import { useState, FormEvent } from "react";
 import { signIn } from "next-auth/react";

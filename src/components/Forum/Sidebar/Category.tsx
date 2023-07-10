@@ -49,7 +49,6 @@ function Category({ category, channelID }: Props) {
                 )}
                 onClick={() => {
                   dispatch(setChannelName(channel.name));
-                  dispatch(setChannelDescription(null));
                   router.replace(`/forum/${channel.id}`);
                   window.scrollTo(0, 0);
                 }}>

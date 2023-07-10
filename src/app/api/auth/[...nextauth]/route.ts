@@ -1,6 +1,8 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import type { NextAuthOptions } from "next-auth";
+import { store } from "@/redux/store";
+import { setAccessToken } from "@/redux/slices/appSlice";
 
 export const authOptions: NextAuthOptions = {
   pages: {
@@ -38,6 +40,7 @@ export const authOptions: NextAuthOptions = {
         );
         const user = await res.json();
         if ((res.status === 200 || res.status === 201) && user) {
+          store.dispatch(setAccessToken(user.access_token));
           return user;
         } else if (user?.msg) {
           return Promise.reject(new Error("error:" + user.msg));

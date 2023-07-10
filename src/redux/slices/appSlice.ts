@@ -4,11 +4,13 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 interface AppState {
   isScrolled: boolean;
   isMobile: boolean;
+  accessToken?: string;
 }
 
 const initialState: AppState = {
   isScrolled: false,
   isMobile: false,
+  accessToken: undefined,
 };
 
 export const appSlice = createSlice({
@@ -21,9 +23,12 @@ export const appSlice = createSlice({
     setIsMobile: (state, action: PayloadAction<boolean>) => {
       state.isMobile = action.payload;
     },
+    setAccessToken: (state, action: PayloadAction<string>) => {
+      state.accessToken = action.payload;
+    },
   },
 });
 
-export const { setIsScrolled, setIsMobile } = appSlice.actions;
+export const { setIsScrolled, setIsMobile, setAccessToken } = appSlice.actions;
 
 export default appSlice.reducer;

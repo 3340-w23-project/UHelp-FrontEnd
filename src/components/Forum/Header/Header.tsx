@@ -3,42 +3,32 @@ import React, { useEffect } from "react";
 import styles from "@/app/styles/Forum.module.scss";
 import { zeroRightClassName } from "react-remove-scroll-bar";
 import { useDispatch } from "react-redux";
-import useSWRImmutable from "swr/immutable";
-import Skeleton from "@/app/components/Skeleton";
-import Button from "@/app/components/Button";
-import Account from "@/app/components/Navbar/Account";
+import Skeleton from "@/components/Skeleton";
+import Button from "@/components/Button";
+import Account from "@/components/Navbar/Account";
 import { setIsOpen, setModalType } from "@/redux/slices/forumSlice";
 import { MdPostAdd } from "react-icons/md";
 import { useAppSelector } from "@/redux/store";
-import {
-  setChannelDescription,
-  setChannelName,
-} from "@/redux/slices/channelSlice";
-import { channelFetcher } from "@/app/(Forum)/forum/[channelID]/helper";
 import SidebarButton from "../Sidebar/SidebarButton";
 import clsx from "clsx";
-import { useSession } from "next-auth/react";
+import { Session } from "next-auth";
+import { Channel } from "@/utils/Types";
+import { setChannelName } from "@/redux/slices/channelSlice";
 
-function ForumHeader() {
+interface ForumHeaderProps {
+  session: Session | null;
+  channel: Channel;
+}
+
+function ForumHeader({ session, channel }: ForumHeaderProps) {
   const dispatch = useDispatch();
-  const { data: session } = useSession();
-  const channelID = useAppSelector((state) => state.channel.channelID);
-  const apiURL = `/uhelp-api/channel/${channelID}`;
-  const { data } = useSWRImmutable(apiURL, () => channelFetcher(apiURL));
   const channelName = useAppSelector((state) => state.channel.channelName);
-  const channelDescription = useAppSelector(
-    (state) => state.channel.channelDescription
-  );
   const isMobile = useAppSelector((state) => state.app.isMobile);
   const isSidebarOpen = useAppSelector((state) => state.forum.isMenuOpen);
 
   useEffect(() => {
-    if (data) {
-      if (data.name !== channelName) dispatch(setChannelName(data.name));
-      if (data.description !== channelDescription)
-        dispatch(setChannelDescription(data.description));
-    }
-  }, [data]);
+    dispatch(setChannelName(channel.name));
+  }, [channel]);
 
   return (
     <div
@@ -57,13 +47,13 @@ function ForumHeader() {
 
         {!isMobile && (
           <>
-            {!channelDescription && !channelName && (
+            {!channel.description && !channelName && (
               <div style={{ height: "0.05rem" }} />
             )}
 
-            {channelDescription ? (
+            {channel.description ? (
               <span className={styles.channelDescription}>
-                {channelDescription}
+                {channel.description}
               </span>
             ) : (
               !isMobile && <Skeleton width={"16rem"} height={"1.3rem"} />

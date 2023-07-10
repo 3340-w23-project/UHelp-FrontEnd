@@ -4,7 +4,7 @@ import { AppConfig } from "@/utils/AppConfig";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import Navbar from "../components/Navbar/Navbar";
+import Navbar from "../../components/Navbar/Navbar";
 
 export const metadata = {
   title: {

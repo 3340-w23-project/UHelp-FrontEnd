@@ -69,6 +69,10 @@ $sidebarWidth: 300px;
 
     .channelDescription {
       color: #505050;
+
+      @media (max-width: 768px) {
+        display: none;
+      }
     }
   }
 }
@@ -257,7 +261,6 @@ $sidebarWidth: 300px;
         @include flex($align: center);
         font-size: 1.1rem;
         margin-bottom: 1.2rem;
-        overflow: hidden;
         white-space: nowrap;
 
         .postAvatar {

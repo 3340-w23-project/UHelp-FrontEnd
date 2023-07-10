@@ -1,7 +1,7 @@
-import HeroSection from "@/app/components/Homepage/HeroSection";
-import Footer from "@/app/components/Footer";
-import Navbar from "@/app/components/Navbar/Navbar";
-import Section from "@/app/components/Homepage/Section";
+import HeroSection from "@/components/Homepage/HeroSection";
+import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar/Navbar";
+import Section from "@/components/Homepage/Section";
 import { sections } from "@/utils/HomeData";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";

@@ -7,6 +7,7 @@ export type Category = {
 export type Channel = {
   id: number;
   name: string;
+  description: string;
 };
 
 export type Author = {

@@ -1,5 +1,5 @@
 "use client";
-import ModalBackdrop from "@/app/components/Forum/Modal/ModalBackdrop";
+import ModalBackdrop from "@/components/Forum/Modal/ModalBackdrop";
 import styles from "@/app/styles/Forum.module.scss";
 import { AnimatePresence, motion } from "framer-motion";
 import { BsXLg } from "react-icons/bs";

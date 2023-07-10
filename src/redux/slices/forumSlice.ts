@@ -8,6 +8,7 @@ interface ForumState {
   isOpen: boolean;
   postID: number;
   replyID: number | null;
+  replyDepth: number;
   action: string;
   postTitleInput: string;
   postContentInput: string;
@@ -21,6 +22,7 @@ const initialState: ForumState = {
   isOpen: false,
   postID: 0,
   replyID: null,
+  replyDepth: 0,
   action: "post",
   postTitleInput: "",
   postContentInput: "",
@@ -47,6 +49,9 @@ export const forumSlice = createSlice({
     setReplyID: (state, action: PayloadAction<number | null>) => {
       state.replyID = action.payload;
     },
+    setReplyDepth: (state, action: PayloadAction<number>) => {
+      state.replyDepth = action.payload;
+    },
     setAction: (state, action: PayloadAction<string>) => {
       state.action = action.payload;
     },
@@ -71,6 +76,7 @@ export const {
   setIsOpen,
   setPostID,
   setReplyID,
+  setReplyDepth,
   setAction,
   setPostTitleInput,
   setPostContentInput,
